@@ -1,10 +1,9 @@
 define(['graphicore/errors'], function(errors){
     
     var count_runs_of_Test_MakeError = 0; 
-    
+    var raiser = {raise:function(err){throw new err;}}
     doh.register("graphicore.errors", [
     function Test_Errors(){
-        var raiser = {raise:function(err){throw new err;}}
         doh.assertError(
             Error,
             raiser, 'raise',
@@ -20,13 +19,6 @@ define(['graphicore/errors'], function(errors){
         );
     },
     function Test_MakeError(){
-        var raiser = {
-            raise: function(err)
-            { 
-                throw new err;
-            }
-        }
-        
         if(count_runs_of_Test_MakeError < 1)
         {
             // will fail on the seccond run of the test in the same instance
@@ -58,6 +50,17 @@ define(['graphicore/errors'], function(errors){
             [myNamespace.NewError],
             'makeError must make a child of Error in myNamespace.NewError'
         );
+    },
+    function Test_Assertion(){
+        doh.assertError(
+            errors.Assertion,
+            errors, 'assert',
+            [false],
+            'assertion must raise when false'
+        );
+        
+        //noting may happen
+        doh.assertEqual(errors.assert(true), null);
     }
     ]);
 });
