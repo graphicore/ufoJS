@@ -33,6 +33,7 @@ dojo._loadUri('../../require.js');
 //now use backdraft to load our tests and execute them when ready
 require([
         'tests/errors',
-        'tests/enhance',
-        'tests/tools/pens/AbstractPen'
+        'tests/testmain',
+        'tests/tools/pens/AbstractPen',
+        'tests/tools/pens/main',
     ], function(){doh.run();});
