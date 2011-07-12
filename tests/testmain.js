@@ -110,6 +110,44 @@ define(
             main, 'range',
             [1.5, 1, 1]
         );
+    },
+    function Test_round(){
+        
+        var float = 1/3;//like 0.3333333333333333
+        
+        doh.assertEqual(0, main.round(float));
+        doh.assertEqual(0.3, main.round(float, 10));
+        doh.assertEqual(0.33, main.round(float, 100));
+        doh.assertEqual(0.333, main.round(float, 1000));
+        doh.assertEqual(0.3333, main.round(float, 10000));
+        doh.assertEqual(0.33333, main.round(float, 100000));
+        doh.assertEqual(0.333333, main.round(float, 1000000));
+        
+        var float = 2/3;//like 0.6666666666666666
+        
+        doh.assertEqual(1, main.round(float));
+        doh.assertEqual(0.7, main.round(float, 10));
+        doh.assertEqual(0.67, main.round(float, 100));
+        doh.assertEqual(0.667, main.round(float, 1000));
+        doh.assertEqual(0.6667, main.round(float, 10000));
+        doh.assertEqual(0.66667, main.round(float, 100000));
+        doh.assertEqual(0.666667, main.round(float, 1000000));
+    },
+    function Test_isInt(){
+        doh.assertTrue(main.isInt(0));
+        doh.assertTrue(main.isInt(1));
+        doh.assertTrue(main.isInt(-1));
+        doh.assertTrue(main.isInt(1000));
+        doh.assertTrue(main.isInt(56789876));
+        //!this is javascript, there is no real int type
+        doh.assertTrue(main.isInt(6.0));
+        
+        doh.assertFalse(main.isInt(56789.876));
+        doh.assertFalse(main.isInt('567'));
+        doh.assertFalse(main.isInt(''));
+        doh.assertFalse(main.isInt(null));
+        doh.assertFalse(main.isInt(undefined));
+        doh.assertFalse(main.isInt([]));
     }
     ]);
 });

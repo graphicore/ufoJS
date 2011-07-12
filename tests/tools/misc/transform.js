@@ -2,7 +2,8 @@ define(
     ['graphicore', 'graphicore/errors', 'graphicore/tools/misc/transform'],
     function(main, errors, transform)
 {
-    var Transform = transform.Transform,
+    var round = main.round,
+        Transform = transform.Transform,
         Scale = transform.Scale
         Offset = transform.Offset
         Identity = transform.Identity;
@@ -105,9 +106,7 @@ define(
         var expecting = new Transform([1, 0, 1, 1, 0, 0]);
         //here I had a floating point rounding error
         var circa = t.skew(Math.PI / 4).slice().map(function(val){
-            val = val * 1000;
-            val = Math.round(val);
-            return val / 1000;
+            return round(val, 1000);
         });
         doh.assertTrue(expecting.cmp(circa));
     },
