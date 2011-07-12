@@ -1,7 +1,7 @@
 define(
     [
         'graphicore/errors',
-        'graphicore/tools/pens/TestPens',
+        'graphicore/tools/pens/testPens',
         'graphicore/tools/pens/TransformPen',
         'graphicore/tools/misc/transform'
     ],
