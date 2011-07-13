@@ -18,7 +18,7 @@ define(['graphicore/errors'], function(errors){
             'errors.NotImplemented must inherit from errors.Error'
         );
     },
-    function Test_MakeError(){
+    function Test_makeError(){
         if(count_runs_of_Test_MakeError < 1)
         {
             // will fail on the seccond run of the test in the same instance
@@ -51,7 +51,7 @@ define(['graphicore/errors'], function(errors){
             'makeError must make a child of Error in myNamespace.NewError'
         );
     },
-    function Test_Assertion(){
+    function Test_asssert(){
         doh.assertError(
             errors.Assertion,
             errors, 'assert',

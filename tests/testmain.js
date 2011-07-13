@@ -3,7 +3,7 @@ define(
     function(main, errors)
 {
     doh.register("graphicore.main", [
-    function Test_Enhance(){
+    function Test_enhance(){
         var enhance = main.enhance;
         var AbstractObject = function(){};
         enhance(AbstractObject, {
@@ -30,7 +30,7 @@ define(
         doh.assertTrue(concrete.test());
         doh.assertTrue(concrete instanceof AbstractObject);
     },
-    function Test_Range_Ranges(){
+    function Test_range_Ranges(){
         
         doh.assertEqual([], main.range(1,1,1));
         
@@ -58,7 +58,7 @@ define(
         for(var i in main.range(0, -10, 1)) list.push(i);
         doh.assertEqual([], list);
     },
-    function Test_Range_Errors() {
+    function Test_range_Errors() {
         
         doh.assertError(
             errors.Value,

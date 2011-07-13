@@ -3,7 +3,7 @@ define(
     function(errors, AbstractPen)
 {
     doh.register("graphicore.pens.AbstractPen", [
-    function Test_Errors(){
+    function Test_AbstractPen_Errors(){
         pen = new AbstractPen;
         doh.assertError(
             errors.NotImplemented,

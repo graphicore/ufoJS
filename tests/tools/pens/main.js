@@ -3,7 +3,7 @@ define(
     function(errors, pens)
 {
     doh.register("graphicore.pens.main", [
-    function Test_DecomposeSuperBezierSegment_Errors() {
+    function Test_decomposeSuperBezierSegment_Errors() {
         doh.assertError(
             TypeError,
             pens, 'decomposeSuperBezierSegment',
@@ -27,7 +27,7 @@ define(
      * the expectations here are checked against the python implementation
      * fonttools.pens.baspen.decomposeSuperBezierSegment
      */
-    function Test_DecomposeSuperBezierSegment() {
+    function Test_decomposeSuperBezierSegment() {
         //a 3 point super bezier equals a cubic bezier
         var points = [ [1, 2], [3, 4], [5, 6] ];
         var result = [ points ];
