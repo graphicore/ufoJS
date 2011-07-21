@@ -32,6 +32,11 @@ define(
     function Test_BasePen_inheritance() {
         var pen = new BasePen();
         doh.assertTrue(pen instanceof AbstractPen);
+        
+        var pen = new TestPen([]);
+        doh.assertTrue(pen instanceof AbstractPen);
+        doh.assertTrue(pen instanceof BasePen);
+        
     },
     function Test_BasePen_Errors() {
         var pen = new BasePen();
