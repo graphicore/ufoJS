@@ -38,5 +38,6 @@ require([
         'tests/tools/pens/main',
         'tests/tools/misc/transform',
         'tests/tools/pens/TransformPen',
-        'tests/tools/pens/BasePen'
+        'tests/tools/pens/BasePen',
+        'tests/tools/pens/AbstractPointPen',
     ], function(){doh.run();});
