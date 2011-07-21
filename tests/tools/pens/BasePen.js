@@ -3,10 +3,11 @@ define(
         'graphicore',
         'graphicore/errors',
         'graphicore/tools/misc/transform',
+        'graphicore/tools/pens/AbstractPen',
         'graphicore/tools/pens/BasePen',
         'graphicore/tools/pens/testPens'
     ],
-    function(graphicore, errors, transform, BasePen, testPens)
+    function(graphicore, errors, transform, AbstractPen, BasePen, testPens)
 {
     /*shortcuts*/
     var TestPen = testPens.BaseTestPen,
@@ -28,6 +29,10 @@ define(
     };
     
     doh.register("graphicore.pens.BasePen", [
+    function Test_BasePen_inheritance() {
+        var pen = new BasePen();
+        doh.assertTrue(pen instanceof AbstractPen);
+    },
     function Test_BasePen_Errors() {
         var pen = new BasePen();
         
