@@ -13,20 +13,10 @@ define(
     var TestPen = testPens.BaseTestPen,
     /**
      * a little helper to round the results of the testpen. This is good
-     * to overcome floating point rounding errors
+     * to overcome floating point rounding errors and still make meaningfull
+     * tests
      */
-        roundRecursive = function(item, factor) {
-        //currying the factor away
-        var round = graphicore.round,
-            roundRecursive = function(item) {
-            if(item instanceof Array)
-                return item.map(roundRecursive);
-            if(typeof item === 'number')
-                return round(item, factor);
-            return item;
-        }
-        return roundRecursive(item);
-    };
+        roundRecursive = graphicore.roundRecursive;
     
     doh.register("graphicore.pens.BasePen", [
     function Test_BasePen_inheritance() {

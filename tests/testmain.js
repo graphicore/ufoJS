@@ -133,6 +133,53 @@ define(
         doh.assertEqual(0.66667, main.round(float, 100000));
         doh.assertEqual(0.666667, main.round(float, 1000000));
     },
+    function Test_roundRecursiveFunc() {
+        var testdata = [
+            ['a', 2/3, 'b', 1.3, 2, {donttouch: 'me', invisible: 1/3}],
+            5, 1/3, true, false, null, undefined];
+        
+        var expecting = [
+                ['a', 1, 'b', 1, 2, {donttouch: 'me', invisible: 1/3}],
+                5, 0, true, false, null, undefined],
+            factor = 0,
+            testfunc = main.roundRecursiveFunc(factor);
+        doh.assertEqual(expecting, testfunc(testdata));
+        doh.assertEqual(expecting, main.roundRecursive(testdata, factor));
+        
+        var expecting = [
+                ['a', 0.7, 'b', 1.3, 2, {donttouch: 'me', invisible: 1/3}],
+                5, .3, true, false, null, undefined],
+            factor = 10,
+            testfunc = main.roundRecursiveFunc(factor);
+        doh.assertEqual(expecting, testfunc(testdata));
+        doh.assertEqual(expecting, main.roundRecursive(testdata, factor));
+        
+        var expecting = [
+                ['a', 0.6667, 'b', 1.3, 2, {donttouch: 'me', invisible: 1/3}],
+                5, .3333, true, false, null, undefined],
+            factor = 10000,
+            testfunc = main.roundRecursiveFunc(factor);
+        doh.assertEqual(expecting, testfunc(testdata));
+        doh.assertEqual(expecting, main.roundRecursive(testdata, factor));
+        
+        var testdata = 2/3,
+            factor = 10000,
+            testfunc = main.roundRecursiveFunc(factor);
+        doh.assertEqual(0.6667, testfunc(testdata));
+        doh.assertEqual(0.6667, main.roundRecursive(testdata, factor));
+        
+        var testdata = {a: 2/3},
+            factor = 10000,
+            testfunc = main.roundRecursiveFunc(factor);
+        doh.assertEqual({a: 2/3}, testfunc(testdata));
+        doh.assertEqual({a: 2/3}, main.roundRecursive(testdata, factor));
+        
+        var testdata = '0.123456789',
+            factor = 10000,
+            testfunc = main.roundRecursiveFunc(factor);
+        doh.assertEqual(testdata, testfunc(testdata));
+        doh.assertEqual(testdata, main.roundRecursive(testdata, factor));
+    },
     function Test_isInt(){
         doh.assertTrue(main.isInt(0));
         doh.assertTrue(main.isInt(1));
