@@ -3,26 +3,26 @@ define(
         'graphicore',
         'graphicore/errors',
         'graphicore/tools/pens/AbstractPointPen',
-        'graphicore/tools/pens/BasePointPen',
+        'graphicore/tools/pens/BasePointToSegmentPen',
         'graphicore/tools/pens/testPens',
         
     ],
-    function(graphicore, errors, AbstractPointPen, BasePointPen, testPens)
+    function(graphicore, errors, AbstractPointPen, BasePointToSegmentPen, testPens)
 {
     /*shortcuts*/
-    var TestPen = testPens.BasePointTestPen;
+    var TestPen = testPens.BasePointToSegmentTestPen;
     
-    doh.register("graphicore.pens.BasePointPen", [
-    function Test_BasePointPen_inheritance() {
-        var pen = new BasePointPen();
+    doh.register("graphicore.pens.BasePointToSegmentPen", [
+    function Test_BasePointToSegmentPen_inheritance() {
+        var pen = new BasePointToSegmentPen();
         doh.assertTrue(pen instanceof AbstractPointPen);
         
         var pen = new TestPen;
         doh.assertTrue(pen instanceof AbstractPointPen);
-        doh.assertTrue(pen instanceof BasePointPen);
+        doh.assertTrue(pen instanceof BasePointToSegmentPen);
     },
-    function Test_BasePointPen_Errors() {
-        var pen = new BasePointPen();
+    function Test_BasePointToSegmentPen_Errors() {
+        var pen = new BasePointToSegmentPen();
         
         doh.assertError(
             TypeError,
@@ -51,7 +51,7 @@ define(
         //after calling endPath we can call beginPath again
         pen.beginPath();
         
-        var pen = new BasePointPen();
+        var pen = new BasePointToSegmentPen();
         doh.assertError(
             errors.NotImplemented,
             pen, 'addComponent'
@@ -62,8 +62,8 @@ define(
             pen, '_flushContour'
         );
     },
-    function Test_BasePointPen_addPoint() {
-        var pen = new BasePointPen();
+    function Test_BasePointToSegmentPen_addPoint() {
+        var pen = new BasePointToSegmentPen();
         // just testing if all defaults come out as expected
         // and if all other args end in currentPath as they are
         var expecting = [
@@ -75,7 +75,7 @@ define(
         pen.addPoint([1, 1], 'move', true, 'Hermann', {abc: 'def'});
         doh.assertEqual(expecting, pen.currentPath);
     },
-    function Test_BasePointPen_endPath() {
+    function Test_BasePointToSegmentPen_endPath() {
         var pen = new TestPen();
         
         //no addPoint so nothing happened
