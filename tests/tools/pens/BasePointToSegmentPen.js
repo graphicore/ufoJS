@@ -7,7 +7,13 @@ define(
         'graphicore/tools/pens/testPens',
         
     ],
-    function(graphicore, errors, AbstractPointPen, BasePointToSegmentPen, testPens)
+    function(
+        graphicore,
+        errors,
+        AbstractPointPen,
+        BasePointToSegmentPen,
+        testPens
+    )
 {
     /*shortcuts*/
     var TestPen = testPens.BasePointToSegmentTestPen;
