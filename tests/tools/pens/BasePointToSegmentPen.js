@@ -31,10 +31,10 @@ define(
         var pen = new BasePointToSegmentPen();
         
         doh.assertError(
-            TypeError,
+            TypeError,//TypeError: Cannot call method 'push' of null
             pen, 'addPoint',
             [[1, 1]],
-            'addPoint before beginPath'//TypeError: Cannot call method 'push' of null
+            'addPoint before beginPath'
         );
         
         doh.assertError(
@@ -152,7 +152,7 @@ define(
         pen.endPath();
         doh.assertEqual(expecting, pen.flush());
         
-        //the quadratic curves specialcase without on curve points
+        //the quadratic curves special case without on curve points
         var expecting = [
             ['_flushContour', /* segments: */  [
                 [ 'qcurve', [
