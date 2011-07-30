@@ -117,6 +117,8 @@ define(
         );
         
         
+        
+        
     },
     function Test_PointToSegmentPen_flushContour() {
         // these are the same tests as in the graphicore.pens.BasePointToSegmentPen
@@ -190,6 +192,57 @@ define(
         pen.addPoint([3, 3]);
         pen.addPoint([4, 4]);
         pen.addPoint([5, 5]);
+        pen.endPath();
+        doh.assertEqual(expecting, testPen.flush());
+    },
+    function Test_PointToSegmentPen_outputImpliedClosingLine() {
+        var testPen = new TestPen(),
+        pen = new PointToSegmentPen(testPen, true);
+        //an open countour
+        var expecting = [
+            ['moveTo', [1, 1] ],
+            ['curveTo',  [2, 2], [3, 3], [4, 4] ],
+            ['lineTo', [5, 5] ],
+            ['endPath']
+        ];
+        pen.beginPath();
+        pen.addPoint([1, 1], 'move');
+        pen.addPoint([2, 2]);
+        pen.addPoint([3, 3]);
+        pen.addPoint([4, 4], 'curve', true);
+        pen.addPoint([5, 5], 'line');
+        pen.endPath();
+        doh.assertEqual(expecting, testPen.flush());
+        
+        //a closed countour
+        var expecting = [
+            ['moveTo', [4, 4] ],
+            ['curveTo',  [1, 1], [2, 2], [3, 3] ],
+            ['lineTo', [4, 4] ],
+            ['closePath']
+        ];
+        pen.beginPath();
+        pen.addPoint([4, 4], 'line');
+        pen.addPoint([1, 1]);
+        pen.addPoint([2, 2]);
+        pen.addPoint([3, 3], 'curve', true);
+        pen.endPath();
+        doh.assertEqual(expecting, testPen.flush());
+        //the same closed contour but without lineTo this time
+        //note that in this case the moveTo still is at [4, 4]
+        //so the information is preserved in a way
+         var expecting = [
+            ['moveTo', [4, 4] ],
+            ['curveTo',  [1, 1], [2, 2], [3, 3] ],
+            ['closePath']
+        ];
+        var testPen = new TestPen(),
+        pen = new PointToSegmentPen(testPen, false);
+        pen.beginPath();
+        pen.addPoint([4, 4], 'line');
+        pen.addPoint([1, 1]);
+        pen.addPoint([2, 2]);
+        pen.addPoint([3, 3], 'curve', true);
         pen.endPath();
         doh.assertEqual(expecting, testPen.flush());
     }
