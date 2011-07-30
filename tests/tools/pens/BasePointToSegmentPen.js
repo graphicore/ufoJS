@@ -4,8 +4,7 @@ define(
         'graphicore/errors',
         'graphicore/tools/pens/AbstractPointPen',
         'graphicore/tools/pens/BasePointToSegmentPen',
-        'graphicore/tools/pens/testPens',
-        
+        'graphicore/tools/pens/testPens'
     ],
     function(
         graphicore,
@@ -122,8 +121,8 @@ define(
         pen.endPath();
         doh.assertEqual(expecting, pen.flush());
         
-        // the pen will rotate the point list so that it ends with the first
-        // on curve point of the point list
+        // the pen will rotate the point list so that it ends with the
+        // first on curve point of the point list
         var expecting = [
             ['_flushContour', /* segments: */  [
                 [ 'curve', [
