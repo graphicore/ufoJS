@@ -40,5 +40,6 @@ require([
         'tests/tools/pens/TransformPen',
         'tests/tools/pens/BasePen',
         'tests/tools/pens/AbstractPointPen',
-        'tests/tools/pens/BasePointToSegmentPen'
+        'tests/tools/pens/BasePointToSegmentPen',
+        'tests/tools/pens/PointToSegmentPen'
     ], function(){doh.run();});
