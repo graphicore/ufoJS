@@ -1,8 +1,22 @@
-Credits
-=======
+graphicore Font Building
+========================
 
-Code Input
-----------
+Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+
+You should have received a copy of the MIT License along with this program.
+If not, see http://www.opensource.org/licenses/mit-license.php
+
+About
+-----
+
+This software will eventually enable JavaScript environments to do presentation,
+creation and manipulation of font data. Therefore concepts and algorithms
+of the FontTools and RoboFab (see Credits) where translated into JavaScript.
+
+Credits
+-------
+
+### Code Input
 
 This project aims to provide a similar API to font data in JavaScript as
 the (mostly) Python Projects FontTools and RoboFab. To achieve that I did
@@ -22,8 +36,8 @@ Author: Just van Rossum
 [RoboFab](http://www.robofab.org)
 Authors: Erik van Blokland, Tal Leming, Just van Rossum
 
-Reference
----------
+### Reference
+
 This is closely related to the RoboFab way of working with font data.
 It's the RoboFab way of storing font data and the main reason why I think
 using the RoboFab/FontTools code is a good idea: compatibility to the UFO.
@@ -31,8 +45,8 @@ using the RoboFab/FontTools code is a good idea: compatibility to the UFO.
 [Unified Font Object](http://unifiedfontobject.org)
 Authors:  Erik van Blokland, Tal Leming, Just van Rossum
 
-Includes
---------
+### Dependencies
+
 The Project itself requires an [Modules/AsynchronousDefinition-Loader](http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition)
 defined by [commonJs](http://www.commonjs.org/) and currently provided by
 [bdload](http://bdframework.org/bdLoad/docs/bdLoad-tutorial/bdLoad-tutorial.html)
