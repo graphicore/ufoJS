@@ -255,7 +255,7 @@ define(
                 pen.closePath();
             }
         },
-        pen = new TestPen({'testglyph': testGlyph});
+            pen = new TestPen({'testglyph': testGlyph});
         
         doh.assertError(
             TypeError,

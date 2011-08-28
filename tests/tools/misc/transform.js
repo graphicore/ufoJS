@@ -4,8 +4,8 @@ define(
 {
     var round = main.round,
         Transform = transform.Transform,
-        Scale = transform.Scale
-        Offset = transform.Offset
+        Scale = transform.Scale,
+        Offset = transform.Offset,
         Identity = transform.Identity;
     
     doh.register("graphicore.tools.misc.transform", [

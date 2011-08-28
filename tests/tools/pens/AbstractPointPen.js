@@ -4,7 +4,7 @@ define(
 {
     doh.register("graphicore.pens.AbstractPointPen", [
     function Test_AbstractPointPen_Errors() {
-        pen = new AbstractPointPen;
+        var pen = new AbstractPointPen;
         doh.assertError(
             errors.NotImplemented,
             pen, 'beginPath'
