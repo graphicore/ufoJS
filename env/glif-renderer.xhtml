@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+<title>.glif rendering with javascript and SVG | graphicore font building</title>
+    <meta http-equiv="Content-Style-Type" content="text/css" />
+    <meta name="author" content="Lasse Fister" />
+    <!--<link type="text/css" rel="stylesheet" media="all" href="./style/style.css" />-->
+    <script type="text/javascript" src="./javascript/require.js"></script>
+    <script type="text/javascript">
+    require({
+        baseUrl: 'javascript',
+        packages:[
+            {
+                name: 'graphicore',
+                location: '../../lib',
+                lib: ''
+            },
+            {
+                name: 'dojo',
+                location: 'dojo',
+                lib: ''
+            }
+        ]
+    },['glif-renderer']);
+    </script>
+</head>
+<body>
+</body>
+</html>
