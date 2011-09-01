@@ -3,18 +3,18 @@ if(typeof console == 'undefined'){
 }
 define([
     'dojo/dojo',
-    'graphicore',
-    'graphicore/errors',
-    'graphicore/tools/pens/AbstractPen',
-    'graphicore/tools/pens/BasePen',
-    'graphicore/UFO/glyphFactories',
-    'graphicore/UFO/main',
-    'graphicore/tools/pens/main',
-    'graphicore/tools/misc/transform',
-    'graphicore/tools/pens/testPens',
-    'graphicore/tools/pens/TransformPen',
-    'graphicore/tools/pens/PointToSegmentPen',
-    'graphicore/tools/pens/SVGPen'
+    'ufojs',
+    'ufojs/errors',
+    'ufojs/tools/pens/AbstractPen',
+    'ufojs/tools/pens/BasePen',
+    'ufojs/UFO/glyphFactories',
+    'ufojs/UFO/main',
+    'ufojs/tools/pens/main',
+    'ufojs/tools/misc/transform',
+    'ufojs/tools/pens/testPens',
+    'ufojs/tools/pens/TransformPen',
+    'ufojs/tools/pens/PointToSegmentPen',
+    'ufojs/tools/pens/SVGPen'
 
 ],
 function(

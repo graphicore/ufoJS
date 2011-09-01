@@ -1,13 +1,11 @@
 define(
     [
-        'graphicore',
-        'graphicore/errors',
-        'graphicore/tools/pens/AbstractPointPen',
-        'graphicore/tools/pens/BasePointToSegmentPen',
-        'graphicore/tools/pens/testPens'
+        'ufojs/errors',
+        'ufojs/tools/pens/AbstractPointPen',
+        'ufojs/tools/pens/BasePointToSegmentPen',
+        'ufojs/tools/pens/testPens'
     ],
     function(
-        graphicore,
         errors,
         AbstractPointPen,
         BasePointToSegmentPen,
@@ -17,7 +15,7 @@ define(
     /*shortcuts*/
     var TestPen = testPens.BasePointToSegmentTestPen;
     
-    doh.register("graphicore.pens.BasePointToSegmentPen", [
+    doh.register("ufojs.pens.BasePointToSegmentPen", [
     function Test_BasePointToSegmentPen_inheritance() {
         var pen = new BasePointToSegmentPen();
         doh.assertTrue(pen instanceof AbstractPointPen);

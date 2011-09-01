@@ -1,8 +1,8 @@
 define(
-    ['graphicore/errors', 'graphicore/tools/pens/main'],
+    ['ufojs/errors', 'ufojs/tools/pens/main'],
     function(errors, pens)
 {
-    doh.register("graphicore.pens.main", [
+    doh.register("ufojs.pens.main", [
     function Test_decomposeSuperBezierSegment_Errors() {
         doh.assertError(
             TypeError,

@@ -1,11 +1,11 @@
 define(
     [
-        'graphicore/errors',
-        'graphicore/tools/pens/testPens',
-        'graphicore/tools/pens/AbstractPen',
-        'graphicore/tools/pens/AbstractPointPen',
-        'graphicore/tools/pens/BasePointToSegmentPen',
-        'graphicore/tools/pens/PointToSegmentPen'
+        'ufojs/errors',
+        'ufojs/tools/pens/testPens',
+        'ufojs/tools/pens/AbstractPen',
+        'ufojs/tools/pens/AbstractPointPen',
+        'ufojs/tools/pens/BasePointToSegmentPen',
+        'ufojs/tools/pens/PointToSegmentPen'
     ],
     function(
         errors,
@@ -19,7 +19,7 @@ define(
     /*shortcuts*/
     var TestPen = TestPens.AbstractTestPen;
     
-    doh.register("graphicore.pens.PointToSegmentPen", [
+    doh.register("ufojs.pens.PointToSegmentPen", [
     function Test_PointToSegmentPen_inheritance() {
         var testPen = new TestPen(),
             pen = new PointToSegmentPen(testPen);
@@ -121,7 +121,7 @@ define(
         
     },
     function Test_PointToSegmentPen_flushContour() {
-        // these are the same tests as in the graphicore.pens.BasePointToSegmentPen
+        // these are the same tests as in the ufojs.pens.BasePointToSegmentPen
         // Test_BasePointToSegmentPen_endPath test, except that we expect
         // another translation of the output
         var testPen = new TestPen(),

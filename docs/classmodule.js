@@ -1,6 +1,6 @@
 //copypasta to get a new module started
 define(
-    ['graphicore/enhance', './AbstractThing'],
+    ['ufojs/enhance', './AbstractThing'],
     function(enhance, AbstractThing)
 {
     

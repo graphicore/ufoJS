@@ -1,13 +1,13 @@
 define(
     [
-        'graphicore',
-        'graphicore/errors',
-        'graphicore/tools/misc/transform',
-        'graphicore/tools/pens/AbstractPen',
-        'graphicore/tools/pens/BasePen',
-        'graphicore/tools/pens/testPens'
+        'ufojs',
+        'ufojs/errors',
+        'ufojs/tools/misc/transform',
+        'ufojs/tools/pens/AbstractPen',
+        'ufojs/tools/pens/BasePen',
+        'ufojs/tools/pens/testPens'
     ],
-    function(graphicore, errors, transform, AbstractPen, BasePen, testPens)
+    function(ufojs, errors, transform, AbstractPen, BasePen, testPens)
 {
     /*shortcuts*/
     var TestPen = testPens.BaseTestPen,
@@ -16,9 +16,9 @@ define(
      * to overcome floating point rounding errors and still make meaningfull
      * tests
      */
-        roundRecursive = graphicore.roundRecursive;
+        roundRecursive = ufojs.roundRecursive;
     
-    doh.register("graphicore.pens.BasePen", [
+    doh.register("ufojs.pens.BasePen", [
     function Test_BasePen_inheritance() {
         var pen = new BasePen();
         doh.assertTrue(pen instanceof AbstractPen);

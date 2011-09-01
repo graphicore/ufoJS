@@ -1,8 +1,8 @@
 define(
-    ['graphicore/errors', 'graphicore/tools/pens/AbstractPointPen'],
+    ['ufojs/errors', 'ufojs/tools/pens/AbstractPointPen'],
     function(errors, AbstractPointPen)
 {
-    doh.register("graphicore.pens.AbstractPointPen", [
+    doh.register("ufojs.pens.AbstractPointPen", [
     function Test_AbstractPointPen_Errors() {
         var pen = new AbstractPointPen;
         doh.assertError(

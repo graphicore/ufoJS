@@ -1,8 +1,8 @@
 define(
-    ['graphicore/enhance', 'graphicore/errors'],
+    ['ufojs/enhance', 'ufojs/errors'],
     function(enhance, errors)
 {
-    doh.register("graphicore.enhance", [
+    doh.register("ufojs.enhance", [
     function Test_Enhance(){
         var AbstractObject = function(){};
         enhance(AbstractObject, {

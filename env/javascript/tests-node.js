@@ -8,7 +8,7 @@ require({
             location: 'doh'
         },
         {
-            name: 'graphicore',
+            name: 'ufojs',
             location: '../../lib',
             lib: ''
         },

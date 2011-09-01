@@ -1,8 +1,8 @@
 define(
-    ['graphicore', 'graphicore/errors'],
+    ['ufojs', 'ufojs/errors'],
     function(main, errors)
 {
-    doh.register("graphicore.main", [
+    doh.register("ufojs.main", [
     function Test_enhance(){
         var enhance = main.enhance;
         var AbstractObject = function(){};

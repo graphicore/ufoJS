@@ -1,10 +1,10 @@
 define(
     [
-        'graphicore/errors',
-        'graphicore/tools/pens/testPens',
-        'graphicore/tools/pens/AbstractPen',
-        'graphicore/tools/pens/TransformPen',
-        'graphicore/tools/misc/transform'
+        'ufojs/errors',
+        'ufojs/tools/pens/testPens',
+        'ufojs/tools/pens/AbstractPen',
+        'ufojs/tools/pens/TransformPen',
+        'ufojs/tools/misc/transform'
     ],
     function(errors, TestPens, AbstractPen, TransformPen, transform)
 {
@@ -12,7 +12,7 @@ define(
     var TestPen = TestPens.AbstractTestPen,
         Transform = transform.Transform;
     
-    doh.register("graphicore.pens.TransformPen", [
+    doh.register("ufojs.pens.TransformPen", [
     function Test_TransformPen_inheritance() {
         
         var testPen = new TestPen(null),

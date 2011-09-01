@@ -1,8 +1,8 @@
-define(['graphicore/errors'], function(errors){
+define(['ufojs/errors'], function(errors){
     
     var count_runs_of_Test_MakeError = 0; 
     var raiser = {raise:function(err){throw new err;}}
-    doh.register("graphicore.errors", [
+    doh.register("ufojs.errors", [
     function Test_Errors(){
         doh.assertError(
             Error,

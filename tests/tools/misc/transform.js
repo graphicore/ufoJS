@@ -1,5 +1,5 @@
 define(
-    ['graphicore', 'graphicore/errors', 'graphicore/tools/misc/transform'],
+    ['ufojs', 'ufojs/errors', 'ufojs/tools/misc/transform'],
     function(main, errors, transform)
 {
     var round = main.round,
@@ -8,7 +8,7 @@ define(
         Offset = transform.Offset,
         Identity = transform.Identity;
     
-    doh.register("graphicore.tools.misc.transform", [
+    doh.register("ufojs.tools.misc.transform", [
     function Test_Transform_transformPoint() {
     /**
      * the values of the expectations are from the docstrings of the python
