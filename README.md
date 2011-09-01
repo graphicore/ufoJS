@@ -1,5 +1,5 @@
-graphicore Font Building
-========================
+ufoJS
+=====
 
 Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
 
@@ -10,8 +10,9 @@ About
 -----
 
 This software will eventually enable JavaScript environments to do presentation,
-creation and manipulation of font data. Therefore concepts and algorithms
-of the FontTools and RoboFab (see Credits) where translated into JavaScript.
+creation and manipulation of font data (propably in the UFO format).
+Therefore concepts and algorithms of the FontTools and RoboFab (see Credits)
+where translated into JavaScript.
 
 Credits
 -------
@@ -24,8 +25,8 @@ the (mostly) Python Projects FontTools and RoboFab. To achieve that I did
 JavaScript. Therefore the original ideas and algorithms are from these
 projects and they serve as reference for what behavior is right or wrong.
 Any discrepancies between the JavaScript and Python versions especially
-those caused by the differences of the languages or those caused by the
-incapabilities of the translator are completely discussible.
+those caused by the differences between the languages or those caused by
+the incapabilities of the translator are completely discussible.
 
 The files of the original sources are referenced in the files of this
 project where they where used.
@@ -38,12 +39,12 @@ Authors: Erik van Blokland, Tal Leming, Just van Rossum
 
 ### Reference
 
+[Unified Font Object](http://unifiedfontobject.org)
+Authors:  Erik van Blokland, Tal Leming, Just van Rossum
+
 This is closely related to the RoboFab way of working with font data.
 It's the RoboFab way of storing font data and the main reason why I think
 using the RoboFab/FontTools code is a good idea: compatibility to the UFO.
-
-[Unified Font Object](http://unifiedfontobject.org)
-Authors:  Erik van Blokland, Tal Leming, Just van Rossum
 
 ### Dependencies
 
@@ -51,6 +52,9 @@ The Project itself requires an [Modules/AsynchronousDefinition-Loader](http://wi
 defined by [commonJs](http://www.commonjs.org/) and currently provided by
 [bdload](http://bdframework.org/bdLoad/docs/bdLoad-tutorial/bdLoad-tutorial.html)
 Author: Rawld Gill
+And for nodeJs (where you can run the tests, too)
+[requireJS](https://github.com/jrburke/r.js)
+Author: James Burke
 
 The Tests are driven by the [D.O.H: Dojo Objective Harness](http://dojotoolkit.org/reference-guide/util/doh.html)
 Authors: Alex Russell, Pete Higgins, Dustin Machi, Jared Jurkiewicz
