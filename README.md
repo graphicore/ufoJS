@@ -48,8 +48,9 @@ using the RoboFab/FontTools code is a good idea: compatibility to the UFO.
 
 ### Dependencies
 
-The Project itself requires an [Modules/AsynchronousDefinition-Loader](http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition)
-defined by [commonJs](http://www.commonjs.org/) and currently provided by
+The Project itself requires an [Modules/AsynchronousDefinition-Loader]
+(http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition) defined by
+[commonJs](http://www.commonjs.org/) and currently provided by
 [bdload](http://bdframework.org/bdLoad/docs/bdLoad-tutorial/bdLoad-tutorial.html)
 Author: Rawld Gill
 And for nodeJs (where you can run the tests, too)

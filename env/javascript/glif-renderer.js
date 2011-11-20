@@ -18,7 +18,7 @@ function(
     plistLib
 ){
     var ufoDirectory = './ufos',
-        // Just copy your UFOs into ufoDirectory and can set the fontname
+        // Just copy your UFOs into ufoDirectory and set the fontname
         // in the browser with the location hash like this:
         // http://localhost:8080/env/glif-renderer.xhtml#DemoFont.ufo
         // Replace "DemoFont.ufo" with your fonts name. Then reload the page.
