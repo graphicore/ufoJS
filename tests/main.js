@@ -10,5 +10,6 @@ define([
     'tests/tools/pens/BasePen',
     'tests/tools/pens/AbstractPointPen',
     'tests/tools/pens/BasePointToSegmentPen',
-    'tests/tools/pens/PointToSegmentPen'
+    'tests/tools/pens/PointToSegmentPen',
+    'tests/plistLib/main'
 ],'test Layer');
