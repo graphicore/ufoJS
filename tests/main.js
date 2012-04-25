@@ -1,6 +1,7 @@
 //this is just a layer to load all the tests. they will register themselves
 //with the global! doh object.
 define([
+    'tests/ufoLib/validators',
     'tests/errors',
     'tests/testmain',
     'tests/tools/pens/AbstractPen',
