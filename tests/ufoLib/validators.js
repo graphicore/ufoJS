@@ -68,10 +68,15 @@ define(
         doh.assertFalse(validators.genericNonNegativeNumberValidator(function(){}));
     },
     function Test_genericDictValidator() {
+        doh.assertError(
+            TypeError,
+            validators, 'genericDictValidator',
+            [{}],
+            'seccond argument must be type of object'
+        );
         // not a dict
-        doh.assertFalse(validators.genericDictValidator(function(){}));
-        doh.assertFalse(validators.genericDictValidator(1));
-        doh.assertFalse(validators.genericDictValidator());
+        doh.assertFalse(validators.genericDictValidator(function(){}, {}));
+        doh.assertFalse(validators.genericDictValidator(undefined,{}));
         
         doh.assertTrue(validators.genericDictValidator({},{}));
          
