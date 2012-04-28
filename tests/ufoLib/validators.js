@@ -279,6 +279,118 @@ define(
         doh.assertTrue(validators.fontInfoOpenTypeHeadCreatedValidator(value));
         value = '9999/12/31 23:59:59';//max date
         doh.assertTrue(validators.fontInfoOpenTypeHeadCreatedValidator(value));
+    },
+    function Test_fontInfoOpenTypeNameRecordsValidator(){
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator({}));
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(function(){}));
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(true));
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(1));
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(''));
+        
+        doh.assertTrue(validators.fontInfoOpenTypeNameRecordsValidator([]));
+        
+        var value = [{
+            nameID: 5,
+            platformID: 3,
+            encodingID: 8,
+            languageID: 89,
+            string: 'hi'
+        }];        
+        doh.assertTrue(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value.push({
+            nameID: 7,
+            platformID: 23,
+            encodingID: 98,
+            languageID: 21,
+            string: 'hello'
+        });
+        doh.assertTrue(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value.push({
+            nameID: '7',
+            platformID: 23,
+            encodingID: 98,
+            languageID: 21,
+            string: 'hello'
+        });
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value[2] = {
+            nameID: 7,
+            platformID: false,
+            encodingID: 98,
+            languageID: 21,
+            string: 'hello'
+        };
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value[2] = {
+            nameID: 7,
+            platformID: 58,
+            encodingID: [],
+            languageID: 21,
+            string: 'hello'
+        };
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value[2] = {
+            nameID: 7,
+            platformID: 58,
+            encodingID: 90,
+            languageID: 13,
+            string: 987
+        };
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value[2] = {
+            nameID: 7,
+            platformID: 58,
+            encodingID: 90,
+            string: 'hello'
+        };
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        value[2] = {
+            nameID: 7,
+            platformID: 58,
+            encodingID: 90,
+            languageID: 6
+        };
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value[2] = {
+            nameID: 7,
+            platformID: 58,
+            languageID: 67,
+            string: 'hello'
+        };
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value[2] = {
+            nameID: 7,
+            encodingID: 90,
+            languageID: 67,
+            string: 'hello'
+        };
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value[2] = {
+            platformID: 58,
+            encodingID: 90,
+            languageID: 67,
+            string: 'hello'
+        };
+        doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
+        value[2] = {
+            nameID: 7,
+            platformID: 58,
+            encodingID: 90,
+            languageID: 67,
+            string: 'hello'
+        };
+        doh.assertTrue(validators.fontInfoOpenTypeNameRecordsValidator(value));
+        
     }
     ]);
 });
