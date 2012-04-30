@@ -1525,6 +1525,392 @@ define(
         // fontInfoWOFFMetadataExtensionValidator is tested above
         value.push({items: []});
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionsValidator(value));
+    },
+    function Test_identifierValidator() {
+        //not a string
+        var value = undefined, i;
+        doh.assertFalse(validators.identifierValidator(value));
+        value = true;
+        doh.assertFalse(validators.identifierValidator(value));
+        value = [];
+        doh.assertFalse(validators.identifierValidator(value));
+        value = {};
+        doh.assertFalse(validators.identifierValidator(value));
+        value = 17;
+        doh.assertFalse(validators.identifierValidator(value));
+        // too short
+        value = '';
+        doh.assertFalse(validators.identifierValidator(value));
+        //good length and content
+        value = 'a';
+        doh.assertTrue(validators.identifierValidator(value));
+        value = [];
+        for(i=0; i<100; i++)
+            value.push('a');
+        value = value.join('');
+        doh.assertTrue(validators.identifierValidator(value));
+        //too long
+        value += 'a';
+        doh.assertFalse(validators.identifierValidator(value));
+        
+        //bad content
+        value = 'ä';
+        doh.assertFalse(validators.identifierValidator(value));
+        
+        value = String.fromCharCode(0x2026);
+        doh.assertFalse(validators.identifierValidator(value));
+        
+        value = String.fromCharCode(0x7F);
+        doh.assertFalse(validators.identifierValidator(value));
+        
+        value = String.fromCharCode(0x1f);
+        doh.assertFalse(validators.identifierValidator(value));
+        
+        // 0x20 = 32
+        // 0x7e = 126
+        // so all valid values fit in one string
+        value = [];
+        for(i=0x20; i<0x7f; i++)
+            value.push(String.fromCharCode(i));
+        value = value.join('');
+        doh.assertTrue(validators.identifierValidator(value));
+    },
+    function Test_colorValidator() {
+        //not string
+        var value = 1;
+        doh.assertFalse(validators.colorValidator(value));
+        value = false;
+        doh.assertFalse(validators.colorValidator(value));
+        value = undefined;
+        doh.assertFalse(validators.colorValidator(value));
+        value = [];
+        doh.assertFalse(validators.colorValidator(value));
+        
+        //from the Python doctest
+        value = "0,0,0,0";
+        doh.assertTrue(validators.colorValidator(value));
+        value = ".5,.5,.5,.5";
+        doh.assertTrue(validators.colorValidator(value));
+        value = "0.5,0.5,0.5,0.5";
+        doh.assertTrue(validators.colorValidator(value));
+        value = "1,1,1,1";
+        doh.assertTrue(validators.colorValidator(value));
+        
+        //values greater than 1 are forbidden
+        value = "2,0,0,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,2,0,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,0,2,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,0,0,2";
+        doh.assertFalse(validators.colorValidator(value));
+        
+        //values smaller than 0 are forbidden (and minus signs, too)
+        value = "-.3,0,0,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,-.3,0,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,0,-.3,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,0,0,-.3";
+        doh.assertFalse(validators.colorValidator(value));
+        
+        // wont accept plus signs
+        value = ".3,0,0,0";
+        doh.assertTrue(validators.colorValidator(value));
+        value = "+.3,0,0,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,+.3,0,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,0,+3,0";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "0,0,0,+3";
+        doh.assertFalse(validators.colorValidator(value));
+        
+        //badly formatted
+        value = "1r,1,1,1";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "1,1g,1,1";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "1,1,1b,1";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "1,1,1,1a";
+        doh.assertFalse(validators.colorValidator(value));
+        
+        //commas missing
+        value = "1 1 1 1";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "1 1,1,1";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "1,1 1,1";
+        doh.assertFalse(validators.colorValidator(value));
+        value = "1,1,1 1";
+        doh.assertFalse(validators.colorValidator(value));
+        
+        value = "1, 1, 1, 1";
+        doh.assertTrue(validators.colorValidator(value));
+    },
+    function Test_guidelineValidator(){
+        // {
+        //    x: x and/or y must be there, numeric
+        //    y: x and/or y must be there, numeric
+        //    angle: if x and y are defined, angle must be defined
+        //           else it must not be defined,  number between 0 and 360
+        //    name: optional, string
+        //    color: optional, colorValidator
+        //    identifier: optional, identifierValidator
+        // }
+        //not dict
+        var value = 5;
+        doh.assertFalse(validators.guidelineValidator(value));
+        value = '';
+        doh.assertFalse(validators.guidelineValidator(value));
+        value = true;
+        doh.assertFalse(validators.guidelineValidator(value));
+        
+        //minimal true
+        value = {x: 5};
+        doh.assertTrue(validators.guidelineValidator(value));
+        value = {y: -51.5};
+        doh.assertTrue(validators.guidelineValidator(value));
+        //x and y must be defined to make angle needed
+        value.angle = 30;
+        doh.assertFalse(validators.guidelineValidator(value));
+        value.x = 33.8;
+        doh.assertTrue(validators.guidelineValidator(value));
+        //now there must ne an angle
+        delete(value.angle);
+        doh.assertFalse(validators.guidelineValidator(value));
+        //between 0 and 360
+        value.angle = -1;
+        doh.assertFalse(validators.guidelineValidator(value));
+        value.angle = -.01;
+        doh.assertFalse(validators.guidelineValidator(value));
+        value.angle = 360.1;
+        doh.assertFalse(validators.guidelineValidator(value));
+        value.angle = 768;
+        doh.assertFalse(validators.guidelineValidator(value));
+        value.angle = 0;
+        doh.assertTrue(validators.guidelineValidator(value));
+        value.angle = 360;
+        doh.assertTrue(validators.guidelineValidator(value));
+        
+        //name must be string when present
+        value.name = 15;
+        doh.assertFalse(validators.guidelineValidator(value));
+        value.name = '';
+        doh.assertTrue(validators.guidelineValidator(value));
+        value.name = 'my name';
+        doh.assertTrue(validators.guidelineValidator(value));
+        
+        //color and identifier have tested validators, so less tests here
+        value.identifier = 'wrönǵ¢öǹŧ€nt';
+        doh.assertFalse(validators.guidelineValidator(value));
+        value.identifier = 'good " # $ % & \' @ content';
+        doh.assertTrue(validators.guidelineValidator(value));
+        
+        value.color = '0 0 0 0';
+        doh.assertFalse(validators.guidelineValidator(value));
+        value.color = '.1, 0, 1, 0.9';
+        doh.assertTrue(validators.guidelineValidator(value));
+    },
+    function Test_guidelinesValidator() {
+        // Array of zero or more guidelineValidator
+        // an guidelineValidator.identifier must be unique within the array
+        // and within the keys! of the optional seccond argument 'identifiers'
+        
+        //no Array
+        var value = '';
+        doh.assertFalse(validators.guidelinesValidator(value));
+        value = 5;
+        doh.assertFalse(validators.guidelinesValidator(value));
+        value = {};
+        doh.assertFalse(validators.guidelinesValidator(value));
+        value = true;
+        doh.assertFalse(validators.guidelinesValidator(value));
+        
+        //minimal true
+        value = [];
+        doh.assertTrue(validators.guidelinesValidator(value));
+        
+        //test the identifier uniqueness
+        value.push({
+            x: 5,
+            identifier: 'first id'
+        });
+        value.push({
+            y: 173,
+            identifier: 'first id'
+        });
+        doh.assertFalse(validators.guidelinesValidator(value));
+        value[1].identifier = 'seccond id';
+        doh.assertTrue(validators.guidelinesValidator(value));
+        
+        // see whether the identifiers argument works
+        var identifiers = {};
+        identifiers[value[1].identifier] = true;
+        doh.assertFalse(validators.guidelinesValidator(value, identifiers));
+        var identifiers = {'someId': true};
+        doh.assertTrue(validators.guidelinesValidator(value, identifiers));
+    },
+    function Test_anchorValidator(){
+        // {
+        //   x: mandatory, number
+        //   y: mandatory, number
+        //   name: optional, string
+        //   color: optional colorValidator
+        //   identifier: optional, identifierValidator
+        // }
+        
+        
+        //not dict
+        var value = 9;
+        doh.assertFalse(validators.anchorValidator(value));
+        value = '';
+        doh.assertFalse(validators.anchorValidator(value));
+        value = true;
+        doh.assertFalse(validators.anchorValidator(value));
+        value = undefined;
+        doh.assertFalse(validators.anchorValidator(value));
+        
+        //minimal true
+        value = {
+            x: 15.8,
+            y: -152876
+        };
+        doh.assertTrue(validators.anchorValidator(value));
+        
+        //when name then a string
+        value.name = ['hi'];
+        doh.assertFalse(validators.anchorValidator(value));
+        value.name = 5;
+        doh.assertFalse(validators.anchorValidator(value));
+        value.name = false;
+        doh.assertFalse(validators.anchorValidator(value));
+        value.name = '';
+        doh.assertTrue(validators.anchorValidator(value));
+        value.name = 'Hi';
+        doh.assertTrue(validators.anchorValidator(value));
+        
+        //color and identifier have tested validators, so less tests here
+        value.identifier = 'wrönǵ¢öǹŧ€nt';
+        doh.assertFalse(validators.anchorValidator(value));
+        value.identifier = 'good " # $ % & \' @ content';
+        doh.assertTrue(validators.anchorValidator(value));
+        
+        value.color = '0 0 0 0';
+        doh.assertFalse(validators.anchorValidator(value));
+        value.color = '.1, 0, 1, 0.9';
+        doh.assertTrue(validators.anchorValidator(value));
+    },
+    function Test_anchorsValidator() {
+        // Array of zero or more anchorValidator
+        // an anchorValidator.identifier must be unique within the array
+        // and within the keys! of the optional seccond argument 'identifiers'
+        
+        //no Array
+        var value = '';
+        doh.assertFalse(validators.anchorsValidator(value));
+        value = 5;
+        doh.assertFalse(validators.anchorsValidator(value));
+        value = {};
+        doh.assertFalse(validators.anchorsValidator(value));
+        value = true;
+        doh.assertFalse(validators.anchorsValidator(value));
+        
+        //minimal true
+        value = [];
+        doh.assertTrue(validators.anchorsValidator(value));
+        
+        //test the identifier uniqueness
+        value.push({
+            x: 5,
+            y: -96.45,
+            identifier: 'first id'
+        });
+        value.push({
+            x: 65.5864,
+            y: 17.3,
+            identifier: 'first id'
+        });
+        doh.assertFalse(validators.anchorsValidator(value));
+        value[1].identifier = 'seccond id';
+        doh.assertTrue(validators.anchorsValidator(value));
+        
+        // see whether the identifiers argument works
+        var identifiers = {};
+        identifiers[value[1].identifier] = true;
+        doh.assertFalse(validators.anchorsValidator(value, identifiers));
+        var identifiers = {'someId': true};
+        doh.assertTrue(validators.anchorsValidator(value, identifiers));
+    },
+    function Test_imageValidator(){
+        // {
+        //   fileName: mandatory, string with at least one character
+        //   xScale: optional, number
+        //   xyScale:  optional, number
+        //   yxScale:  optional, number
+        //   yScale:  optional, number
+        //   xOffset:  optional, number
+        //   yOffset:  optional, number
+        //   color:  optional, colorValidator
+        // }
+        
+        //no dict
+        var value = 6;
+        doh.assertFalse(validators.imageValidator(value));
+        value = 'abc';
+        doh.assertFalse(validators.imageValidator(value));
+        value = true;
+        doh.assertFalse(validators.imageValidator(value));
+        //not the mandatory keys
+        value = {};
+        doh.assertFalse(validators.imageValidator(value));
+        
+        //minimal true
+        value.fileName = 'a';
+        doh.assertTrue(validators.imageValidator(value));
+        
+        value.fileName = '';
+        doh.assertFalse(validators.imageValidator(value));
+        // in the Python Sources are no rules for the format of a fileName
+        value.fileName = '23454321=-098?AXDc*ä_325//\\';
+        doh.assertTrue(validators.imageValidator(value));
+        
+        //all other values must be numbers when present
+        value.xScale = '15';
+        doh.assertFalse(validators.imageValidator(value));
+        value.xScale = 15;
+        doh.assertTrue(validators.imageValidator(value));
+        
+        value.xyScale = true;
+        doh.assertFalse(validators.imageValidator(value));
+        value.xyScale = 1.5;
+        doh.assertTrue(validators.imageValidator(value));
+        
+        value.yxScale = [];
+        doh.assertFalse(validators.imageValidator(value));
+        value.yxScale = -5;
+        doh.assertTrue(validators.imageValidator(value));
+        
+        value.xOffset = {};
+        doh.assertFalse(validators.imageValidator(value));
+        value.xOffset = 500056456312;
+        doh.assertTrue(validators.imageValidator(value));
+        
+        value.yOffset = function(){};
+        doh.assertFalse(validators.imageValidator(value));
+        value.yOffset = -0.6312;
+        doh.assertTrue(validators.imageValidator(value));
+    },
+    function Test_pngValidator(){
+        doh.assertError(
+            errors.NotImplemented,
+            validators, 'pngValidator',
+            [],//any call to this validator will throw an error
+            'It\'s not quite clear how to implement this yet'
+        );
     }
     ]);
 });
