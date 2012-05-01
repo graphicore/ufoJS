@@ -1651,7 +1651,7 @@ define(
         value = "1, 1, 1, 1";
         doh.assertTrue(validators.colorValidator(value));
     },
-    function Test_guidelineValidator(){
+    function Test_guidelineValidator() {
         // {
         //    x: x and/or y must be there, numeric
         //    y: x and/or y must be there, numeric
@@ -1754,7 +1754,7 @@ define(
         var identifiers = {'someId': true};
         doh.assertTrue(validators.guidelinesValidator(value, identifiers));
     },
-    function Test_anchorValidator(){
+    function Test_anchorValidator() {
         // {
         //   x: mandatory, number
         //   y: mandatory, number
@@ -1845,7 +1845,7 @@ define(
         var identifiers = {'someId': true};
         doh.assertTrue(validators.anchorsValidator(value, identifiers));
     },
-    function Test_imageValidator(){
+    function Test_imageValidator() {
         // {
         //   fileName: mandatory, string with at least one character
         //   xScale: optional, number
@@ -1904,13 +1904,112 @@ define(
         value.yOffset = -0.6312;
         doh.assertTrue(validators.imageValidator(value));
     },
-    function Test_pngValidator(){
+    function Test_pngValidator() {
         doh.assertError(
             errors.NotImplemented,
             validators, 'pngValidator',
             [],//any call to this validator will throw an error
             'It\'s not quite clear how to implement this yet'
         );
+    },
+    function Test_layerContentsValidator() {
+        // value is an Array of Arrays with two items [layerName, directoryName]
+        // both items must be string
+        // one directoryName must be present, the default glyph directory called "glyphs"
+        // all other items are optional, the directoryName must start with "glyphs."
+        // layer names must not be empty
+        // the layerName "public.default" must not be used for any directory
+        // other than the deault "glyphs" but "glyph" may have another layerName
+        // no directorName or layerName must be used twice
+        
+        // ufoPath is a stub because we don't do the path operations now
+        var ufoPath = '/', 
+        // not Array
+            value = 1;
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = {};
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = false;
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = '';
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        
+        // no foundDefault
+        value = [];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        //an entry is not an array
+        value = [true];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = [{}];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = [5];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        //an entry is shorte than 2 items
+        value = [['layer']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        //an entry is longer than 2 items
+        value = [['layer', 'glyphs', 'too much']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        //an item of entry is not string
+        value = [['layer', 5]];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = [[undefined, 'glyphs.hi']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        //when directory is not "glyph" it must start with glyphs.
+        value = [['hi', 'glyph']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = [['hi', 'glyphsLayer']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = [['hi', 'glyphor']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        //layer name must not be empty
+        value = [['', 'glyphs']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = [['', 'glyphs.custom']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        
+        // valid but the check for the existence of the directory is not implemented
+        value = [['public.default', 'glyphs']];
+        doh.assertError(
+            errors.NotImplemented,
+            validators, 'layerContentsValidator',
+            [value, ufoPath],
+            'It\'s not quite clear how to implement this yet'
+        );
+        // so there is a workaround now, to be able to test the rest of the function
+        ufoPath = {testing: true};
+        doh.assertTrue(validators.layerContentsValidator(value, ufoPath)[0]);
+        
+        //the layerName 'public.default' must only be used for the directoryName "glyphs"
+        value = [['public.default', 'glyphs.something']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        
+        // a layerName must not be used more than once
+        value = [['Slayer', 'glyphs.something'], ['Slayer', 'glyphs']];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = [['Slayer', 'glyphs.something'], ['Default', 'glyphs']];
+        doh.assertTrue(validators.layerContentsValidator(value, ufoPath)[0]);
+        
+        // a directoryName must not be used more than once
+        value = [
+            ['Slayer', 'glyphs.something'],
+            ['Default', 'glyphs'],
+            ['Another', 'glyphs.something'],
+        ];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        value = [
+            ['Slayer', 'glyphs.something'],
+            ['Default', 'glyphs'],
+            ['Another', 'glyphs.anything'],
+        ];
+        doh.assertTrue(validators.layerContentsValidator(value, ufoPath)[0]);
+        
+        //once more: no default directory makes it fails
+        value = [
+            ['Slayer', 'glyphs.something'],
+            ['Another', 'glyphs.anything']
+        ];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
     }
     ]);
 });
