@@ -2010,6 +2010,116 @@ define(
             ['Another', 'glyphs.anything']
         ];
         doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+    },
+    function Test_groupsValidator() {
+        // a dict of zero or more groupName: [glyphList Array] key: value pairs
+        // groupName must not be an empty string
+        // glyphList must be an Array, may be empty
+        // when groupName starts with public.kern1. OR public.kern2.
+        // its validated as a kerning group, otherwise validation is skipped
+        // a kerning group must have at least one character after the prefix
+        // every item in a kerning groups glyphList must be string
+        // an item of a glyphList is a glyphName
+        // a glyphName must be unique within in the groups prefixed with
+        // public.kern1. and must be unique within groups prefixed with public.kern2
+        
+        // no dict
+        var value = 1;
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        value = '';
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        value = true;
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        value = undefined;
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        
+        //minimal true
+        value = {};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        //not a kerning group but wrong type
+        value = {'agroup': {}};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        value = {'agroup': 9};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        value = {'agroup': true};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        // this group won't get checked further
+        value = {'agroup': []};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        value = {'agroup': [1, 2, 'hallo', {}]};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        // a groupName must have a length
+        value = {'' : []};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        // just public. as prefix makes the kerning group validation skip as well
+        value = {'public.something': [2, {}, true]};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        
+        //valid kerning group
+        value = {'public.kern1.round': []};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        
+        //one invalid kerning group, there is no name after the prefix
+        value = {'public.kern1.': []};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        //one valid one of public.kern2. invalid
+        value = {'public.kern1.round': [], 'public.kern2.': []};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        //two valid
+        value = {'public.kern1.round': [], 'public.kern2.round': []};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        
+        //two valid with contents
+        value = {
+            'public.kern1.round': ['a', 'b', 'c'],
+            'public.kern2.round': ['a', 'b', 'c']
+        };
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        
+        //glyphname doubled in group 1
+        value = {
+            'public.kern1.round': ['a', 'b', 'c', 'a'],
+            'public.kern2.round': ['a', 'b', 'c']
+        };
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        
+        //glyphName doubled in the kern2 groups
+        value = {
+            'public.kern1.round': ['a', 'b', 'c'],
+            'public.kern2.round': ['a', 'b', 'c'],
+            'public.kern2.cornered': ['c']
+        };
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        //more valid groups
+        value = {
+            'public.kern1.round': ['a', 'b', 'c'],
+            'public.kern1.funky': ['g', 'd', 'y'],
+            'public.kern2.round': ['a', 'b', 'c'],
+            'public.kern2.cornered': ['T', 'M', 'N']
+        };
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        
+        // taken from the python doctests:
+        value = {"A" : ["A", "A"], "A2" : ["A"]};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+
+        value = {"" : ["A"]};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+
+        value = {"public.awesome" : ["A"]};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        
+        value = {"public.kern1." : ["A"]};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+     
+        value = {"public.kern2." : ["A"]};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
+        
+        value = {"public.kern1.A" : ["A"], "public.kern2.A" : ["A"]};
+        doh.assertTrue(validators.groupsValidator(value)[0]);
+        
+        value = {"public.kern1.A1" : ["A"], "public.kern1.A2" : ["A"]};
+        doh.assertFalse(validators.groupsValidator(value)[0]);
     }
     ]);
 });
