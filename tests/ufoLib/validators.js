@@ -2120,6 +2120,27 @@ define(
         
         value = {"public.kern1.A1" : ["A"], "public.kern1.A2" : ["A"]};
         doh.assertFalse(validators.groupsValidator(value)[0]);
+    },
+    function Test_kerningValidator() {
+        // from the Python doctest
+        var groups = {
+            "public.kern1.O" : ["O", "D", "Q"],
+            "public.kern2.E" : ["E", "F"]
+        };
+        kerning = [
+            [["public.kern1.O", "public.kern2.E"], -100],
+            [["public.kern1.O", "F"], -200],
+            [["D", "F"], -300]
+        ];
+        doh.assertTrue(validators.kerningValidator(kerning, groups));
+        
+        kerning = [
+            [["public.kern1.O", "public.kern2.E"], -100],
+            [["public.kern1.O", "F"], -200],
+            [["Q", "public.kern2.E"], -250],
+            [["D", "F"], -300]
+        ];
+        doh.assertFalse(validators.kerningValidator(kerning, groups));
     }
     ]);
 });
