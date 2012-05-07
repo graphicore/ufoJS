@@ -2122,12 +2122,55 @@ define(
         doh.assertFalse(validators.groupsValidator(value)[0]);
     },
     function Test_kerningValidator() {
+        // wrong input datatypes
+        kerning = 1, groups = {};
+        
+        doh.assertError(
+            TypeError,
+            validators, 'kerningValidator',
+            [kerning, groups],
+            'expects an Array for Kerning'
+        );
+        kerning = [], groups = 1;
+        doh.assertError(
+            TypeError,
+            validators, 'kerningValidator',
+            [kerning, groups],
+            'expects an object for groups'
+        );
+        // empty input will validate
+        kerning = [], groups = {};
+        doh.assertTrue(validators.kerningValidator(kerning, groups));
+        
+        // however, a malformed kerning array will make this bark
+        kerning = ['a'], groups = {};
+        doh.assertError(
+            TypeError,
+            validators, 'kerningValidator',
+            [kerning, groups],
+            'Both arguments of _kerningNamesHash must be string'
+        );
+        kerning = [[[]]], groups = {};
+        doh.assertError(
+            TypeError,
+            validators, 'kerningValidator',
+            [kerning, groups],
+            'Both arguments of _kerningNamesHash must be string'
+        );
+        kerning = [[['a', 1]]], groups = {};
+        doh.assertError(
+            TypeError,
+            validators, 'kerningValidator',
+            [kerning, groups],
+            'Both arguments of _kerningNamesHash must be string'
+        );
+        
+        
         // from the Python doctest
         var groups = {
             "public.kern1.O" : ["O", "D", "Q"],
             "public.kern2.E" : ["E", "F"]
-        };
-        kerning = [
+        }, kerning = [
             [["public.kern1.O", "public.kern2.E"], -100],
             [["public.kern1.O", "F"], -200],
             [["D", "F"], -300]
@@ -2141,6 +2184,54 @@ define(
             [["D", "F"], -300]
         ];
         doh.assertFalse(validators.kerningValidator(kerning, groups));
+    },
+    function Test_fontLibValidator() {
+        // not an object
+        var lib = 1;
+        doh.assertFalse(validators.fontLibValidator(lib)[0]);
+        lib = '';
+        doh.assertFalse(validators.fontLibValidator(lib)[0]);
+        lib = true;
+        doh.assertFalse(validators.fontLibValidator(lib)[0]);
+        
+        // from the Python doctest
+        lib = {foo: 'bar'};
+        doh.assertTrue(validators.fontLibValidator(lib)[0]);
+        
+        lib = {"public.awesome" : "hello"};
+        doh.assertTrue(validators.fontLibValidator(lib)[0]);
+        
+        lib = {"public.glyphOrder" : ["A", "C", "B"]};
+        doh.assertTrue(validators.fontLibValidator(lib)[0]);
+        
+        //public.glyphOrder is not properly formatted.
+        lib = {"public.glyphOrder" : "hello"};
+        doh.assertFalse(validators.fontLibValidator(lib)[0]);
+        lib = {"public.glyphOrder" : ["A", 1, "B"]};
+        doh.assertFalse(validators.fontLibValidator(lib)[0]);
+    },
+    function Test_glyphLibValidator() {
+        // not an object
+        var lib = 1;
+        doh.assertFalse(validators.glyphLibValidator(lib)[0]);
+        lib = '';
+        doh.assertFalse(validators.glyphLibValidator(lib)[0]);
+        lib = true;
+        doh.assertFalse(validators.glyphLibValidator(lib)[0]);
+        
+        // from the Python doctest
+        lib = {"foo" : "bar"};
+        doh.assertTrue(validators.glyphLibValidator(lib)[0]);
+        
+        lib = {"public.awesome" : "hello"};
+        doh.assertTrue(validators.glyphLibValidator(lib)[0]);
+      
+        lib = {"public.markColor" : "1,0,0,0.5"};
+        doh.assertTrue(validators.glyphLibValidator(lib)[0]);
+        
+        //public.markColor is not properly formatted.
+        lib = {"public.markColor" : 1}
+        doh.assertFalse(validators.glyphLibValidator(lib)[0]);
     }
     ]);
 });
