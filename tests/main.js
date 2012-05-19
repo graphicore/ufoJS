@@ -1,7 +1,6 @@
 //this is just a layer to load all the tests. they will register themselves
 //with the global! doh object.
 define([
-    'tests/ufoLib/validators',
     'tests/errors',
     'tests/testmain',
     'tests/tools/pens/AbstractPen',
@@ -12,5 +11,6 @@ define([
     'tests/tools/pens/AbstractPointPen',
     'tests/tools/pens/BasePointToSegmentPen',
     'tests/tools/pens/PointToSegmentPen',
-    'tests/plistLib/main'
+    'tests/plistLib/main',
+    'tests/ufoLib/validators'
 ],'test Layer');
