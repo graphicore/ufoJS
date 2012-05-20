@@ -12,5 +12,6 @@ define([
     'tests/tools/pens/BasePointToSegmentPen',
     'tests/tools/pens/PointToSegmentPen',
     'tests/plistLib/main',
-    'tests/ufoLib/validators'
+    'tests/ufoLib/validators',
+    'tests/ufoLib/filenames'
 ],'test Layer');
