@@ -1906,11 +1906,104 @@ define(
     },
     function Test_pngValidator() {
         doh.assertError(
+           errors.Assertion,
+           validators, 'pngValidator',
+           [],
+           'there must be at least one input parameter'
+        );
+        
+        doh.assertError(
+           errors.Assertion,
+           validators, 'pngValidator',
+           [{}],
+           'there must be at least one input parameter'
+        );
+        
+        doh.assertTrue(validators.pngValidator({data: "\x89PNG\r\n\x1a\n"})[0]);
+        doh.assertTrue(validators.pngValidator({data: '\x89PNG\r\n\x1a\ndatdadtdadtdadadDATA'})[0]);
+        doh.assertFalse(validators.pngValidator({data: 'nothing'})[0]);
+        
+        var path = './testdata/grayscale.png';
+        doh.assertTrue(validators.pngValidator({path: path})[0]);
+        
+        doh.assertError(
             errors.NotImplemented,
             validators, 'pngValidator',
-            [],//any call to this validator will throw an error
-            'It\'s not quite clear how to implement this yet'
+            [{fileObj: {a:0}}/*fileObject*/],
+            'A propper API for fileObjects must be defined'
         );
+    },
+    {
+        name: "Test_pngValidatorAsync_withData",
+        setUp: function() {
+            //Setup to do before runTest.
+        },
+        runTest: function() {
+            var deferred = new doh.Deferred();
+            var callback = function(result, message) {
+                try {
+                    doh.assertTrue(result);
+                    deferred.callback(true);
+                } catch(e) {
+                    deferred.errback(e);
+                }
+            };
+            var arg = {data: "\x89PNG\r\n\x1a\n"};
+            validators.pngValidatorAsync(arg, callback);
+            return deferred;
+        },
+        tearDown: function() {
+            //cleanup to do after runTest.
+        },
+        timeout: 3000
+    },
+    {
+        name: "Test_pngValidatorAsync_withPath",
+        setUp: function() {
+            //Setup to do before runTest.
+        },
+        runTest: function() {
+            var deferred = new doh.Deferred();
+            var callback = function(result, message) {
+                try {
+                    doh.assertTrue(result);
+                    deferred.callback(true);
+                } catch(e) {
+                    deferred.errback(e);
+                }
+            };
+            var arg = {path: './testdata/grayscale.png'};
+            validators.pngValidatorAsync(arg, callback);
+            return deferred;
+        },
+        tearDown: function() {
+            //cleanup to do after runTest.
+        },
+        timeout: 3000
+    },
+    {
+        name: "Test_pngValidatorAsync_withBadPath",
+        setUp: function() {
+            //Setup to do before runTest.
+        },
+        runTest: function() {
+            var deferred = new doh.Deferred();
+            var callback = function(result, message) {
+                try {
+                    doh.assertFalse(result);
+                    deferred.callback(true);
+                } catch(e) {
+                    deferred.errback(e);
+                }
+            };
+            var arg = {path: './testdata/not-available.png'};
+            validators.pngValidatorAsync(arg, callback);
+            return deferred;
+        },
+        tearDown: function() {
+            //cleanup to do after runTest.
+        },
+        timeout: 3000
     },
     function Test_layerContentsValidator() {
         // value is an Array of Arrays with two items [layerName, directoryName]
@@ -1922,8 +2015,7 @@ define(
         // other than the deault "glyphs" but "glyph" may have another layerName
         // no directorName or layerName must be used twice
         
-        // ufoPath is a stub because we don't do the path operations now
-        var ufoPath = '/', 
+        var ufoPath = './testdata/TestFont1 (UFO3).ufo', 
         // not Array
             value = 1;
         doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
@@ -1968,48 +2060,113 @@ define(
         value = [['', 'glyphs.custom']];
         doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
         
-        // valid but the check for the existence of the directory is not implemented
-        value = [['public.default', 'glyphs']];
-        doh.assertError(
-            errors.NotImplemented,
-            validators, 'layerContentsValidator',
-            [value, ufoPath],
-            'It\'s not quite clear how to implement this yet'
-        );
-        // so there is a workaround now, to be able to test the rest of the function
-        ufoPath = {testing: true};
+        // existing dirs
+        value = [
+            ['public.default', 'glyphs'],
+            ['background', 'glyphs.mask'],
+            ['Some Arbitrary Layer', 'glyphs.arbitrary']
+        ];
         doh.assertTrue(validators.layerContentsValidator(value, ufoPath)[0]);
         
+        // none existing dirs
+        value = [
+            ['public.default', 'glyphs'],
+            ['background', 'glyphs.not-available']
+        ];
+        doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+        
+        
         //the layerName 'public.default' must only be used for the directoryName "glyphs"
-        value = [['public.default', 'glyphs.something']];
+        value = [['public.default', 'glyphs.arbitrary']];
         doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
         
         // a layerName must not be used more than once
-        value = [['Slayer', 'glyphs.something'], ['Slayer', 'glyphs']];
+        value = [['Slayer', 'glyphs.arbitrary'], ['Slayer', 'glyphs']];
         doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
-        value = [['Slayer', 'glyphs.something'], ['Default', 'glyphs']];
+        value = [['Slayer', 'glyphs.arbitrary'], ['Default', 'glyphs']];
         doh.assertTrue(validators.layerContentsValidator(value, ufoPath)[0]);
         
         // a directoryName must not be used more than once
         value = [
-            ['Slayer', 'glyphs.something'],
+            ['Slayer', 'glyphs.arbitrary'],
             ['Default', 'glyphs'],
-            ['Another', 'glyphs.something'],
+            ['Another', 'glyphs.arbitrary'],
         ];
         doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
         value = [
-            ['Slayer', 'glyphs.something'],
+            ['Slayer', 'glyphs.arbitrary'],
             ['Default', 'glyphs'],
-            ['Another', 'glyphs.anything'],
+            ['Another', 'glyphs.mask'],
         ];
         doh.assertTrue(validators.layerContentsValidator(value, ufoPath)[0]);
         
         //once more: no default directory makes it fails
         value = [
-            ['Slayer', 'glyphs.something'],
-            ['Another', 'glyphs.anything']
+            ['Slayer', 'glyphs.arbitrary'],
+            ['Another', 'glyphs.mask']
         ];
         doh.assertFalse(validators.layerContentsValidator(value, ufoPath)[0]);
+    },
+    {
+        name: "Test_layerContentsValidatorAsync_existingDirs",
+        setUp: function() {
+            //Setup to do before runTest.
+        },
+        runTest: function() {
+            var deferred = new doh.Deferred();
+            var callback = function(result, message) {
+                try {
+                    doh.assertTrue(result);
+                    deferred.callback(true);
+                } catch(e) {
+                    deferred.errback(e);
+                }
+            };
+            var ufoPath = './testdata/TestFont1 (UFO3).ufo',
+                // existing dirs
+                value = [
+                    ['public.default', 'glyphs'],
+                    ['background', 'glyphs.mask'],
+                    ['Some Arbitrary Layer', 'glyphs.arbitrary']
+                ];
+            validators.layerContentsValidatorAsync(value, ufoPath, callback);
+            return deferred;
+        },
+        tearDown: function() {
+            //cleanup to do after runTest.
+        },
+        timeout: 3000
+    },
+    {
+        name: "Test_layerContentsValidatorAsync_noneExistingDir",
+        setUp: function() {
+            //Setup to do before runTest.
+        },
+        runTest: function() {
+            var deferred = new doh.Deferred();
+            var callback = function(result, message) {
+                try {
+                    doh.assertFalse(result);
+                    deferred.callback(true);
+                } catch(e) {
+                    deferred.errback(e);
+                }
+            };
+            var ufoPath = './testdata/TestFont1 (UFO3).ufo',
+                // existing dirs
+                value = [
+                    ['public.default', 'glyphs'],
+                    ['background', 'glyphs.mask'],
+                    ['Some Arbitrary Layer', 'glyphs.not-available']
+                ];
+            
+            validators.layerContentsValidatorAsync(value, ufoPath, callback);
+            return deferred;
+        },
+        tearDown: function() {
+            //cleanup to do after runTest.
+        },
+        timeout: 3000
     },
     function Test_groupsValidator() {
         // a dict of zero or more groupName: [glyphList Array] key: value pairs
