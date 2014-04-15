@@ -1,0 +1,32 @@
+{
+  "name": "ufoJS",
+  "version": "0.0.0",
+  "description": "JavaScript API for the Unified Font Object",
+  "main": "lib/main.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/graphicore/ufoJS.git"
+  },
+  "keywords": [
+    "unified",
+    "font",
+    "object",
+    "ufo",
+    "robofab"
+  ],
+  "author": "Lasse Fister",
+  "license": "MIT",
+  "readmeFilename": "README.md",
+  "gitHead": "ebfca2028f68a5000041fe705f27f0e34518d31b",
+  "devDependencies": {
+    "jsdom": "~0.10.5",
+    "libxmljs": "~0.9.0"
+  }
+}
