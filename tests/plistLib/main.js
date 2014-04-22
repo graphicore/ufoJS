@@ -2,6 +2,30 @@ define(
     ['ufojs', 'ufojs/errors', 'ufojs/tools/io/main' ,'ufojs/plistLib/main'],
     function(main, errors, io, plistLib)
 {
+    var goodPlistPath = './testdata/good.plist'
+      , goodPlistData = {
+            age: 28.92,
+            'birth-date': new Date(Date.UTC(1983, 0, 21, 22, 23, 23)),
+            glibberish: new plistLib.types.Data('hjkljh678fghj7654refghjudertghu7654redcvghuj765t'),
+            names: {
+                'given-name': 'John',
+                surname: 'Dow'
+            },
+            five: new plistLib.types.Int(5),
+            pets: [
+                'Jonny',
+                'Bello',
+                {
+                    'given-name': 'John',
+                    type: 'snail'
+                }
+            ],
+            yes: true,
+            no: false
+        }
+        ;
+    
+    
     doh.register("plistLib.main", [
     /**
      * This is to document what the _comparePlists method is supposed to do
@@ -48,28 +72,8 @@ define(
         },
         runTest: function() {
             //we expect the parsed file to look like this
-            var a = {
-                age: 28.92,
-                'birth-date': new Date(Date.UTC(1983, 0, 21, 22, 23, 23)),
-                glibberish: new plistLib.types.Data('hjkljh678fghj7654refghjudertghu7654redcvghuj765t'),
-                names: {
-                    'given-name': 'John',
-                    surname: 'Dow'
-                },
-                five: new plistLib.types.Int(5),
-                pets: [
-                    'Jonny',
-                    'Bello',
-                    {
-                        'given-name': 'John',
-                        type: 'snail'
-                    }
-                ],
-                yes: true,
-                no: false
-            };
-            var deferred = new doh.Deferred();
-            var loadHandler = function(err, data) {
+            var deferred = new doh.Deferred()
+              , loadHandler = function(err, data) {
                 if(err) {
                     deferred.errback(err);
                     return;
@@ -78,13 +82,13 @@ define(
                     //parse the string to an object
                     var p = plistLib.readPlistFromString(data);
                     //compare
-                    doh.assertTrue(plistLib._comparePlists(p, a, true));
+                    doh.assertTrue(plistLib._comparePlists(p, goodPlistData, true));
                     deferred.callback(true);
                 } catch(e) {
                     deferred.errback(e);
                 }
             };
-            io.readFile('./testdata/good.plist', loadHandler);
+            io.readFile(goodPlistPath, loadHandler);
             return deferred;
         },
         tearDown: function(){
@@ -123,13 +127,44 @@ define(
                     deferred.errback(e);
                 }
             };
-            io.readFile('./testdata/good.plist', loadHandler);
+            io.readFile(goodPlistPath, loadHandler);
             return deferred;
         },
         tearDown: function(){
             //cleanup to do after runTest.
         },
         timeout: 3000
+    },
+    {
+        name: "Test_readPlistFromFile",
+        setUp: function() {},
+        runTest: function(){
+            var deferred = new doh.Deferred()
+              , promise
+              , data
+              ;
+            // sync api
+            data = plistLib.readPlistFromFile(false, goodPlistPath);
+            doh.assertTrue(plistLib._comparePlists(data, goodPlistData, true));
+            
+            // async api  
+            plistLib.readPlistFromFile(true, goodPlistPath)
+                .then(function(data){
+                    try {
+                        doh.assertTrue(plistLib._comparePlists(data, goodPlistData, true));
+                    }
+                    catch(e) {
+                        deferred.errback(e);
+                        return;
+                    }
+                    deferred.callback(true);
+                }, deferred.errback.bind(deferred));
+            return deferred;
+        },
+        tearDown: function(){},
+        timeout: 3000
     }
+    
+    
     ])
 });
