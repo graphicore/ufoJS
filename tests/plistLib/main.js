@@ -38,7 +38,7 @@ define(
         );
     },
     /**
-     * To see whether we read everything, here is our exoected result
+     * To see whether we read everything, here is our expected result
      * compared against a parsed plist file
      */
     {
