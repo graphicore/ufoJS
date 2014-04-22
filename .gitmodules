@@ -1,0 +1,3 @@
+[submodule "lib/obtainJS"]
+	path = lib/obtainJS
+	url = https://github.com/graphicore/obtainJS
