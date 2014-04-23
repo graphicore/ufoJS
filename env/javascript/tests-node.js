@@ -44,6 +44,19 @@ function(){
     }
     //tell the loader about doh
     define('doh', [], doh);
+    
+    // the tests module loads all tests
+    var module = 'tests'
+        i=0;
+    // if we wan't to run only a specific test, here is a commandline option
+    // example from the convenience ./tests-node.sh script:
+    // ./env$ ./tests-node.sh -m tests/tools/pens/TransformPen
+    for(;i<process.argv.length;i++)
+        if (process.argv[i] in {'-m':0, '--module':0}) {
+            module = process.argv[i+1];
+            console.log('Testing custom module: ', module, '\n')
+            break;
+        }
     //now load our tests and execute them when ready
-    require(['tests'], function(tests){doh.run();});
+    require([module], function(tests){doh.run();});
 });

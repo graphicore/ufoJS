@@ -1,3 +1,3 @@
 #!/bin/sh
 
-node ./javascript/r.js ./javascript/tests-node.js
+node ./javascript/r.js ./javascript/tests-node.js "$@"
