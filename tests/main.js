@@ -14,5 +14,6 @@ define([
     'tests/plistLib/main',
     'tests/ufoLib/validators',
     'tests/ufoLib/filenames',
-    'tests/ufoLib/glifLib/misc'
+    'tests/ufoLib/glifLib/misc',
+    'tests/ufoLib/glifLib/readGlyph'
 ],'test Layer');
