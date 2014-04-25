@@ -25,8 +25,10 @@ function(){
     doh= {};
     factories.runnerFactory(doh);
     
-    doh.debug = console.log;
-    doh.error = console.log;
+    doh.debug = console.log.bind(console);
+    doh.error = function(error){
+        console.log(error.name, 'stack>\n', error.stack, '\n<stack')
+    };
     
     // Override the doh._report method to make it quit with an
     // appropriate exit code in case of test failures.

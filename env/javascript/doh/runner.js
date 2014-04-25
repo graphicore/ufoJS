@@ -116,7 +116,7 @@ doh._AssertFailure = function(msg, hint){
 	if(hint){
 		msg = (new String(msg||""))+" with hint: \n\t\t"+(new String(hint)+"\n");
 	}
-	this.message = new String(msg||"");
+	this.message = new String(msg||"").valueOf();
 	return this;
 }
 doh._AssertFailure.prototype = new Error();
@@ -787,19 +787,19 @@ doh._handleFailure = function(groupName, fixture, e){
 	var out = "";
 	if(e instanceof this._AssertFailure){
 		this._failureCount++;
-		if(e["fileName"]){ out += e.fileName + ':'; }
-		if(e["lineNumber"]){ out += e.lineNumber + ' '; }
-		out += e+": "+e.message;
-		this.debug("\t_AssertFailure:", out);
+		if(e["fileName"]){ out += 'fileName: '+ e.fileName + ' '; }
+		if(e["lineNumber"]){ out += 'lineNumber: '+ e.lineNumber + ' '; }
+		out += e.toString();
+		this.debug("_AssertFailure:", out, '<<<');
 	}else{
 		this._errorCount++;
 	}
 	this.error(e);
 	if(fixture.runTest["toSource"]){
 		var ss = fixture.runTest.toSource();
-		this.debug("\tERROR IN:\n\t\t", ss);
+		this.debug("ERROR IN:\n\t", ss);
 	}else{
-		this.debug("\tERROR IN:\n\t\t", fixture.runTest);
+		this.debug("ERROR IN:\n\t", fixture.runTest);
 	}
 
 	if(e.rhinoException){
