@@ -15,5 +15,6 @@ define([
     'tests/ufoLib/validators',
     'tests/ufoLib/filenames',
     'tests/ufoLib/glifLib/misc',
-    'tests/ufoLib/glifLib/readGlyph'
+    'tests/ufoLib/glifLib/readGlyph',
+    'tests/xml/main'
 ],'test Layer');
