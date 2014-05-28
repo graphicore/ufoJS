@@ -138,7 +138,7 @@ define([
             pen = new GLIFPointPen(element, undefined, 2);
 
             // doc.appendChild(element);
-            // console.log(xml.docToString(doc))
+            // console.log(xml.toString(doc))
             doh.assertError(
                 errors.GlifLib,
                 {draw: _map}, 'draw',
