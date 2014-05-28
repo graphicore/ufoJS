@@ -16,5 +16,6 @@ define([
     'tests/ufoLib/filenames',
     'tests/ufoLib/glifLib/misc',
     'tests/ufoLib/glifLib/readGlyph',
-    'tests/xml/main'
+    'tests/xml/main',
+    'tests/ufoLib/glifLib/GLIFPointPen'
 ],'test Layer');
