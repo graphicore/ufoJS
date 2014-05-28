@@ -1,20 +1,21 @@
 define([
     'ufojs'
   , 'ufojs/errors'
-  , 'ufojs/tools/io/main'
   , 'ufojs/ufoLib/glifLib/readGlyph'
   , 'ufojs/tools/pens/testPens'
   , 'ufojs/xml/main'
+  , 'ufojs/plistLib/main'
 ], function(
     main
   , errors
-  , io
   , readGlyph
   , pens
   , xml
+  , plistLib
 ) {
     "use strict";
-    var AbstractPointTestPen = pens.AbstractPointTestPen
+    var compareObjects = plistLib._comparePlists
+      , AbstractPointTestPen = pens.AbstractPointTestPen
       , glifString = '<?xml version="1.0" encoding="UTF-8"?>\n\
 <glyph name="R" format="1">\n\
   <advance width="463"/>\n\
@@ -123,7 +124,7 @@ define([
 
     doh.register("ufoLib.glifLib.readGlyph", [
         function Test_readGlyphFromString() {
-            var glyphObject, pen;
+            var glyphObject, pen, prediction, result,i;
             
             // read the more complex glifString
             glyphObject = {};
@@ -151,37 +152,48 @@ define([
                 'Not parseable.'
             );
             
-            doh.assertEqual(pen.flush(), [
+            
+            prediction = [
                 [ 'beginPath' ],
-                [ 'addPoint', [ '445', '0' ], 'line', false, 'horst' ],
-                [ 'addPoint', [ '319', '249' ], 'line', false, undefined ],
-                [ 'addPoint', [ '380', '286' ], null, false, undefined ],
-                [ 'addPoint', [ '417', '349' ], null, false, undefined ],
-                [ 'addPoint', [ '417', '436' ], 'curve', true, undefined ],
-                [ 'addPoint', [ '417', '590' ], null, false, undefined ],
-                [ 'addPoint', [ '315', '664' ], null, false, undefined ],
-                [ 'addPoint', [ '151', '664' ], 'curve', true, undefined ],
-                [ 'addPoint', [ '47', '664' ], 'line', false, undefined ],
-                [ 'addPoint', [ '47', '0' ], 'line', false, undefined ],
-                [ 'addPoint', [ '151', '0' ], 'line', false, undefined ],
-                [ 'addPoint', [ '151', '208' ], 'line', false, undefined ],
-                [ 'addPoint', [ '180', '208' ], null, false, undefined ],
-                [ 'addPoint', [ '197', '210' ], null, false, undefined ],
-                [ 'addPoint', [ '221', '214' ], 'curve', false, undefined ],
-                [ 'addPoint', [ '331', '0' ], 'line', false, undefined ],
+                [ 'addPoint', [ 445, 0 ], 'line', false, 'horst' ],
+                [ 'addPoint', [ 319, 249 ], 'line', false, undefined ],
+                [ 'addPoint', [ 380, 286 ], null, false, undefined ],
+                [ 'addPoint', [ 417, 349 ], null, false, undefined ],
+                [ 'addPoint', [ 417, 436 ], 'curve', true, undefined ],
+                [ 'addPoint', [ 417, 590 ], null, false, undefined ],
+                [ 'addPoint', [ 315, 664 ], null, false, undefined ],
+                [ 'addPoint', [ 151, 664 ], 'curve', true, undefined ],
+                [ 'addPoint', [ 47, 664 ], 'line', false, undefined ],
+                [ 'addPoint', [ 47, 0 ], 'line', false, undefined ],
+                [ 'addPoint', [ 151, 0 ], 'line', false, undefined ],
+                [ 'addPoint', [ 151, 208 ], 'line', false, undefined ],
+                [ 'addPoint', [ 180, 208 ], null, false, undefined ],
+                [ 'addPoint', [ 197, 210 ], null, false, undefined ],
+                [ 'addPoint', [ 221, 214 ], 'curve', false, undefined ],
+                [ 'addPoint', [ 331, 0 ], 'line', false, undefined ],
                 [ 'endPath' ],
                 [ 'beginPath' ],
-                [ 'addPoint', [ '313', '436' ], 'curve', true, undefined ],
-                [ 'addPoint', [ '313', '345' ], null, false, undefined ],
-                [ 'addPoint', [ '250', '303' ], null, false, undefined ],
-                [ 'addPoint', [ '151', '303' ], 'curve', false, undefined ],
-                [ 'addPoint', [ '151', '569' ], 'line', false, undefined ],
-                [ 'addPoint', [ '251', '569' ], null, false, undefined ],
-                [ 'addPoint', [ '313', '535' ], null, false, undefined ],
+                [ 'addPoint', [ 313, 436 ], 'curve', true, undefined ],
+                [ 'addPoint', [ 313, 345 ], null, false, undefined ],
+                [ 'addPoint', [ 250, 303 ], null, false, undefined ],
+                [ 'addPoint', [ 151, 303 ], 'curve', false, undefined ],
+                [ 'addPoint', [ 151, 569 ], 'line', false, undefined ],
+                [ 'addPoint', [ 251, 569 ], null, false, undefined ],
+                [ 'addPoint', [ 313, 535 ], null, false, undefined ],
                 [ 'endPath' ],
                 [ 'addComponent', 'B', [ 1, 0, 0.3, 1, 350, 0 ] ]
-            ])
+            ];
             
+            result = pen.flush();
+            doh.assertEqual(prediction, result)
+            // check that especially points are stricly equal
+            // points must be numbers!
+            for(i=0; i<result.length;i++) {
+                if(result[i][0] === 'addPoint') {
+                    doh.assertTrue(prediction[i][1][0] === result[i][1][0]);
+                    doh.assertTrue(prediction[i][1][1] === result[i][1][1]);
+                }
+            }
             
             // read format1GlifSpec glif
             glyphObject = {};
@@ -197,19 +209,19 @@ define([
                     unicodes: [ 46 ]
                 });
             doh.assertEqual(pen.flush(), [ [ 'beginPath' ],
-                [ 'addPoint', [ '237', '152' ], null, false, undefined ],
-                [ 'addPoint', [ '193', '187' ], null, false, undefined ],
-                [ 'addPoint', [ '134', '187' ], 'curve', true, undefined ],
-                [ 'addPoint', [ '74', '187' ], null, false, undefined ],
-                [ 'addPoint', [ '30', '150' ], null, false, undefined ],
-                [ 'addPoint', [ '30', '88' ], 'curve', true, undefined ],
-                [ 'addPoint', [ '30', '23' ], null, false, undefined ],
-                [ 'addPoint', [ '74', '-10' ], null, false, undefined ],
-                [ 'addPoint', [ '134', '-10' ], 'curve', true, undefined ],
-                [ 'addPoint', [ '193', '-10' ], null, false, undefined ],
-                [ 'addPoint', [ '237', '25' ], null, false, undefined ],
-                [ 'addPoint', [ '237', '88' ], 'curve', true, undefined ],
-                [ 'addPoint', [ '331', '0' ], 'line', false, undefined ],
+                [ 'addPoint', [ 237, 152 ], null, false, undefined ],
+                [ 'addPoint', [ 193, 187 ], null, false, undefined ],
+                [ 'addPoint', [ 134, 187 ], 'curve', true, undefined ],
+                [ 'addPoint', [ 74, 187 ], null, false, undefined ],
+                [ 'addPoint', [ 30, 150 ], null, false, undefined ],
+                [ 'addPoint', [ 30, 88 ], 'curve', true, undefined ],
+                [ 'addPoint', [ 30, 23 ], null, false, undefined ],
+                [ 'addPoint', [ 74, -10 ], null, false, undefined ],
+                [ 'addPoint', [ 134, -10 ], 'curve', true, undefined ],
+                [ 'addPoint', [ 193, -10 ], null, false, undefined ],
+                [ 'addPoint', [ 237, 25 ], null, false, undefined ],
+                [ 'addPoint', [ 237, 88 ], 'curve', true, undefined ],
+                [ 'addPoint', [ 331, 0 ], 'line', false, undefined ],
                 [ 'endPath' ]
             ]);
 
@@ -217,7 +229,8 @@ define([
             glyphObject = {};
             pen = new AbstractPointTestPen();
             readGlyph.fromString(format2GlifSpec, glyphObject, pen);
-            doh.assertEqual(glyphObject, {
+            
+            prediction = {
                 name: 'period',
                 width: 268,
                 height: 0,
@@ -240,39 +253,46 @@ define([
                 ],
                 anchors: [ { x: 74, y: 197, name: 'top', identifier: 'just an anchor' } ],
                 unicodes: [ 46, 47 ]
-            });
+            };
             
-            doh.assertEqual(pen.flush(),[
-                [ 'beginPath', undefined ],
-                [ 'addPoint', [ '237', '152' ], null, false, undefined, undefined ],
-                [ 'addPoint', [ '193', '187' ], null, false, undefined, undefined ],
+           
+            doh.assertEqual(prediction, glyphObject);
+            
+            prediction = [
+                [ 'beginPath', {identifier:undefined} ],
+                
+                [ 'addPoint', [ 237, 152 ], null, false, undefined, {identifier:undefined} ],
+                [ 'addPoint', [ 193, 187 ], null, false, undefined, {identifier:undefined} ],
                 [ 'addPoint',
-                    [ '134', '187' ],
+                    [ 134, 187 ],
                     'curve',
                     true,
                     undefined,
-                    undefined ],
-                [ 'addPoint', [ '74', '187' ], null, false, undefined, undefined ],
-                [ 'addPoint', [ '30', '150' ], null, false, undefined, undefined ],
-                [ 'addPoint', [ '30', '88' ], 'curve', true, undefined, undefined ],
-                [ 'addPoint', [ '30', '23' ], null, false, undefined, undefined ],
+                    {identifier:undefined} ],
+                [ 'addPoint', [ 74, 187 ], null, false, undefined, {identifier:undefined} ],
+                [ 'addPoint', [ 30, 150 ], null, false, undefined, {identifier:undefined} ],
+                [ 'addPoint', [ 30, 88 ], 'curve', true, undefined, {identifier:undefined} ],
+                [ 'addPoint', [ 30, 23 ], null, false, undefined, {identifier:undefined} ],
                 [ 'addPoint',
-                    [ '74', '-10' ],
+                    [ 74, -10 ],
                     null,
                     false,
                     undefined,
-                    'just a point' ],
+                    {identifier:'just a point'} ],
                 [ 'addPoint',
-                    [ '134', '-10' ],
+                    [ 134, -10 ],
                     'curve',
                     true,
                     undefined,
-                    undefined ],
-                [ 'addPoint', [ '193', '-10' ], null, false, undefined, undefined ],
-                [ 'addPoint', [ '237', '25' ], null, false, undefined, undefined ],
-                [ 'addPoint', [ '237', '88' ], 'curve', true, undefined, undefined ],
+                    {identifier:undefined} ],
+                [ 'addPoint', [ 193, -10 ], null, false, undefined, {identifier:undefined} ],
+                [ 'addPoint', [ 237, 25 ], null, false, undefined, {identifier:undefined} ],
+                [ 'addPoint', [ 237, 88 ], 'curve', true, undefined, {identifier:undefined} ],
                 [ 'endPath' ]
-            ]);
+            ];
+            result = pen.flush()
+            
+            doh.assertTrue(compareObjects(result, prediction, true));
         },
         function Test_readGlyph_RootElement() {
             var doc
@@ -345,29 +365,29 @@ define([
                     ]
                 };
             goodOutline = [
-                [ 'beginPath', undefined ],
+                [ 'beginPath', {identifier:undefined} ],
                 [ 'addPoint',
-                    [ '237', '152' ],
+                    [ 237, 152 ],
                     null,
                     false,
                     undefined,
-                    'just a point' ],
-                [ 'addPoint', [ '193', '187' ], null, false, undefined, undefined ],
+                    {identifier:'just a point'} ],
+                [ 'addPoint', [ 193, 187 ], null, false, undefined, {identifier: undefined} ],
                 [ 'addPoint',
-                    [ '134', '187' ],
+                    [ 134, 187 ],
                     'curve',
                     true,
                     undefined,
-                    undefined ],
+                    {identifier:undefined} ],
                 [ 'endPath' ]
             ];
-            
             
             glyphObject = {}
             pen = new AbstractPointTestPen();
             readGlyph.fromString(format2Glif, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
-            doh.assertEqual(pen.flush(), goodOutline);
+            
+            doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
             
             function setConflictID(nodes, value) {
                 var _reset =  nodes.map(function(node) {
@@ -408,7 +428,7 @@ define([
             pen = new AbstractPointTestPen();
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
-            doh.assertEqual(pen.flush(), goodOutline);
+            doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
             
             resetter = setConflictID([guide2, anchor2], 'conflict')
             pen = new AbstractPointTestPen();
@@ -424,7 +444,7 @@ define([
             pen = new AbstractPointTestPen();
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
-            doh.assertEqual(pen.flush(), goodOutline);
+            doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
             
             resetter = setConflictID([anchor1, anchor2], 'conflict')
             pen = new AbstractPointTestPen();
@@ -440,7 +460,7 @@ define([
             pen = new AbstractPointTestPen();
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
-            doh.assertEqual(pen.flush(), goodOutline);
+            doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
             
             resetter = setConflictID([anchor1, contour], 'conflict')
             pen = new AbstractPointTestPen();
@@ -456,7 +476,7 @@ define([
             pen = new AbstractPointTestPen();
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
-            doh.assertEqual(pen.flush(), goodOutline);
+            doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
             
             resetter = setConflictID([point2, contour], 'conflict')
             pen = new AbstractPointTestPen();
@@ -472,7 +492,7 @@ define([
             pen = new AbstractPointTestPen();
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
-            doh.assertEqual(pen.flush(), goodOutline);
+            doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
             
             resetter = setConflictID([point1, point2], 'conflict')
             pen = new AbstractPointTestPen();
@@ -488,7 +508,7 @@ define([
             pen = new AbstractPointTestPen();
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
-            doh.assertEqual(pen.flush(), goodOutline);
+            doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
             
             // but!
             errors.warn('Some conflicting identifiers are not found if using '
