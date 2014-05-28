@@ -118,18 +118,18 @@ define([
             outlineCommands.map(_drawToPen, pen)
             
             // only some spot-tests
-            doh.assertEqual(3, element.childNodes.length)
-            doh.assertEqual('contour', element.childNodes[0].tagName)
-            doh.assertEqual('contour', element.childNodes[1].tagName)
-            doh.assertEqual('component', element.childNodes[2].tagName)
+            doh.assertEqual(3, element.children.length)
+            doh.assertEqual('contour', element.children[0].tagName)
+            doh.assertEqual('contour', element.children[1].tagName)
+            doh.assertEqual('component', element.children[2].tagName)
             
-            doh.assertEqual(16, element.childNodes[0].childNodes.length)
-            doh.assertEqual('horst', element.childNodes[0]
-                                            .childNodes[0]
+            doh.assertEqual(16, element.children[0].children.length)
+            doh.assertEqual('horst', element.children[0]
+                                            .children[0]
                                             .getAttribute('name'))
-            doh.assertEqual(16, element.childNodes[0].childNodes.length)
-            doh.assertFalse(element.childNodes[0]
-                                   .childNodes[1]
+            doh.assertEqual(16, element.children[0].children.length)
+            doh.assertFalse(element.children[0]
+                                   .children[1]
                                    .hasAttribute('identifier'))
             
             
@@ -153,11 +153,11 @@ define([
             pen = new GLIFPointPen(element, identifiers, 2);
             outlineCommands.map(_drawToPen, pen)
             
-            doh.assertEqual('very-very-unique', element.childNodes[0]
-                                            .childNodes[1]
+            doh.assertEqual('very-very-unique', element.children[0]
+                                            .children[1]
                                             .getAttribute('identifier'))
             
-            doh.assertEqual('very-unique', element.childNodes[1]
+            doh.assertEqual('very-unique', element.children[1]
                                                   .getAttribute('identifier'));
             
             doh.assertTrue('very-very-unique' in identifiers)
