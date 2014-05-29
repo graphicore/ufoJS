@@ -134,9 +134,11 @@ define([
             doh.assertEqual(glyphObject,{name: 'R',
                                          width: 463,
                                          height: 0,
-                                         unicodes: [ 82, 22868 ]
+                                         unicodes: [ 82, 22868 ],
+                                         anchors: [
+                                            { x: 208, y: 681, name: 'top' }
+                                         ]
             })
-            
             
             doh.assertError(
                 errors.GlifLib,
