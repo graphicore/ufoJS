@@ -12,12 +12,25 @@ define([
     "use strict";
     
     var testGlyphSet = 'testdata/TestFont1 (UFO3).ufo/glyphs'
-      , contentsPlist = 'testdata/TestFont1 (UFO3).ufo/glyphs/contents.plist'
+      , contentsPlist = testGlyphSet + '/contents.plist'
+        
+      , glyphSetFaulty = 'testdata/contentplists/faulty'
+      , faultyPlist = glyphSetFaulty + '/contents.plist'
+      
+      , glyphSetEmpty = 'testdata/contentplists/empty'
+      , notFoundPlist = glyphSetEmpty + '/contents.plist'
+      
+      , glyphSetFileNameFail = 'testdata/contentplists/file-name-fail'
+      
+      , glyphSetMissingGlyph = 'testdata/contentplists/missing-glyph'
+      
+      
+      
       , contentsPlistContent = { A: 'A_.glif', B: 'B_.glif' }
       // plist with array as root element
       , arrayPlist = 'testdata/array.plist'
       , arrayData = [ 'Jonny', 'Bello', { 'given-name': 'John', type: 'snail' } ]
-      , faultyPlist = 'testdata/faulty.plist'
+      
       ;
     
     doh.register("ufoLib.glifLib.GlyphSet", [
@@ -52,6 +65,9 @@ define([
             // check that this uses the default method
             doh.assertEqual(misc.glyphNameToFileName,
                                             glyphset.glyphNameToFileName)
+            // glyphset.contents is set by rebuildContents
+            doh.assertEqual(undefined, glyphset.contents)
+            doh.assertTrue('contents' in glyphset)
             
             glyphset = new GlyphSet(testGlyphSet, injectedFunc);
             doh.assertEqual(injectedFunc, glyphset.glyphNameToFileName)
@@ -71,7 +87,7 @@ define([
             doh.assertError(
                 errors.IONoEntry,
                 glyphset, '_readPlist',
-                [false, 'non-existant.plist'],
+                [false, notFoundPlist],
                 "IONoEntry Error: ENOENT, no such file or directory "
                 + "'non-existant.plist'"
             )
@@ -118,7 +134,7 @@ define([
               , errback = deferred.errback.bind(deferred)
               ;
             // errors.IONoEntry, is expected on 404 or equivalent
-            glyphset._readPlist(true, 'non-existant.plist')
+            glyphset._readPlist(true, notFoundPlist)
             .then(
                 function(result) {
                     throw new Error('This test-case is broken. An IONoEntry '
@@ -165,17 +181,217 @@ define([
             return deferred;
         }
         
-      , function Test_GlyphSet_rebuildContents_sync() {
+      , function Test_GlyphSet_rebuildContents_faultyPlist() {
             var glyphset
-                ;
-            glyphset = new GlyphSet(testGlyphSet);
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+            // errors.GlifLib, is expected
             
+            // sync
+            // anything else must raise errors.GlifLib
+            glyphset = new GlyphSet(glyphSetFaulty)
+            doh.assertError(
+                errors.GlifLib,
+                glyphset, 'rebuildContents',
+                [false],
+                'GlifLib Error: The file "testdata/faulty.plist" could '
+                + 'not be read. ...'
+            )
             
+            // async
+            glyphset = new GlyphSet(glyphSetFaulty)
+            glyphset.rebuildContents(true)
+            .then(
+                function(result) {
+                    throw new Error('This test-case is broken. An GlifLib '
+                        +' error was provoked, but a result appeared.')
+                },
+                function(error) {
+                    doh.assertError(
+                        errors.GlifLib,
+                        {echo: function(error){ throw error; }}, 'echo',
+                        [error],
+                        'GlifLib Error: The file "testdata/faulty.plist" '
+                        + 'could not be read. ...'
+                    )
+                    deferred.callback(true);
+                }
+            )
+            .then(undefined, errback)
+            return deferred;
+        }
+      , function Test_GlyphSet_rebuildContents_notFoundPlist() {
+            // missing contentsPlist: consider the glyphset to be empty.
+            var glyphset
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+              
+            // sync
+            glyphset = new GlyphSet(glyphSetEmpty)
+            glyphset.rebuildContents(false)
+            doh.assertEqual({}, glyphset.contents)
+            
+            // async
+            glyphset = new GlyphSet(glyphSetEmpty)
+            glyphset.rebuildContents(true)
+            .then(function() {
+                doh.assertEqual({}, glyphset.contents)
+                deferred.callback(true);
+            })
+            .then(undefined, errback)
+            return deferred;
+        }
+      , function Test_GlyphSet_rebuildContents_fileNameFail() {
+            // contents.plist is not properly formatted the value at "name"
+            // is not string but:'+ typeof fileName);
+            var glyphset
+            , deferred = new doh.Deferred()
+            , errback = deferred.errback.bind(deferred)
+            ;
+            
+            // sync
+            glyphset = new GlyphSet(glyphSetFileNameFail);
+            doh.assertError(
+                errors.GlifLib,
+                glyphset, 'rebuildContents',
+                [false],
+                'GlifLib Error: contents.plist is not properly formatted '
+                + 'the value at "B" is not string but:number'
+            )
+            
+            // async
+            glyphset = new GlyphSet(glyphSetFileNameFail)
+            glyphset.rebuildContents(true)
+            .then(
+                function(result) {
+                    throw new Error('This test-case is broken. An GlifLib '
+                        +' error was provoked, but a result appeared.')
+                },
+                function(error) {
+                    doh.assertError(
+                        errors.GlifLib,
+                        {echo: function(error){ throw error; }}, 'echo',
+                        [error],
+                        'GlifLib: contents.plist is not properly '
+                        + 'formatted the value at "B" is not string but:number'
+                    )
+                    deferred.callback(true);
+                }
+            )
+            .then(undefined, errback)
+            return deferred;
+        }
+      , function Test_GlyphSet_rebuildContents_missingGlyph() {
+            // contents.plist references a file that does not exist: + filePaths[i]
+            var glyphset
+            , deferred = new doh.Deferred()
+            , errback = deferred.errback.bind(deferred)
+            ;
+            // sync
+            glyphset = new GlyphSet(glyphSetMissingGlyph);
+            doh.assertError(
+                errors.GlifLib,
+                glyphset, 'rebuildContents',
+                [false],
+                'GlifLib: contents.plist references a file that '
+                + 'does not exist: '
+                + 'testdata/contentplists/missing-glyph/C_.glif'
+            )
+            
+            // async
+            glyphset = new GlyphSet(glyphSetMissingGlyph)
+            glyphset.rebuildContents(true)
+            .then(
+                function(result) {
+                    throw new Error('This test-case is broken. An GlifLib '
+                        +' error was provoked, but a result appeared.')
+                },
+                function(error) {
+                    doh.assertError(
+                        errors.GlifLib,
+                        {echo: function(error){ throw error; }}, 'echo',
+                        [error],
+                        'GlifLib: contents.plist references a file '
+                        + 'that does not exist: '
+                        + 'testdata/contentplists/missing-glyph/C_.glif'
+                    )
+                    deferred.callback(true);
+                }
+            )
+            .then(undefined, errback)
+            return deferred;
         }
       , function Test_GlyphSet_factory() {
+            var glyphset
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
             
+            // sync
+            glyphset = GlyphSet.factory(false, testGlyphSet);
+            doh.assertTrue(glyphset instanceof GlyphSet);
+            doh.assertEqual(contentsPlistContent, glyphset.contents);
             
+            GlyphSet.factory(true, testGlyphSet)
+            .then(function(glyphset) {
+                    doh.assertTrue(glyphset instanceof GlyphSet);
+                    doh.assertEqual(contentsPlistContent, glyphset.contents);
+                    deferred.callback(true);
+            })
+            .then(undefined, errback);
             
+            return deferred;
+        }
+      , function Test_GlyphSet_factory_genericError() {
+            // picking the Error caused by  lyphSetMissingGlyph 
+            // just to proof that GlyphSet.factory handles it right.
+            var deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+            
+            doh.assertError(
+                errors.GlifLib,
+                GlyphSet, 'factory',
+                [false, glyphSetMissingGlyph],
+                'GlifLib: contents.plist references a file '
+                + 'that does not exist: '
+                + 'testdata/contentplists/missing-glyph/C_.glif'
+            )
+            
+            // async
+            GlyphSet.factory(true, glyphSetMissingGlyph)
+            .then(
+                function(result) {
+                    throw new Error('This test-case is broken. An GlifLib '
+                        +' error was provoked, but a result appeared.')
+                },
+                function(error) {
+                    doh.assertError(
+                        errors.GlifLib,
+                        {echo: function(error){ throw error; }}, 'echo',
+                        [error],
+                        'GlifLib: contents.plist references a file '
+                        + 'that does not exist: '
+                        + 'testdata/contentplists/missing-glyph/C_.glif'
+                    )
+                    deferred.callback(true);
+                }
+            )
+            .then(undefined, errback)
+            return deferred;
+        }
+      , function Test_GlyphSet_getReverseContents() {
+            var glyphset = GlyphSet.factory(false, testGlyphSet)
+              , reverseContents
+              , k
+              ;
+            reverseContents = glyphset.getReverseContents();
+            for(k in this.contents){
+                doh.assertTrue(this.contents[k] in reverseContents);
+                doh.assertEqual(k, reverseContents[this.contents[k]]);
+            }
         }
     ])
 });
