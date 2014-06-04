@@ -3,7 +3,7 @@ define([
   , 'ufojs/errors'
   , 'ufojs/ufoLib/glifLib/misc'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
-  , 'ufojs/tools/io/main'
+  , 'ufojs/tools/io/static'
 ], function(
     main
   , errors
