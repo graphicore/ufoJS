@@ -3,13 +3,17 @@ define([
   , 'ufojs/errors'
   , 'ufojs/ufoLib/glifLib/misc'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
+  , 'ufojs/plistLib/main'
   , 'ufojs/tools/io/static'
+  , 'ufojs/tools/io/TestingIO'
 ], function(
     main
   , errors
   , misc
   , GlyphSet
+  , plistLib
   , staticIO
+  , TestingIO
 ) {
     "use strict";
     
@@ -25,8 +29,6 @@ define([
       , glyphSetFileNameFail = 'testdata/contentplists/file-name-fail'
       
       , glyphSetMissingGlyph = 'testdata/contentplists/missing-glyph'
-      
-      
       
       , contentsPlistContent = { A: 'A_.glif', B: 'B_.glif' }
       // plist with array as root element
@@ -86,15 +88,16 @@ define([
         }
       , function Test_GlyphSet_readPlist_sync() {
             var glyphset
-              , array;
+              , array
+              ;
             
             glyphset = new GlyphSet(staticIO, testGlyphSet);
-            
             // this works with any plist
             doh.assertEqual(arrayData, glyphset._readPlist(false, arrayPlist));
             // and with contents.plis
             doh.assertEqual(contentsPlistContent,
                             glyphset._readPlist(false, contentsPlist));
+            
             // errors.IONoEntry, is expected on 404 or equivalent
             doh.assertError(
                 errors.IONoEntry,
@@ -103,6 +106,7 @@ define([
                 "IONoEntry Error: ENOENT, no such file or directory "
                 + "'non-existant.plist'"
             )
+            
             // anything else must raise errors.GlifLib
             doh.assertError(
                 errors.GlifLib,
@@ -404,6 +408,45 @@ define([
                 doh.assertTrue(this.contents[k] in reverseContents);
                 doh.assertEqual(k, reverseContents[this.contents[k]]);
             }
+        }
+      , function Test_GlyphSet_writeContents() {
+            var testingIO
+              , glyphset
+              , k, glifname
+              , oldPlistContent = plistLib.createPlistString(contentsPlistContent)
+              , newPlistContent
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+              
+            testingIO = new TestingIO();
+            testingIO.files[contentsPlist] = [
+                oldPlistContent, new Date()]
+            for(k in contentsPlistContent){
+                glifname = testGlyphSet+ '/' + contentsPlistContent[k];
+                testingIO.files[glifname] = ['fake', new Date()];
+            }
+            glyphset = GlyphSet.factory(false, testingIO, testGlyphSet)
+            glyphset.contents['X'] = 'X_.glif';
+            
+            glyphset.writeContents(false);
+            
+            newPlistContent = plistLib.readPlistFromString(
+                                testingIO.readFile(false, contentsPlist));
+            doh.assertTrue('X' in newPlistContent);
+            doh.assertEqual(newPlistContent['X'], 'X_.glif');
+            
+            glyphset.contents['Y'] = 'Y_.glif';
+            glyphset.writeContents(true)
+            .then(function(){
+                var newPlistContent = plistLib.readPlistFromString(
+                                testingIO.readFile(false, contentsPlist));
+                doh.assertTrue('Y' in newPlistContent);
+                doh.assertEqual(newPlistContent['Y'], 'Y_.glif');
+                deferred.callback(true);
+            })
+            .then(undefined, errback)
+            return deferred;
         }
     ])
 });
