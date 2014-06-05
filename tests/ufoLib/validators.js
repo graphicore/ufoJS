@@ -1,7 +1,14 @@
-define(
-    ['ufojs', 'ufojs/errors', 'ufojs/ufoLib/validators'],
-    function(main, errors, validators)
-{
+define([
+    'ufojs'
+  , 'ufojs/errors'
+  , 'ufojs/tools/io/static'
+  , 'ufojs/ufoLib/validators'
+], function(
+    main
+  , errors
+  , staticIO
+  , validators
+) {
     doh.register("ufojs.ufoLib.validators", [
     function Test_isDictEnough() {
         doh.assertTrue(validators.isDictEnough({}));
@@ -1909,27 +1916,34 @@ define(
            errors.Assertion,
            validators, 'pngValidatorSync',
            [],
+           'I/O api is missing'
+        );
+        
+        doh.assertError(
+           errors.Assertion,
+           validators, 'pngValidatorSync',
+           [staticIO],
            'there must be at least one input parameter'
         );
         
         doh.assertError(
            errors.Assertion,
            validators, 'pngValidatorSync',
-           [{}],
+           [staticIO, {}],
            'there must be at least one input parameter'
         );
         
-        doh.assertTrue(validators.pngValidatorSync({data: "\x89PNG\r\n\x1a\n"})[0]);
-        doh.assertTrue(validators.pngValidatorSync({data: '\x89PNG\r\n\x1a\ndatdadtdadtdadadDATA'})[0]);
-        doh.assertFalse(validators.pngValidatorSync({data: 'nothing'})[0]);
+        doh.assertTrue(validators.pngValidatorSync(staticIO, {data: "\x89PNG\r\n\x1a\n"})[0]);
+        doh.assertTrue(validators.pngValidatorSync(staticIO, {data: '\x89PNG\r\n\x1a\ndatdadtdadtdadadDATA'})[0]);
+        doh.assertFalse(validators.pngValidatorSync(staticIO, {data: 'nothing'})[0]);
         
         var path = './testdata/grayscale.png';
-        doh.assertTrue(validators.pngValidatorSync({path: path})[0]);
+        doh.assertTrue(validators.pngValidatorSync(staticIO, {path: path})[0]);
         
         doh.assertError(
             errors.NotImplemented,
             validators, 'pngValidatorSync',
-            [{fileObj: {a:0}}/*fileObject*/],
+            [staticIO, {fileObj: {a:0}}/*fileObject*/],
             'A propper API for fileObjects must be defined'
         );
     },
@@ -1953,7 +1967,7 @@ define(
                 }
             };
             var arg = {data: "\x89PNG\r\n\x1a\n"};
-            validators.pngValidatorAsync(arg, callback);
+            validators.pngValidatorAsync(staticIO, arg, callback);
             return deferred;
         },
         tearDown: function() {
@@ -1981,7 +1995,7 @@ define(
                 }
             };
             var arg = {path: './testdata/grayscale.png'};
-            validators.pngValidatorAsync(arg, callback);
+            validators.pngValidatorAsync(staticIO, arg, callback);
             return deferred;
         },
         tearDown: function() {
@@ -2009,7 +2023,7 @@ define(
                 deferred.errback(e);
             };
             var arg = {path: './testdata/not-available.png'};
-            validators.pngValidatorAsync(arg, callback);
+            validators.pngValidatorAsync(staticIO, arg, callback);
             return deferred;
         },
         tearDown: function() {
@@ -2030,47 +2044,47 @@ define(
         var ufoPath = './testdata/TestFont1 (UFO3).ufo', 
         // not Array
             value = 1;
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = {};
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = false;
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = '';
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         
         // no foundDefault
         value = [];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         //an entry is not an array
         value = [true];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [{}];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [5];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         //an entry is shorte than 2 items
         value = [['layer']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         //an entry is longer than 2 items
         value = [['layer', 'glyphs', 'too much']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         //an item of entry is not string
         value = [['layer', 5]];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [[undefined, 'glyphs.hi']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         //when directory is not "glyph" it must start with glyphs.
         value = [['hi', 'glyph']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [['hi', 'glyphsLayer']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [['hi', 'glyphor']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         //layer name must not be empty
         value = [['', 'glyphs']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [['', 'glyphs.custom']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         
         // existing dirs
         value = [
@@ -2078,24 +2092,23 @@ define(
             ['background', 'glyphs.mask'],
             ['Some Arbitrary Layer', 'glyphs.arbitrary']
         ];
-        doh.assertTrue(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertTrue(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         // none existing dirs
         value = [
             ['public.default', 'glyphs'],
             ['background', 'glyphs.not-available']
         ];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
-        
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         
         //the layerName 'public.default' must only be used for the directoryName "glyphs"
         value = [['public.default', 'glyphs.arbitrary']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         
         // a layerName must not be used more than once
         value = [['Slayer', 'glyphs.arbitrary'], ['Slayer', 'glyphs']];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [['Slayer', 'glyphs.arbitrary'], ['Default', 'glyphs']];
-        doh.assertTrue(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertTrue(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         
         // a directoryName must not be used more than once
         value = [
@@ -2103,20 +2116,20 @@ define(
             ['Default', 'glyphs'],
             ['Another', 'glyphs.arbitrary'],
         ];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [
             ['Slayer', 'glyphs.arbitrary'],
             ['Default', 'glyphs'],
             ['Another', 'glyphs.mask'],
         ];
-        doh.assertTrue(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertTrue(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         
         //once more: no default directory makes it fails
         value = [
             ['Slayer', 'glyphs.arbitrary'],
             ['Another', 'glyphs.mask']
         ];
-        doh.assertFalse(validators.layerContentsValidatorSync(value, ufoPath)[0]);
+        doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
     },
     {
         name: "Test_layerContentsValidatorAsync_existingDirs",
@@ -2144,7 +2157,7 @@ define(
                     ['background', 'glyphs.mask'],
                     ['Some Arbitrary Layer', 'glyphs.arbitrary']
                 ];
-            validators.layerContentsValidatorAsync(value, ufoPath, callback);
+            validators.layerContentsValidatorAsync(staticIO, value, ufoPath, callback);
             return deferred;
         },
         tearDown: function() {
@@ -2179,7 +2192,7 @@ define(
                     ['Some Arbitrary Layer', 'glyphs.not-available']
                 ];
             
-            validators.layerContentsValidatorAsync(value, ufoPath, callback);
+            validators.layerContentsValidatorAsync(staticIO, value, ufoPath, callback);
             return deferred;
         },
         tearDown: function() {
