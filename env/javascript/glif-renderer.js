@@ -1,7 +1,20 @@
-if(typeof console == 'undefined'){
-    console = {log:function(){}};
-}
-define([
+require({
+    baseUrl: 'javascript',
+    packages:[
+        {
+            name: 'ufojs',
+            location: '../../lib',
+            lib: ''
+        },
+        {
+            name: 'dojo',
+            location: 'dojo',
+            lib: ''
+        }
+    ]
+});
+
+require([
     'dojo/dojo',
     'ufojs/UFO/glyphFactories',
     'ufojs/tools/pens/PointToSegmentPen',
