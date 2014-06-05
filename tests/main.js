@@ -18,5 +18,6 @@ define([
     'tests/ufoLib/glifLib/readGlyph',
     'tests/xml/main',
     'tests/ufoLib/glifLib/GLIFPointPen',
-    'tests/ufoLib/glifLib/writeGlyph'
+    'tests/ufoLib/glifLib/writeGlyph',
+    'tests/ufoLib/glifLib/GlyphSet'
 ],'test Layer');
