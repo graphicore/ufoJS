@@ -11,7 +11,7 @@ require({
 },
 [
     'ufojs/xml/main',
-    'ufojs/tools/io/main'
+    'ufojs/tools/io/static'
 ], function(
     xml,
     io
@@ -39,8 +39,9 @@ require({
     var glifDoc = parser.parseFromString(string, "text/xml");
     var result = evaluateXPath(glifDoc, '/glyph/outline[1]/contour|/glyph/outline[1]/component');
     console.log(result.length);
-    console.log(io.getMtimeSync('./adhoc.xhtml'));
-    io.getMtime('./adhoc.xhtml', function(date){
+    console.log(io.getMtime(false, './adhoc.xhtml'));
+    io.getMtime(true, './adhoc.xhtml')
+    .then(function(date){
         console.log( date );   
     });
 });
