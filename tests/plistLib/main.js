@@ -1,7 +1,14 @@
-define(
-    ['ufojs', 'ufojs/errors', 'ufojs/tools/io/main' ,'ufojs/plistLib/main'],
-    function(main, errors, io, plistLib)
-{
+define([
+    'ufojs'
+  , 'ufojs/errors'
+  , 'ufojs/tools/io/static'
+  , 'ufojs/plistLib/main'
+], function(
+    main
+  , errors
+  , staticIO
+  , plistLib
+) {
     var goodPlistPath = './testdata/good.plist'
       , goodPlistData = {
             age: 28.92,
@@ -88,7 +95,7 @@ define(
                     deferred.errback(e);
                 }
             };
-            io.readFile(goodPlistPath, loadHandler);
+            staticIO.readFile({unified: loadHandler}, goodPlistPath);
             return deferred;
         },
         tearDown: function(){
@@ -127,44 +134,13 @@ define(
                     deferred.errback(e);
                 }
             };
-            io.readFile(goodPlistPath, loadHandler);
+            staticIO.readFile({unified: loadHandler}, goodPlistPath);
             return deferred;
         },
         tearDown: function(){
             //cleanup to do after runTest.
         },
         timeout: 3000
-    },
-    {
-        name: "Test_readPlistFromFile",
-        setUp: function() {},
-        runTest: function(){
-            var deferred = new doh.Deferred()
-              , promise
-              , data
-              ;
-            // sync api
-            data = plistLib.readPlistFromFile(false, goodPlistPath);
-            doh.assertTrue(plistLib._comparePlists(data, goodPlistData, true));
-            
-            // async api  
-            plistLib.readPlistFromFile(true, goodPlistPath)
-                .then(function(data){
-                    try {
-                        doh.assertTrue(plistLib._comparePlists(data, goodPlistData, true));
-                    }
-                    catch(e) {
-                        deferred.errback(e);
-                        return;
-                    }
-                    deferred.callback(true);
-                }, deferred.errback.bind(deferred));
-            return deferred;
-        },
-        tearDown: function(){},
-        timeout: 3000
     }
-    
-    
     ])
 });
