@@ -44,6 +44,10 @@ define([
       , glyphSetWrongFormatLayerinfo = 'testdata/testing-layers/wrong-format-layerinfo'
       , glyphSetBrokenColorLayerinfo = 'testdata/testing-layers/broken-color-layerinfo'
       
+      , glyphSetWithComponents = 'testdata/testing-layers/with-components'
+      
+      , glyphSetWithImages = 'testdata/testing-layers/with-images'
+      
       , contentsPlistContent = { A: 'A_.glif', B: 'B_.glif' }
       
       , layerinfoPlistContent = { color: '0.3,0.5,1,0', lib: { greeting: 'hello' } }
@@ -1206,17 +1210,20 @@ define([
                 ]
               , drawPointsFunc = _drawPoints.bind(null, commands)
               , glyphDate = new Date(1998, 0, 1)
+              , reverseContents
+              , glyphNameToFilename
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
-              ;
               ;
             
             doh.assertFalse(glyphset.has_key('X'))
             doh.assertFalse(testingIO.pathExists(false, './X_.glif'))
+            doh.assertFalse('x_.glif' in glyphset.getReverseContents())
             glyphset.writeGlyph(false, 'X', glyphData, drawPointsFunc)
             doh.assertEqual( 'X_.glif', glyphset.contents['X'])
             doh.assertTrue(testingIO.pathExists(false, './X_.glif'))
             doh.assertTrue(glyphset.has_key('X'))
+            doh.assertTrue('x_.glif' in glyphset.getReverseContents())
             
             // setting the date to a value in the past
             testingIO.files['./X_.glif'][1] = glyphDate;
@@ -1230,6 +1237,50 @@ define([
             doh.assertFalse(testingIO.files['./X_.glif'][1] === glyphDate);
             doh.assertEqual('X', glyphset.getGLIFDocument(false, 'X')
                                     .documentElement.getAttribute('name'));
+            
+            // test some aspects of the format version
+            doh.assertEqual('2', glyphset.getGLIFDocument(false, 'X')
+                                .documentElement.getAttribute('format'))
+            
+            // force format version 1
+            glyphset.writeGlyph(false, 'X', glyphData, drawPointsFunc, 1);
+            doh.assertEqual('1', glyphset.getGLIFDocument(false, 'X')
+                                .documentElement.getAttribute('format'))
+            
+            
+            doh.assertError(
+                errors.GlifLib,
+                glyphset, 'writeGlyph',
+                [false, 'X', undefined, undefined, 100],
+                'Unsupported GLIF format version: 100'
+            )
+            
+            glyphset = GlyphSet.factory(false, testingIO, '.', undefined, 2);
+            doh.assertError(
+                errors.GlifLib,
+                glyphset, 'writeGlyph',
+                [false, 'X', undefined, undefined, 2],
+                'Unsupported GLIF format version (2) for UFO format version 2.'
+            )
+            
+            glyphset.writeGlyph(false, 'X', glyphData, drawPointsFunc);
+            doh.assertEqual('1', glyphset.getGLIFDocument(false, 'X')
+                                .documentElement.getAttribute('format'))
+            
+            // reverse the name. no checks are done
+            glyphNameToFilename = function(glyphName, injected_glyphSet) {
+                doh.assertTrue(injected_glyphSet === glyphset);
+                
+                var nameArr = glyphName.split('');
+                nameArr.reverse();
+                nameArr.push('.glif');
+                return nameArr.join('');
+            }
+            
+            glyphset = GlyphSet.factory(false, testingIO, '.', glyphNameToFilename)
+            glyphset.writeGlyph(false, 'YX', glyphData, drawPointsFunc);
+            doh.assertEqual('XY.glif', glyphset.contents['YX']);
+            
             
             
             // async
@@ -1261,6 +1312,182 @@ define([
                 deferred.callback(true);
             })
             .then(undefined, errback);
+            return deferred;
+        }
+      , function Test_GlyphSet_deleteGlyph() {
+            var mTime = new Date(1999, 0,1)
+              , testingIO = _getTestingIO('.', mTime)
+              , glyphset = GlyphSet.factory(false, testingIO, '.')
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+            
+            
+            doh.assertTrue('A' in glyphset.contents);
+            glyphset.getGLIF(false, 'A');
+            doh.assertTrue('A' in glyphset._glifCache);
+            doh.assertTrue('./A_.glif' in testingIO.files);
+            glyphset.getReverseContents();
+            
+            glyphset.deleteGlyph(false, 'A');
+            doh.assertFalse('A' in glyphset.contents);
+            doh.assertFalse('A' in glyphset._glifCache);
+            doh.assertFalse('./A_.glif' in testingIO.files);
+            
+            // async
+            testingIO = _getTestingIO('.', mTime);
+            glyphset = GlyphSet.factory(false, testingIO, '.');
+            glyphset.getReverseContents();
+            
+            glyphset.deleteGlyph(true, 'A')
+            .then(function() {
+                doh.assertFalse('A' in glyphset.contents);
+                doh.assertFalse('A' in glyphset._glifCache);
+                doh.assertFalse('./A_.glif' in testingIO.files);
+                deferred.callback(true);
+            })
+            .then(undefined, errback);
+            return deferred;
+        }
+      , function Test_GlyphSet_get() {
+            var glyphset = GlyphSet.factory(false, staticIO, testGlyphSet)
+              , pen = new AbstractPointTestPen()
+              , expected1 = { }
+              , expected2 = {
+                    name: 'B'
+                  , width: 740
+                  , height: 0
+                  , unicodes: [ 66 ]
+                }
+              , expectedOutline = [ [ 'beginPath' ],
+                    [ 'addPoint', [ 20, 350 ], 'curve', true, null ],
+                    [ 'addPoint', [ 20, 157 ], null, false, null ],
+                    [ 'addPoint', [ 177, 0 ], null, false, null ],
+                    [ 'addPoint', [ 370, 0 ], 'curve', true, null ],
+                    [ 'addPoint', [ 563, 0 ], null, false, null ],
+                    [ 'addPoint', [ 720, 157 ], null, false, null ],
+                    [ 'addPoint', [ 720, 350 ], 'curve', true, null ],
+                    [ 'addPoint', [ 720, 543 ], null, false, null ],
+                    [ 'addPoint', [ 563, 700 ], null, false, null ],
+                    [ 'addPoint', [ 370, 700 ], 'curve', true, null ],
+                    [ 'addPoint', [ 177, 700 ], null, false, null ],
+                    [ 'addPoint', [ 20, 543 ], null, false, null ],
+                    [ 'endPath' ]
+                ]
+              , glyph
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+            
+            glyph = glyphset.get('B');
+            doh.assertTrue(glyph instanceof GlyphSet.prototype.GlyphClass);
+            doh.assertEqual(expected1, glyph);
+            glyph.drawPoints(false, pen);
+            doh.assertEqual(expected2, glyph);
+            doh.assertEqual(expectedOutline, pen.flush());
+            
+            // async
+            glyph = glyphset.get('B');
+            doh.assertEqual(expected1, glyph);
+            
+            glyph.drawPoints(true, pen)
+            .then(function(resultGlyph) {
+                doh.assertTrue(glyph === resultGlyph);
+                doh.assertEqual(expected2, resultGlyph);
+                doh.assertEqual(expectedOutline, pen.flush());
+                deferred.callback(true);
+            })
+            .then(undefined, errback);
+            
+            return deferred;
+        }
+      , function Test_GlyphSet__mapGLIFDocuments() {
+            var glyphset = GlyphSet.factory(false, staticIO, testGlyphSet)
+              , mapper = function(doc) {
+                    return doc.documentElement.getAttribute('name');}
+              , expected = { A: 'A', B: 'B' }
+              , result
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+              ;
+            
+            result = glyphset._mapGLIFDocuments(false, ['A', 'B'], mapper);
+            doh.assertEqual(expected, result);
+            
+            // async
+            glyphset._mapGLIFDocuments(true, ['A', 'B'], mapper)
+            .then(function(result) {
+                doh.assertEqual(expected, result);
+                deferred.callback(true);
+            })
+            .then(undefined, errback);
+            
+            return deferred;
+        }
+      , function Test_GlyphSet_getUnicodes() {
+            var glyphset = GlyphSet.factory(false, staticIO, testGlyphSet)
+              , expected = { A: [ 65 ], B: [ 66 ] }
+              , result
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+            
+            result = glyphset.getUnicodes(false, ['A', 'B']);
+            doh.assertEqual(expected, result);
+            
+            // async
+            glyphset.getUnicodes(true, ['A', 'B'])
+            .then(function(result) {
+                doh.assertEqual(expected, result);
+                deferred.callback(true);
+            })
+            .then(undefined, errback);
+            
+            return deferred;
+        }
+      , function Test_GlyphSet_getComponentReferences() {
+            var glyphset = GlyphSet.factory(false, staticIO, glyphSetWithComponents)
+              , request = ['A', 'B', 'F_A_B']
+              , expected = { A: [], B: [], F_A_B: [ 'A', 'B', 'F' ] }
+              , result
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+            
+            result = glyphset.getComponentReferences(false, request);
+            doh.assertEqual(expected, result);
+            
+            // async
+            glyphset.getComponentReferences(true, request)
+            .then(function(result) {
+                doh.assertEqual(expected, result);
+                deferred.callback(true);
+            })
+            .then(undefined, errback);
+            
+            return deferred;
+        }
+      , function Test_GlyphSet_getImageReferences() {
+            var glyphset = GlyphSet.factory(false, staticIO, glyphSetWithImages)
+              , request = glyphset.keys()
+              , expected = { A: 'Sketch 1.png', B: 'Sketch 2.png'}
+              , result
+              , deferred = new doh.Deferred()
+              , errback = deferred.errback.bind(deferred)
+              ;
+            
+            result = glyphset.getImageReferences(false, request);
+            doh.assertEqual(expected, result);
+            
+            // async
+            glyphset.getImageReferences(true, request)
+            .then(function(result) {
+                doh.assertEqual(expected, result);
+                deferred.callback(true);
+            })
+            .then(undefined, errback);
+            
             return deferred;
         }
     ])
