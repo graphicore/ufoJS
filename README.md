@@ -1,35 +1,65 @@
 ufoJS
 =====
 
-Copyright (c) 2011, Lasse Fister lasse@graphicore.de, http://graphicore.de
+With ufoJS you can load, manipulate and save font data in JavaScript.
+A [UFO: Unified Font Object](http://unifiedfontobject.org) is a directory 
+based file format representing font data in a human readable way. UFO
+is already supported by all major font development tools. ufoJS enables
+browser based font development tools that blend nicely into
+professional workflows.
 
-You should have received a copy of the MIT License along with this program.
-If not, see http://www.opensource.org/licenses/mit-license.php
+ufoJS is tested with nodeJS and current Firefox and Chrome. You can run the
+unit tests with other browsers and see where it breaks and where it works.
 
-About
------
+Technology remarks
+------------------
 
-This software will eventually enable JavaScript environments to do presentation,
-creation and manipulation of font data (propably in the UFO format).
-Therefore concepts and algorithms of the FontTools and RoboFab (see Credits)
-where translated into JavaScript.
+The starting point for ufoJS is porting RoboFab to JavaScript. Once this
+is done to a satisfactory point, we can start with optimizing the APIs and
+inner  workings for new challenges. However, the first goal is to become
+useful and fully unit tested.
 
-Credits
--------
+There are already significant differences to the RoboFab legacy:
+
+ * ufoJS provides both a synchronous and an [asynchronous](http://en.wikipedia.org/wiki/Asynchronous_I/O)
+   API.
+   
+   * The asynchronous API is particularly useful for User Interfaces or
+   fast NodeJS based servers. JavaScript developers know this concept already.
+   * The synchronous API is useful for adhoc-scripting, simple command line
+     programms or webworkers. It is less complex to write synchronous scripts.
+     
+   [ObtainJS](https://github.com/graphicore/obtainJS) is used to implement the
+   asynchronous and synchronous API side bz side. Go to the OtainJS
+   Repository to learn how to use APIs implemented with it or how to implement
+   APIs with ObtainJS.
+   
+ * ufoJS does file system abstraction based on a dependency injection
+   pattern. You can write your own persistence module and just use it.
+   See the [I/O modules](https://github.com/graphicore/ufoJS/tree/master/lib/tools/io)
+   for the yet early state of the Interface.
+
+There is no good Documentation or guide yet. You are welcome to start that
+and I would gladly support you. In the meantime your options are:
+
+* [Read the source, Luke](http://blog.codinghorror.com/learn-to-read-the-source-luke/)
+  and read the unit tests, too. Also, there is a mini sample App, the [glif-renderer](./env/glif-renderer.xhtml)
+* See how things are done with RoboFab and try to transfer you knowledge.
+
+
+Further Reading
+---------------
+
+### [UFO Reference](http://unifiedfontobject.org)
+
+keep this under your pillow ;-)
 
 ### Code Input
 
-This project aims to provide a similar API to font data in JavaScript as
-the (mostly) Python Projects FontTools and RoboFab. To achieve that I did
-(more or less) translate some of the  FontTools and RoboFab files into
-JavaScript. Therefore the original ideas and algorithms are from these
-projects and they serve as reference for what behavior is right or wrong.
-Any discrepancies between the JavaScript and Python versions especially
-those caused by the differences between the languages or those caused by
-the incapabilities of the translator are completely discussible.
+ufoJS is based on porting the Python code of FontTools and RoboFab to JavaScript.
 
-The files of the original sources are referenced in the files of this
-project where they where used.
+The files of the Python sources are referenced in the headers of the files
+of this project.
 
 [FontTools](http://sourceforge.net/projects/fonttools/)
 Author: Just van Rossum 
@@ -37,28 +67,22 @@ Author: Just van Rossum
 [RoboFab](http://www.robofab.org)
 Authors: Erik van Blokland, Tal Leming, Just van Rossum
 
-### Reference
-
-[Unified Font Object](http://unifiedfontobject.org)
-Authors:  Erik van Blokland, Tal Leming, Just van Rossum
-
-This is closely related to the RoboFab way of working with font data.
-It's the RoboFab way of storing font data and the main reason why I think
-using the RoboFab/FontTools code is a good idea: compatibility to the UFO.
-
 ### Dependencies
 
-The Project itself requires an [Modules/AsynchronousDefinition-Loader]
-(http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition) defined by
-[commonJs](http://www.commonjs.org/) and currently provided by
-[bdload](http://bdframework.org/bdLoad/docs/bdLoad-tutorial/bdLoad-tutorial.html)
-Author: Rawld Gill
-And for nodeJs (where you can run the tests, too)
-[requireJS](https://github.com/jrburke/r.js)
+The Project itself uses an [Modules/AsynchronousDefinition-Loader](http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition)
+defined by [commonJs](http://www.commonjs.org/) and currently provided by
+[RequireJS](http://requirejs.org/) and [RequireJS for nodeJs](https://github.com/jrburke/r.js)
 Author: James Burke
 
-The Tests are driven by the [D.O.H: Dojo Objective Harness](http://dojotoolkit.org/reference-guide/util/doh.html)
+The Tests are driven by (an old version of) the [D.O.H: Dojo Objective Harness](http://dojotoolkit.org/reference-guide/util/doh.html)
 Authors: Alex Russell, Pete Higgins, Dustin Machi, Jared Jurkiewicz
 
-The [dojo toolkit](http://dojotoolkit.org/) is used where a webbrowser is
-involved. The lib itself has no dependencies on it.
+The implementation of the Synchronous/Asynchronous APIs is made
+with [ObtainJS](https://github.com/graphicore/obtainJS) Author: Lasse Fister
+
+<hr />
+
+Copyright (c) 2011, 2012, 2013, 2014, Lasse Fister lasse@graphicore.de, http://graphicore.de
+
+You should have received a copy of the MIT License along with this program.
+If not, see http://www.opensource.org/licenses/mit-license.php
