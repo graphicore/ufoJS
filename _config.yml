@@ -1,6 +1,6 @@
 include: ['.htaccess'
-, './javascript/doh/_rhinoRunner.js'
-, './javascript/doh/_browserRunner.js'
-, './javascript/dojo/_base.js'
-, './javascript/dojo/resources/_modules.js'
+, 'env/javascript/doh/_rhinoRunner.js'
+, 'envjavascript/doh/_browserRunner.js'
+, 'env/javascript/dojo/_base.js'
+, 'env/javascript/dojo/resources/_modules.js'
 ]
