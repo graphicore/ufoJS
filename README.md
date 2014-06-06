@@ -11,6 +11,21 @@ professional workflows.
 ufoJS is tested with nodeJS and current Firefox and Chrome. You can run the
 unit tests with other browsers and see where it breaks and where it works.
 
+### Current State:
+The GlyphSet and its dependencies are implemented and tested. This means
+you now have control over everything in the `glyphs` directory of your
+UFOv2/v3 and the UFOv3 layers (which is data wise the same as the
+`glyphs` directory). However, this is not stable yet. We will definitely
+find some bugs when using it.
+
+Not in the box yet are the APIs for everything above the glyph layer level.
+This is the next big task.
+
+
+### Actions:
+ * Run the [Testsuite](http://lib.ufojs.org/env/tests.html)
+ * Sample application: [Glif Renderer](http://lib.ufojs.org/env/glif-renderer.xhtml)
+
 Technology remarks
 ------------------
 
@@ -45,7 +60,6 @@ and I would gladly support you. In the meantime your options are:
 * [Read the source, Luke](http://blog.codinghorror.com/learn-to-read-the-source-luke/)
   and read the unit tests, too. Also, there is a mini sample App, the [glif-renderer](./env/glif-renderer.xhtml)
 * See how things are done with RoboFab and try to transfer you knowledge.
-
 
 Further Reading
 ---------------
