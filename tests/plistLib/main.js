@@ -1,7 +1,38 @@
-define(
-    ['ufojs', 'ufojs/errors', 'ufojs/tools/io/main' ,'ufojs/plistLib/main'],
-    function(main, errors, io, plistLib)
-{
+define([
+    'ufojs'
+  , 'ufojs/errors'
+  , 'ufojs/tools/io/static'
+  , 'ufojs/plistLib/main'
+], function(
+    main
+  , errors
+  , staticIO
+  , plistLib
+) {
+    var goodPlistPath = './testdata/good.plist'
+      , goodPlistData = {
+            age: 28.92,
+            'birth-date': new Date(Date.UTC(1983, 0, 21, 22, 23, 23)),
+            glibberish: new plistLib.types.Data('hjkljh678fghj7654refghjudertghu7654redcvghuj765t'),
+            names: {
+                'given-name': 'John',
+                surname: 'Dow'
+            },
+            five: new plistLib.types.Int(5),
+            pets: [
+                'Jonny',
+                'Bello',
+                {
+                    'given-name': 'John',
+                    type: 'snail'
+                }
+            ],
+            yes: true,
+            no: false
+        }
+        ;
+    
+    
     doh.register("plistLib.main", [
     /**
      * This is to document what the _comparePlists method is supposed to do
@@ -38,7 +69,7 @@ define(
         );
     },
     /**
-     * To see whether we read everything, here is our exoected result
+     * To see whether we read everything, here is our expected result
      * compared against a parsed plist file
      */
     {
@@ -48,28 +79,8 @@ define(
         },
         runTest: function() {
             //we expect the parsed file to look like this
-            var a = {
-                age: 28.92,
-                'birth-date': new Date(Date.UTC(1983, 0, 21, 22, 23, 23)),
-                glibberish: new plistLib.types.Data('hjkljh678fghj7654refghjudertghu7654redcvghuj765t'),
-                names: {
-                    'given-name': 'John',
-                    surname: 'Dow'
-                },
-                five: new plistLib.types.Int(5),
-                pets: [
-                    'Jonny',
-                    'Bello',
-                    {
-                        'given-name': 'John',
-                        type: 'snail'
-                    }
-                ],
-                yes: true,
-                no: false
-            };
-            var deferred = new doh.Deferred();
-            var loadHandler = function(err, data) {
+            var deferred = new doh.Deferred()
+              , loadHandler = function(err, data) {
                 if(err) {
                     deferred.errback(err);
                     return;
@@ -78,13 +89,13 @@ define(
                     //parse the string to an object
                     var p = plistLib.readPlistFromString(data);
                     //compare
-                    doh.assertTrue(plistLib._comparePlists(p, a, true));
+                    doh.assertTrue(plistLib._comparePlists(p, goodPlistData, true));
                     deferred.callback(true);
                 } catch(e) {
                     deferred.errback(e);
                 }
             };
-            io.readFile('./testdata/good.plist', loadHandler);
+            staticIO.readFile({unified: loadHandler}, goodPlistPath);
             return deferred;
         },
         tearDown: function(){
@@ -123,7 +134,7 @@ define(
                     deferred.errback(e);
                 }
             };
-            io.readFile('./testdata/good.plist', loadHandler);
+            staticIO.readFile({unified: loadHandler}, goodPlistPath);
             return deferred;
         },
         tearDown: function(){

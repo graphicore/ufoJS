@@ -244,11 +244,17 @@ define(
         doh.assertEqual(expected, pen.flush());
     },
     function Test_BasePen_addComponent() {
-        // There's currently no glyphset object and no glyph  objekt with
+        // There's currently no glyphset object and no glyph  object with
         // a draw method so here are some fakes for that stuff 
         var testGlyph = {
-            draw: function(pen)
+            draw: function(obtainSwitch, pen)
             {
+                // the draw function has a obtainJS api, but we currently
+                // support only the synchronous call.
+                // this fixes that claim as a test.
+                doh.assertFalse(obtainSwitch);
+                doh.assertTrue(false === obtainSwitch);
+                
                 pen.moveTo([1, 1]);
                 pen.lineTo([2, 2]);
                 pen.curveTo([3, 3], [4, 4], [5, 5]);

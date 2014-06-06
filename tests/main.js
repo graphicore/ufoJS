@@ -13,5 +13,11 @@ define([
     'tests/tools/pens/PointToSegmentPen',
     'tests/plistLib/main',
     'tests/ufoLib/validators',
-    'tests/ufoLib/filenames'
+    'tests/ufoLib/filenames',
+    'tests/ufoLib/glifLib/misc',
+    'tests/ufoLib/glifLib/readGlyph',
+    'tests/xml/main',
+    'tests/ufoLib/glifLib/GLIFPointPen',
+    'tests/ufoLib/glifLib/writeGlyph',
+    'tests/ufoLib/glifLib/GlyphSet'
 ],'test Layer');

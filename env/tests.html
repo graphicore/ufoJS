@@ -1,71 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html>
 <html style="height:100%;">
 	<!--
 		This is a customized version of the doh's runner.html
 	-->
 	<head>
+		<meta charset="UTF-8" />
 		<title>The Dojo Unit Test Harness testing ufoJS, $Rev: 24358 $</title>
-	<script type="text/javascript">
-		// workaround for bug in Safari 3.  See #7189
-		if (/3[\.0-9]+ Safari/.test(navigator.appVersion))
-		{
-			window.console = {
-				origConsole: window.console,
-					log: function(s){
-					this.origConsole.log(s);
-				},
-				info: function(s){
-					this.origConsole.info(s);
-				},
-				error: function(s){
-					this.origConsole.error(s);
-				},
-				warn: function(s){
-					this.origConsole.warn(s);
-				}
-			};
-		}
-	</script>
-	<script type="text/javascript" src="./javascript/require.js"></script>
-	<script type="text/javascript">
-	require({
-		baseUrl: 'javascript',
-		packages:[
-			{
-				name: 'doh',
-				lib: '',
-				location: 'doh'
-			},
-			{
-				name: 'ufojs',
-				location: '../../lib',
-				lib: ''
-			},
-			{
-				name: 'tests',
-				location: '../../tests',
-				lib: ''
-			}
-		]
-	},['tests-web']);
-    </script>
-		
-		<script type="text/javascript">
-			function fixHeight(){
-				// IE9 doesn't give test iframe height because no nodes have an explicit pixel height!
-				// Give outer table a pixel height.
-				
-				//this method was in the original testrunner 
-				if(dojo.isIE){
-					var headerHeight=0;
-					var rows=dojo.query('#testLayout > tbody > tr');
-					for(var i=0; i<rows.length-1; i++){
-						headerHeight+=dojo.position(rows[i]).h;
-					}
-					dojo.byId('testLayout').style.height=(dojo.window.getBox().h-headerHeight)+"px";
-				}
-			}
-		</script>
+        <script type="text/javascript" src="./javascript/require.js" data-main="javascript/tests-web"></script>
 		<style type="text/css">
 			@import "./javascript/dojo/resources/dojo.css";
 			/*
