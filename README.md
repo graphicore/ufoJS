@@ -45,7 +45,7 @@ There are already significant differences to the RoboFab legacy:
      programms or webworkers. It is less complex to write synchronous scripts.
      
    [ObtainJS](https://github.com/graphicore/obtainJS) is used to implement the
-   asynchronous and synchronous API side bz side. Go to the OtainJS
+   asynchronous and synchronous API side by side. Go to the OtainJS
    Repository to learn how to use APIs implemented with it or how to implement
    APIs with ObtainJS.
    
