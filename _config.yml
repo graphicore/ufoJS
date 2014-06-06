@@ -1,0 +1,6 @@
+include: ['.htaccess'
+, './javascript/doh/_rhinoRunner.js'
+, './javascript/doh/_browserRunner.js'
+, './javascript/dojo/_base.js'
+, './javascript/dojo/resources/_modules.js'
+]
