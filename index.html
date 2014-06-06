@@ -1,10 +1,129 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<head>
-<title>abcdefg</title>
-</head>
-<body>
-    <a href="./env/tests.html">Testsuite</a>
-    <a href="./env/glif-renderer.xhtml">render .glif files</a>
-</body>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+
+    <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/pygment_trac.css" media="screen" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/print.css" media="print" />
+
+    <title>ufoJS by graphicore</title>
+  </head>
+
+  <body>
+
+    <header>
+      <div class="container">
+        <h1>ufoJS</h1>
+        <h2>Javascript API for the Unified Font Object</h2>
+
+        <section id="downloads">
+          <a href="https://github.com/graphicore/ufoJS/zipball/master" class="btn">Download as .zip</a>
+          <a href="https://github.com/graphicore/ufoJS/tarball/master" class="btn">Download as .tar.gz</a>
+          <a href="https://github.com/graphicore/ufoJS" class="btn btn-github"><span class="icon"></span>View on GitHub</a>
+        </section>
+      </div>
+    </header>
+
+    <div class="container">
+      <section id="main_content">
+        <h1>
+<a name="ufojs" class="anchor" href="#ufojs"><span class="octicon octicon-link"></span></a>ufoJS</h1>
+
+<p>With ufoJS you can load, manipulate and save font data in JavaScript.
+A <a href="http://unifiedfontobject.org">UFO: Unified Font Object</a> is a directory 
+based file format representing font data in a human readable way. UFO
+is already supported by all major font development tools. ufoJS enables
+browser based font development tools that blend nicely into
+professional workflows.</p>
+
+<p>ufoJS is tested with nodeJS and current Firefox and Chrome. You can run the
+unit tests with other browsers and see where it breaks and where it works.</p>
+
+<h2>
+<a name="technology-remarks" class="anchor" href="#technology-remarks"><span class="octicon octicon-link"></span></a>Technology remarks</h2>
+
+<p>The starting point for ufoJS is porting RoboFab to JavaScript. Once this
+is done to a satisfactory point, we can start with optimizing the APIs and
+inner  workings for new challenges. However, the first goal is to become
+useful and fully unit tested.</p>
+
+<p>There are already significant differences to the RoboFab legacy:</p>
+
+<ul>
+<li>
+<p>ufoJS provides both a synchronous and an <a href="http://en.wikipedia.org/wiki/Asynchronous_I/O">asynchronous</a>
+API.</p>
+
+<ul>
+<li>The asynchronous API is particularly useful for User Interfaces or
+fast NodeJS based servers. JavaScript developers know this concept already.</li>
+<li>The synchronous API is useful for adhoc-scripting, simple command line
+programms or webworkers. It is less complex to write synchronous scripts.</li>
+</ul>
+<p><a href="https://github.com/graphicore/obtainJS">ObtainJS</a> is used to implement the
+asynchronous and synchronous API side bz side. Go to the OtainJS
+Repository to learn how to use APIs implemented with it or how to implement
+APIs with ObtainJS.</p>
+</li>
+<li><p>ufoJS does file system abstraction based on a dependency injection
+pattern. You can write your own persistence module and just use it.
+See the <a href="https://github.com/graphicore/ufoJS/tree/master/lib/tools/io">I/O modules</a>
+for the yet early state of the Interface.</p></li>
+</ul><p>There is no good Documentation or guide yet. You are welcome to start that
+and I would gladly support you. In the meantime your options are:</p>
+
+<ul>
+<li>
+<a href="http://blog.codinghorror.com/learn-to-read-the-source-luke/">Read the source, Luke</a>
+and read the unit tests, too. Also, there is a mini sample App, the <a href="./env/glif-renderer.xhtml">glif-renderer</a>
+</li>
+<li>See how things are done with RoboFab and try to transfer you knowledge.</li>
+</ul><h2>
+<a name="further-reading" class="anchor" href="#further-reading"><span class="octicon octicon-link"></span></a>Further Reading</h2>
+
+<h3>
+<a name="ufo-reference" class="anchor" href="#ufo-reference"><span class="octicon octicon-link"></span></a><a href="http://unifiedfontobject.org">UFO Reference</a>
+</h3>
+
+<p>keep this under your pillow ;-)</p>
+
+<h3>
+<a name="code-input" class="anchor" href="#code-input"><span class="octicon octicon-link"></span></a>Code Input</h3>
+
+<p>ufoJS is based on porting the Python code of FontTools and RoboFab to JavaScript.</p>
+
+<p>The files of the Python sources are referenced in the headers of the files
+of this project.</p>
+
+<p><a href="http://sourceforge.net/projects/fonttools/">FontTools</a>
+Author: Just van Rossum </p>
+
+<p><a href="http://www.robofab.org">RoboFab</a>
+Authors: Erik van Blokland, Tal Leming, Just van Rossum</p>
+
+<h3>
+<a name="dependencies" class="anchor" href="#dependencies"><span class="octicon octicon-link"></span></a>Dependencies</h3>
+
+<p>The Project itself uses an <a href="http://wiki.commonjs.org/wiki/Modules/AsynchronousDefinition">Modules/AsynchronousDefinition-Loader</a>
+defined by <a href="http://www.commonjs.org/">commonJs</a> and currently provided by
+<a href="http://requirejs.org/">RequireJS</a> and <a href="https://github.com/jrburke/r.js">RequireJS for nodeJs</a>
+Author: James Burke</p>
+
+<p>The Tests are driven by (an old version of) the <a href="http://dojotoolkit.org/reference-guide/util/doh.html">D.O.H: Dojo Objective Harness</a>
+Authors: Alex Russell, Pete Higgins, Dustin Machi, Jared Jurkiewicz</p>
+
+<p>The implementation of the Synchronous/Asynchronous APIs is made
+with <a href="https://github.com/graphicore/obtainJS">ObtainJS</a> Author: Lasse Fister</p>
+
+<hr><p>Copyright (c) 2011, 2012, 2013, 2014, Lasse Fister <a href="mailto:lasse@graphicore.de">lasse@graphicore.de</a>, <a href="http://graphicore.de">http://graphicore.de</a></p>
+
+<p>You should have received a copy of the MIT License along with this program.
+If not, see <a href="http://www.opensource.org/licenses/mit-license.php">http://www.opensource.org/licenses/mit-license.php</a></p>
+      </section>
+    </div>
+
+    
+  </body>
 </html>
