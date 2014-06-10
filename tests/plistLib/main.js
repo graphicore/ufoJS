@@ -1,5 +1,5 @@
 define([
-    'ufojs/main'
+    'ufojs'
   , 'ufojs/errors'
   , 'ufojs/tools/io/static'
   , 'ufojs/plistLib/main'
