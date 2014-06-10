@@ -1,5 +1,5 @@
 define(
-    ['ufojs', 'ufojs/errors', 'ufojs/tools/misc/transform'],
+    ['ufojs/main', 'ufojs/errors', 'ufojs/tools/misc/transform'],
     function(main, errors, transform)
 {
     var round = main.round,

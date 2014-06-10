@@ -1,14 +1,13 @@
 print = console.log;//doh expects a print method
 require({
-    baseUrl: 'javascript',
-    packages:[
-        {
-            name: 'ufojs',
-            location: '../../lib',
-            lib: ''
-        }
-    ]
-},
+    baseUrl: 'javascript'
+  , paths: {
+        'obtain': '../../lib/obtainJS/lib'
+      , 'ufojs': '../../lib'
+      , 'tests': '../../tests'
+    }
+}
+,
 [
     'ufojs/xml/main',
     'ufojs/tools/io/static'

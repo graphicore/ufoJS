@@ -1,6 +1,6 @@
 define(
     [
-        'ufojs',
+        'ufojs/main',
         'ufojs/errors',
         'ufojs/tools/misc/transform',
         'ufojs/tools/pens/AbstractPen',

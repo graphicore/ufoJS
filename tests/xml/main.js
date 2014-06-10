@@ -1,5 +1,5 @@
 define(
-    ['ufojs', 'ufojs/errors' ,'ufojs/xml/main'],
+    ['ufojs/main', 'ufojs/errors' ,'ufojs/xml/main'],
     function(main, errors, xml)
 {
     /**

@@ -1,5 +1,5 @@
 define(
-    ['ufojs', 'ufojs/errors', 'ufojs/ufoLib/filenames'],
+    ['ufojs/main', 'ufojs/errors', 'ufojs/ufoLib/filenames'],
     function(main, errors, filenames)
 {
     var userNameToFileName = filenames.userNameToFileName,

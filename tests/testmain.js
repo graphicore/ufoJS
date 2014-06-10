@@ -1,5 +1,5 @@
 define(
-    ['ufojs', 'ufojs/errors'],
+    ['ufojs/main', 'ufojs/errors'],
     function(main, errors)
 {
     doh.register("ufojs.main", [

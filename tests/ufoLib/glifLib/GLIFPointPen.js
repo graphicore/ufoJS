@@ -1,5 +1,5 @@
 define([
-    'ufojs'
+    'ufojs/main'
   , 'ufojs/errors'
   , 'ufojs/xml/main'
   , 'ufojs/ufoLib/glifLib/GLIFPointPen'

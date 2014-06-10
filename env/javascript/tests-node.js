@@ -3,14 +3,9 @@ require({
     baseUrl: 'javascript'
   , paths: {
         'obtain': '../../lib/obtainJS/lib'
+      , 'ufojs': '../../lib'
       , 'tests': '../../tests'
     }
-  , packages:[
-        {
-            name: 'ufojs',
-            location: '../../lib',
-        }
-    ]
 })
 
 require(['doh/runner'],

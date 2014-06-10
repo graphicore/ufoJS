@@ -5,14 +5,6 @@ require({
       , 'ufojs': '../../lib'
       , 'tests': '../../tests'
     }
-   , packages:[
-        {
-            name: 'ufojs'
-        }
-      , {
-            name: 'tests'
-        }
-    ]
 });
 
 // This is a little bit twisted. It should be a call to "require", not "define".
@@ -31,7 +23,7 @@ function(){
     
     
     // the tests module loads all tests
-    var module = 'tests';
+    var module = 'tests/main';
     // using the location hash, we can test only a specific module
     // example: http://localhost:8080/env/tests.html#tests/tools/pens/TransformPen
     if(window.location.hash) {

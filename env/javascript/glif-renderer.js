@@ -1,13 +1,13 @@
 require({
-    baseUrl: 'javascript',
-    packages:[
-        {
-            name: 'ufojs',
-            location: '../../lib',
-            lib: ''
-        },
-    ]
+    baseUrl: 'javascript'
+  , paths: {
+        'obtain': '../../lib/obtainJS/lib'
+      , 'ufojs': '../../lib'
+      , 'tests': '../../tests'
+    }
 });
+
+
 
 require([
     'domReady'

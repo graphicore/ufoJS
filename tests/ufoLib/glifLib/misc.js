@@ -1,5 +1,5 @@
 define([
-    'ufojs'
+    'ufojs/main'
   , 'ufojs/errors'
   , 'ufojs/ufoLib/filenames'
   , 'ufojs/ufoLib/validators'
