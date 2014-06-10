@@ -2,27 +2,18 @@ print = console.log;//doh expects a print method
 require({
     baseUrl: 'javascript'
   , paths: {
-      'obtain': '../../lib/obtainJS/lib'
+        'obtain': '../../lib/obtainJS/lib'
+      , 'tests': '../../tests'
     }
   , packages:[
-    //    {
-    //        name: 'doh',
-    //        lib: '',
-    //        location: 'doh'
-    //    },
         {
             name: 'ufojs',
             location: '../../lib',
-            lib: ''
-        },
-        {
-            name: 'tests',
-            location: '../../tests',
-            lib: ''
         }
     ]
-},
-['doh/runner'],
+})
+
+require(['doh/runner'],
 function(){
     var factories = doh;
     doh= {};
@@ -51,7 +42,7 @@ function(){
     define('doh', [], doh);
     
     // the tests module loads all tests
-    var module = 'tests'
+    var module = 'tests/main'
         i=0;
     // if we wan't to run only a specific test, here is a commandline option
     // example from the convenience ./tests-node.sh script:
