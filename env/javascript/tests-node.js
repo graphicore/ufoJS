@@ -1,12 +1,15 @@
 print = console.log;//doh expects a print method
 require({
-    baseUrl: 'javascript',
-    packages:[
-        {
-            name: 'doh',
-            lib: '',
-            location: 'doh'
-        },
+    baseUrl: 'javascript'
+  , paths: {
+      'obtain': '../../lib/obtainJS/lib'
+    }
+  , packages:[
+    //    {
+    //        name: 'doh',
+    //        lib: '',
+    //        location: 'doh'
+    //    },
         {
             name: 'ufojs',
             location: '../../lib',

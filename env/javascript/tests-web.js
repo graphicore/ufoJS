@@ -1,20 +1,16 @@
 require({
-    baseUrl: 'javascript',
-    packages:[
+    baseUrl: 'javascript'
+  , paths: {
+        'obtain': '../../lib/obtainJS/lib'
+      , 'ufojs': '../../lib'
+      , 'tests': '../../tests'
+    }
+   , packages:[
         {
-            name: 'doh',
-            lib: '',
-            location: 'doh'
-        },
-        {
-            name: 'ufojs',
-            location: '../../lib',
-            lib: ''
-        },
-        {
-            name: 'tests',
-            location: '../../tests',
-            lib: ''
+            name: 'ufojs'
+        }
+      , {
+            name: 'tests'
         }
     ]
 });
