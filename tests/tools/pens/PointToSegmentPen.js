@@ -45,7 +45,7 @@ define(
         
         // this is not testable with the api the pen provides so we use
         // the 'private' method to ensure our warnings work and are
-        // in place, the not-errorss in the other tests are documenting
+        // in place, the not-errors in the other tests are documenting
         // that the thing works as a whole
         doh.assertError(
             errors.Assertion,//'Less than one segment'
