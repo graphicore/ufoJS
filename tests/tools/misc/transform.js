@@ -7,7 +7,7 @@ define(
         Scale = transform.Scale,
         Offset = transform.Offset,
         Identity = transform.Identity;
-    
+
     doh.register("ufojs.tools.misc.transform", [
     function Test_Transform_transformPoint() {
     /**
@@ -17,23 +17,23 @@ define(
         var t = new Transform([2, 0, 0, 3, 0, 0]);
         var expecting = [200, 300];
         doh.assertEqual(expecting, t.transformPoint([100, 100]));
-        
+
         var t = Scale(2, 3);
         var expecting = [200, 300];
         doh.assertEqual(expecting, t.transformPoint([100, 100]));
         var expecting = [0, 0];
         doh.assertEqual(expecting, t.transformPoint([0, 0]));
-        
+
         var t = Offset(2, 3);
         var expecting = [102, 103];
         doh.assertEqual(expecting, t.transformPoint([100, 100]));
         var expecting = [2, 3];
         doh.assertEqual(expecting, t.transformPoint([0, 0]));
-        
+
         var t2 = t.scale(0.5);
         var expecting = [52.0, 53.0];
         doh.assertEqual(expecting, t2.transformPoint([100, 100]));
-        
+
         var t3 = t2.rotate(Math.PI / 2);
         var expecting = [2.0, 3.0];
         doh.assertEqual(expecting, t3.transformPoint([0, 0]));
@@ -52,7 +52,7 @@ define(
             [105.01673360427253, 160.13550177543362],
         ];
         doh.assertEqual(expecting, t.transformPoints([ [0, 0], [1, 1], [100, 100] ]));
-        
+
         var t = Scale(2, 3)
         var expecting = [[0, 0], [0, 300], [200, 300], [200, 0]];
         doh.assertEqual(expecting, t.transformPoints([[0, 0], [0, 100], [100, 100], [100, 0]]));
@@ -66,7 +66,7 @@ define(
         //is another value and another object
         doh.assertFalse(t.cmp(t2));
         doh.assertFalse(t === t2);
-        
+
         var t3 = t.translate();
         //is another object but the same value
         doh.assertTrue(t.cmp(t3));
@@ -78,7 +78,7 @@ define(
         var t2 = t.scale(5);
         doh.assertEqual(expecting, t2.valueOf());
         doh.assertFalse(t === t2);
-        
+
         var expecting = '<Transform [5 0 0 6 0 0]>';
         var t3 = t.scale(5, 6);
         doh.assertEqual(expecting, t3.valueOf());
@@ -90,13 +90,13 @@ define(
         var t2 = t.rotate(Math.PI / 2);
         doh.assertEqual(expecting, t2.valueOf());
         doh.assertFalse(t === t2);
-        
+
         var expecting = '<Transform [-1 0 0 -1 0 0]>';
         doh.assertEqual(expecting, t.rotate(Math.PI).valueOf());
-        
+
         var expecting = '<Transform [1 0 0 1 0 0]>';
         doh.assertEqual(expecting, t.rotate(Math.PI * 2).valueOf());
-        
+
         var t = t.scale(9, 5);
         var expecting = '<Transform [0 5 -9 0 0 0]>';
         doh.assertEqual(expecting, t.rotate(Math.PI / 2).valueOf());
@@ -106,7 +106,7 @@ define(
         var expecting = new Transform([1, 0, 1, 1, 0, 0]);
         //here I had a floating point rounding error
         var circa = t.skew(Math.PI / 4).slice().map(function(val){
-            return round(val, 1000);
+            return round(val, 3);
         });
         doh.assertTrue(expecting.cmp(circa));
     },
@@ -119,7 +119,7 @@ define(
         var t = new Transform([2, 0, 0, 3, 1, 6]);
         var expecting = '<Transform [8 6 6 3 21 15]>';
         doh.assertEqual(expecting, t.reverseTransform([4, 3, 2, 1, 5, 6]).valueOf());
-        
+
         var t = new Transform([4, 3, 2, 1, 5, 6]);
         doh.assertEqual(expecting, t.transform([2, 0, 0, 3, 1, 6]).valueOf());
     },
