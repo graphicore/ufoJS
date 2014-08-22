@@ -12,9 +12,9 @@ define([
   , writeGlyph
 ) {
     "use strict";
-    
+
     var compareObjects = plistLib._comparePlists
-    
+
     /**
      * Use with a commands array like AbstractPointTestPen produces like so:
      * commands.map(_drawToPen, pen)
@@ -26,7 +26,7 @@ define([
           ;
         this[cmd].apply(this, args);
     }
-    
+
     doh.register("ufoLib.glifLib.writeGlyph", [
         function Test_writeGlyphToString() {
             var glyphObject
@@ -34,17 +34,17 @@ define([
               , xmlString
               , document
               ;
-            
+
             glyphObject = {
                 width: 463
               , height: 0
               , unicodes: [ 82, 22868 ]
             }
-            
+
             xmlString = writeGlyph.toString(glyphName, glyphObject)
             // just test that it parses into a Dom document
             document = xml.parseXMLString(xmlString)
-            
+
             // and some spot tests
             doh.assertTrue(document instanceof xml.Node);
             doh.assertEqual(document.nodeType, xml.Node.DOCUMENT_NODE);
@@ -52,7 +52,7 @@ define([
         }
       ,  function Test_writeGlyphToDOM() {
             var glyphObject, glyphName, document;
-            
+
             glyphObject = {
                 width: 463
               , height: 0
@@ -63,17 +63,17 @@ define([
             doh.assertTrue(document instanceof xml.Node);
             doh.assertEqual(document.nodeType, xml.Node.DOCUMENT_NODE);
             doh.assertEqual('glyph', document.documentElement.tagName);
-            
-            
-            
+
+
+
             // glyphName may be an instance of String
             glyphName = new String('R')
             document = writeGlyph.toDOM(glyphName, glyphObject)
             doh.assertTrue(document instanceof xml.Node);
             doh.assertEqual(document.nodeType, xml.Node.DOCUMENT_NODE);
             doh.assertEqual('glyph', document.documentElement.tagName);
-            
-            
+
+
             // glyphName must be a string
             glyphName = ['R'];
             doh.assertError(
@@ -82,8 +82,8 @@ define([
                 [glyphName, glyphObject],
                 'glyphName must be a string'
             );
-            
-            
+
+
             // glyphName must not be empty
             glyphName = '';
             doh.assertError(
@@ -92,12 +92,12 @@ define([
                 [glyphName, glyphObject],
                 'glyphName must not be empty'
             );
-            
+
             // minmal glyph
             glyphName = 'A';
             glyphObject = {};
             document = writeGlyph.toDOM(glyphName, undefined, undefined, 1)
-            
+
             doh.assertEqual('A', document.documentElement.getAttribute('name'))
             doh.assertEqual(1, document.documentElement.getAttribute('format'))
             doh.assertEqual(0, document.documentElement.children.length)
@@ -108,7 +108,7 @@ define([
               , document
               , advance
               ;
-            
+
             // width and height
             glyphObject = {
                 width: 463
@@ -123,7 +123,7 @@ define([
             doh.assertTrue(advance.hasAttribute('height'))
             doh.assertEqual('463', advance.getAttribute('width'))
             doh.assertEqual('200', advance.getAttribute('height'))
-            
+
             // only width
             glyphObject = {
                 width: 463
@@ -135,7 +135,7 @@ define([
             doh.assertEqual(1, advance.attributes.length)
             doh.assertTrue(advance.hasAttribute('width'))
             doh.assertEqual('463', advance.getAttribute('width'))
-            
+
             // only height
             glyphObject = {
                 height: 555
@@ -148,7 +148,7 @@ define([
             doh.assertTrue(advance.hasAttribute('height'))
             doh.assertEqual('555', advance.getAttribute('height'))
         }
-        
+
       , function Test_wrtiteGlyph_writeUnicodes() {
             var glyphName = 'any'
               , glyphObject
@@ -166,7 +166,7 @@ define([
               , [glyphName, glyphObject]
               , 'unicode values must be int'
             )
-            
+
             glyphObject = {
                 unicodes: '00E4'
             }
@@ -176,7 +176,7 @@ define([
               , [glyphName, glyphObject]
               , 'unicode values must be int'
             )
-            
+
             glyphObject = {
                 unicodes: 'ä'.charCodeAt(0)
             }
@@ -194,7 +194,7 @@ define([
             unicode = document.documentElement.children[0];
             doh.assertEqual('unicode', unicode.tagName)
             doh.assertEqual('00E4', unicode.getAttribute('hex'))
-            
+
             // test if it skips doubles
             glyphObject = {
                 unicodes: ['ä'.charCodeAt(0), 'ä'.charCodeAt(0)]
@@ -204,7 +204,7 @@ define([
             unicode = document.documentElement.children[0];
             doh.assertEqual('unicode', unicode.tagName)
             doh.assertEqual('00E4', unicode.getAttribute('hex'))
-            
+
             // multiple unicodes as inputs
             glyphObject = {
                 unicodes: [
@@ -220,10 +220,10 @@ define([
             }
             hexMembers = {
                 '00E4': null, '0040':null, '0050':null, '0922':null}
-            
+
             document = writeGlyph.toDOM(glyphName, glyphObject)
             doh.assertEqual(4, document.documentElement.children.length)
-            
+
             // unicodes have an order!
             // http://unifiedfontobject.org/versions/ufo3/glif.html
             //   The first occurrence of this element defines the primary
@@ -231,15 +231,15 @@ define([
             unicode = document.documentElement.children[0];
             doh.assertEqual('unicode', unicode.tagName);
             doh.assertEqual('00E4', unicode.getAttribute('hex'))
-            
+
             doh.assertEqual(
-                glyphObject.unicodes, 
+                glyphObject.unicodes,
                 Array.prototype
                      .slice.call(document.getElementsByTagName('unicode'))
                      .map(function(item) {
                             return parseInt(item.getAttribute('hex'), 16)})
             );
-            
+
             // see if everything is there
             for(i=0;i<document.documentElement.children.length;i++) {
                 unicode = document.documentElement.children[i];
@@ -262,7 +262,7 @@ define([
             doh.assertEqual(1, document.documentElement.children.length)
             note = document.documentElement.children[0];
             doh.assertEqual(glyphObject.note, note.textContent);
-            
+
             // must be a string
             glyphObject = {
                 note: ['A personal note\nto myself.']
@@ -273,7 +273,7 @@ define([
               , [glyphName, glyphObject]
               , 'note attribute must be string'
             )
-            
+
         }
       , function Test_wrtiteGlyph_writeImage() {
             var glyphName = 'any'
@@ -284,7 +284,7 @@ define([
               ;
             // image is validated with imageValidator, which is tested
             // already, we do some spot tests, only
-            
+
             // name is missing
             glyphObject = {
                 image: {}
@@ -296,7 +296,7 @@ define([
               , 'image attribute must be a dict or '
                 + 'dict-like object with the proper structure'
             )
-            
+
             // fileName must be one or more characters
             glyphObject = {
                 image: {
@@ -310,31 +310,31 @@ define([
               , 'image attribute must be a dict or '
                 + 'dict-like object with the proper structure'
             )
-            
+
             // minimal
             glyphObject = {
                 image: {
                     fileName: './my/image/file.png'
                 }
             }
-            
+
             document = writeGlyph.toDOM(glyphName, glyphObject)
             doh.assertEqual(1, document.documentElement.children.length)
             image = document.documentElement.children[0];
             doh.assertEqual('image', image.tagName)
             doh.assertEqual(glyphObject.image.fileName,
                             image.getAttribute('fileName'))
-            
+
             // no image in version format < 2
             glyphObject = {
                 image: {
                     fileName: './my/image/file.png'
                 }
             }
-            
+
             document = writeGlyph.toDOM(glyphName, glyphObject, undefined, 1)
             doh.assertEqual(0, document.documentElement.children.length)
-            
+
             // all data
             glyphObject = {
                 image: {
@@ -356,10 +356,10 @@ define([
                 doh.assertEqual(glyphObject.image[k].toString(),
                                 image.getAttribute(k))
             }
-            
+
             // transformation data that is the same as in the identity
             // transformation is left out:
-            
+
             glyphObject = {
                 image: {
                     fileName: './my/image/file.png'
@@ -371,7 +371,7 @@ define([
                   , yOffset: 6
                 }
             }
-            
+
             document = writeGlyph.toDOM(glyphName, glyphObject)
             doh.assertEqual(1, document.documentElement.children.length)
             image = document.documentElement.children[0];
@@ -393,12 +393,12 @@ define([
               , i, k
               ;
             // guidelines are tested by the guidelines validator
-            
+
             // guidelines must be an array
             glyphObject = {
                 guidelines: {}
             }
-            
+
             doh.assertError(
                 errors.GlifLib
               , writeGlyph, 'toDOM'
@@ -406,8 +406,8 @@ define([
               , 'guidelines attribute does not have '
                 + 'the proper structure.'
             )
-            
-            
+
+
             glyphObject = {
                 guidelines: [
                     {
@@ -436,8 +436,8 @@ define([
                     doh.assertEqual(glyphObject.guidelines[i][k],
                                     guidelines[i].getAttribute(k))
             }
-            
-            
+
+
             // fail because identifier exists
             glyphObject.guidelines[2].identifier
                 = glyphObject.guidelines[0].identifier;
@@ -448,7 +448,7 @@ define([
               , 'guidelines attribute does not have '
                 + 'the proper structure.'
             )
-            
+
             // no guides because we export version 1
             document = writeGlyph.toDOM(glyphName, glyphObject, undefined, 1);
             guidelines = document.getElementsByTagName('guideline');
@@ -489,8 +489,8 @@ define([
             // at the end! This may break one day, but a refactoting would
             // now take me further away from staying close to robofab.
             // The other validated thin is an eventual "color" attribute
-            
-            
+
+
             // anchors must be an array
             glyphObject = {
                 anchors: true
@@ -502,7 +502,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             // x and y are meed
             glyphObject = {
                 anchors: [
@@ -516,7 +516,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             glyphObject = {
                 anchors: [
                     {x: 13}
@@ -529,7 +529,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             // x and y need to be strings
             glyphObject = {
                 anchors: [
@@ -569,7 +569,7 @@ define([
                         anchor.getAttribute(k));
                 }
             }
-            
+
             // fail invalid color
             glyphObject = {
                 anchors: [
@@ -584,7 +584,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             // fail double identifiers
             glyphObject = {
                 anchors: [
@@ -599,7 +599,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             // fail anchors must be array
             glyphObject = {
                 anchors: {}
@@ -611,7 +611,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             // fail anchors items must be dict
             glyphObject = {
                 anchors: [
@@ -625,7 +625,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             // fail anchor must have coordinates for x and y
             glyphObject = {
                 anchors: [
@@ -639,7 +639,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             // coordinates must be number
             glyphObject = {
                 anchors: [
@@ -653,7 +653,7 @@ define([
               , 'anchors attribute does not have the '
                 + 'proper structure.'
             )
-            
+
             // coordinates must be number
             glyphObject = {
                 anchors: [
@@ -686,14 +686,14 @@ define([
                     'an array should not work out'
                 ]
             }
-            
+
             doh.assertError(
                 errors.GlifLib
               , writeGlyph, 'toDOM'
               , [glyphName, glyphObject]
               , 'The lib data is not in the correct format'
             )
-            
+
             // empty lib element
             glyphObject = {
                 lib: {}
@@ -706,7 +706,7 @@ define([
             doh.assertEqual('dict', lib.children[0].tagName)
             restored = plistLib.readPlistElement(lib.children[0])
             doh.assertTrue(compareObjects(glyphObject.lib, restored))
-            
+
             // full lib element
             glyphObject = {
                 lib: {
@@ -725,7 +725,7 @@ define([
             doh.assertEqual('dict', lib.children[0].tagName)
             restored = plistLib.readPlistElement(lib.children[0])
             doh.assertTrue(compareObjects(glyphObject.lib, restored))
-            
+
             // fail because of not validating public.markColor
             glyphObject = {
                 lib: {
@@ -744,7 +744,7 @@ define([
                   'public.markColor': '1,.4,0,0'
                 }
             }
-            
+
             document = writeGlyph.toDOM(glyphName, glyphObject);
             restored = plistLib.readPlistElement(
                     document.getElementsByTagName('lib')[0].children[0])
@@ -755,17 +755,17 @@ define([
             function drawPoints(commands, pen) {
                 commands.map(_drawToPen, pen)
             }
-            
+
             var glyphName = 'any'
               , glyphObject = {}
               , document
               , outlineCommands
               , outline
               ;
-            
+
             // GLIFPointPen is tested separately, so its enough for us
             // to see that the outline is generated in the glyph
-            
+
             // create an empty outline
             document = writeGlyph.toDOM(glyphName, glyphObject, function(){});
             doh.assertEqual(1, document.documentElement.children.length)
@@ -777,7 +777,7 @@ define([
             outlineCommands = [
                 [ 'beginPath' ],
                 [ 'addPoint', [ 445, 0 ], 'line', false, 'horst' ],
-                [ 'addPoint', [ 319, 249 ], 'line', false, undefined, 
+                [ 'addPoint', [ 319, 249 ], 'line', false, undefined,
                                             {identifier:'very-unique'}],
                 [ 'addPoint', [ 380, 286 ], null, false, undefined ],
                 [ 'addPoint', [ 417, 349 ], null, false, undefined ],
@@ -807,10 +807,16 @@ define([
             ]
             document = writeGlyph.toDOM(glyphName, glyphObject,
                                 drawPoints.bind(null, outlineCommands));
-            
+
             doh.assertEqual(2, document.getElementsByTagName('contour').length)
             doh.assertEqual(23, document.getElementsByTagName('point').length)
             doh.assertEqual(1, document.getElementsByTagName('component').length)
         }
+      , function Test_writeGlyph_options_precision() {
+          // this test fails on purpose
+          // remove this test when the new options.precision argument is
+          // tested sufficiently
+          doh.assertTrue(false)
+      }
     ])
 });
