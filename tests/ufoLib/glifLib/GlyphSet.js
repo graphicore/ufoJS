@@ -254,18 +254,17 @@ define([
             // errors.GlifLib, is expected
             
             // sync
-            // anything else must raise errors.GlifLib
-            glyphset = new GlyphSet(staticIO, glyphSetFaulty)
+            glyphset = new GlyphSet(staticIO, glyphSetFaulty);
             doh.assertError(
                 errors.GlifLib,
                 glyphset, 'rebuildContents',
                 [false],
                 'GlifLib Error: The file "testdata/faulty.plist" could '
                 + 'not be read. ...'
-            )
+            );
             
             // async
-            glyphset = new GlyphSet(staticIO, glyphSetFaulty)
+            glyphset = new GlyphSet(staticIO, glyphSetFaulty);
             glyphset.rebuildContents(true)
             .then(
                 function(result) {
@@ -283,7 +282,7 @@ define([
                     deferred.callback(true);
                 }
             )
-            .then(undefined, errback)
+            .then(undefined, errback);
             return deferred;
         }
       , function Test_GlyphSet_rebuildContents_notFoundPlist() {
@@ -292,22 +291,39 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-              
+
             // sync
-            glyphset = new GlyphSet(staticIO, glyphSetEmpty)
-            glyphset.rebuildContents(false)
-            doh.assertEqual({}, glyphset.contents)
-            
+            glyphset = new GlyphSet(staticIO, glyphSetEmpty);
+            doh.assertError(
+                errors.IONoEntry,
+                glyphset, 'rebuildContents',
+                [false],
+                'GlifLib Error: The file "testdata/faulty.plist" could '
+                + 'not be read. ...'
+            );
+
             // async
             glyphset = new GlyphSet(staticIO, glyphSetEmpty)
             glyphset.rebuildContents(true)
-            .then(function() {
-                doh.assertEqual({}, glyphset.contents)
-                deferred.callback(true);
-            })
-            .then(undefined, errback)
+            .then(
+                function(result) {
+                    throw new Error('This test-case is broken. A GlifLib '
+                        + 'error was provoked, but a result appeared.')
+                },
+                function(error) {
+                    doh.assertError(
+                        errors.IONoEntry,
+                        {echo: function(error){ throw error; }}, 'echo',
+                        [error],
+                        'GlifLib Error: The file "testdata/faulty.plist" could '
+                        + 'not be read. ...'
+                    )
+                    deferred.callback(true);
+                }
+            )
+            .then(undefined, errback);
             return deferred;
-        }
+         }
       , function Test_GlyphSet_rebuildContents_fileNameFail() {
             // contents.plist is not properly formatted the value at "name"
             // is not string but:'+ typeof fileName);
