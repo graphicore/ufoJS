@@ -214,9 +214,9 @@ define(
         // date arithmetic things i.e. the 13. month is the first month of
         // next year. Is this expected from a dateparsing function???
         // if yes we must test it.
-        var expected = 'Sun Feb 05 2012 05:11:40 GMT+0100 (CET)',
-            result = (new Date(main.parseDate('2011-13-35T27:71:40.000Z'))).toString();
-        doh.assertEqual(expected.valueOf(), result).valueOf();
+        var expected = Date.parse('Sun Feb 05 2012 05:11:40 GMT+0100 (CET)'),
+            result = new Date(main.parseDate('2011-13-35T27:71:40.000Z'));
+        doh.assertEqual(expected.valueOf(), result.valueOf());
 
         var result = new Date(main.parseDate('This is no date at all.'));
         doh.assertTrue(isNaN(result.getTime()));
