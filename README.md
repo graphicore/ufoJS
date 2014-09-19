@@ -1,4 +1,4 @@
-ufoJS
+ufoJS [![Build Status](https://travis-ci.org/graphicore/ufoJS.svg?branch=master)](https://travis-ci.org/graphicore/ufoJS)
 =====
 
 With ufoJS you can load, manipulate and save font data in JavaScript.
