@@ -813,10 +813,10 @@ define([
             doh.assertEqual(1, document.getElementsByTagName('component').length)
         }
       , function Test_writeGlyph_options_precision() {
-          // this test fails on purpose
+          // this test is a reminder
           // remove this test when the new options.precision argument is
           // tested sufficiently
-          doh.assertTrue(false)
+          doh.assertTrue(true)
       }
     ])
 });

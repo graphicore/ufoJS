@@ -201,22 +201,22 @@ define(
 
         var expected = Date.parse('Fri Oct 14 2011 00:21:40 GMT+0200 (CEST)');
             result = main.parseDate('2011-10-13T22:21:40.000Z');
-        doh.assertEqual(expected, result);
+        doh.assertEqual(expected.valueOf(), result.valueOf());
 
         //see if the fallback to standart parsing works, too
         var dateJS = 'Fri Oct 14 2011 00:21:40 GMT+0200 (CEST)',
             expected = Date.parse(dateJS);
             result = main.parseDate(dateJS);
-        doh.assertEqual(expected, result);
+        doh.assertEqual(expected.valueOf(), result.valueOf());
 
         // actually this passes but is rather an implementation specific
         // detail. the timestamp is generated with Date.UTC() which can do
         // date arithmetic things i.e. the 13. month is the first month of
         // next year. Is this expected from a dateparsing function???
         // if yes we must test it.
-        var expected = 'Sun Feb 05 2012 05:11:40 GMT+0100 (CET)',
-            result = (new Date(main.parseDate('2011-13-35T27:71:40.000Z'))).toString();
-        doh.assertEqual(expected, result);
+        var expected = Date.parse('Sun Feb 05 2012 05:11:40 GMT+0100 (CET)'),
+            result = new Date(main.parseDate('2011-13-35T27:71:40.000Z'));
+        doh.assertEqual(expected.valueOf(), result.valueOf());
 
         var result = new Date(main.parseDate('This is no date at all.'));
         doh.assertTrue(isNaN(result.getTime()));
