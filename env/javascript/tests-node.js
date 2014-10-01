@@ -39,7 +39,7 @@ function(){
     // the tests module loads all tests
     var module = 'tests/main'
         i=0;
-    // if we wan't to run only a specific test, here is a commandline option
+    // if we want to run only a specific test, here is a commandline option
     // example from the convenience ./tests-node.sh script:
     // ./env$ ./tests-node.sh -m tests/tools/pens/TransformPen
     for(;i<process.argv.length;i++)
