@@ -211,7 +211,7 @@ define([
                         {echo: function(error){ throw error; }}, 'echo',
                         [error],
                         "IONoEntry Error: ENOENT, no such file or directory "
-                            + "'non-existant.plist'"
+                            + "'non-existent.plist'"
                     )
                     deferred.callback(true);
                 }
