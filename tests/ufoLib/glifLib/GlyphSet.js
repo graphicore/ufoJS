@@ -143,7 +143,7 @@ define([
             glyphset = new GlyphSet(staticIO, testGlyphSet);
             // this works with any plist
             doh.assertEqual(arrayData, glyphset._readPlist(false, arrayPlist));
-            // and with contents.plis
+            // and with contents.plist
             doh.assertEqual(contentsPlistContent,
                             glyphset._readPlist(false, contentsPlist));
             
@@ -153,7 +153,7 @@ define([
                 glyphset, '_readPlist',
                 [false, notFoundPlist],
                 "IONoEntry Error: ENOENT, no such file or directory "
-                + "'non-existant.plist'"
+                + "'non-existent.plist'"
             )
             
             // anything else must raise errors.GlifLib
