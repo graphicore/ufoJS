@@ -2013,14 +2013,14 @@ define([
             var callback = function(error, result) {
                 if(error) {
                     // this is expected, but it would be nice to 
-                    // check th error more specific
+                    // check the error more precisely
                     // so the implementation should catch native errors
                     // and throw io errors
                     deferred.callback(true);
                     return
                 }
                 // no error is an error
-                deferred.errback(e);
+                deferred.errback(error);
             };
             var arg = {path: './testdata/not-available.png'};
             validators.pngValidatorAsync(staticIO, arg, callback);
