@@ -4,8 +4,8 @@ define(
 {
     /**
      * TODO: Testing the xml Module should be done far more, as this is a
-     * point where the implementations from the varoius Environments differ
-     * strongly.
+     * point where the implementations from the various Environments differ
+     * greatly.
      * 
      * FIXME: test all of the exposed API
      */
@@ -25,7 +25,7 @@ define(
             
         },
         /**
-         * Apperently this is broken in the Browsers as these dont throw
+         * Apperently this is broken in browsers as these don't throw
          * Errors when parsing garbage.
          * 
          * So here is a test to see how well our workarounds do.
