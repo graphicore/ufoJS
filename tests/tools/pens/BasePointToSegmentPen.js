@@ -90,12 +90,13 @@ define(
         // testing for a 'smart' thing endPath does, if there
         // is only one point it has to be a 'move', so it transforms
         // our 'curve' into a move
-        var expecting = [
+        var kwargs = undefined
+          , expecting = [
             ['_flushContour', /* segments: */  [
                 [ 'move', [ [ [1, 1], true, null, {} ] ] ] 
-            ]]
+            ], kwargs]
         ];
-        pen.beginPath();
+        pen.beginPath(kwargs);
         pen.addPoint([1, 1], 'curve', true);
         pen.endPath();
         doh.assertEqual(expecting, pen.flush());
@@ -109,7 +110,7 @@ define(
                     [ [3, 3], false, null, {} ],
                     [ [4, 4], true, null, {} ]
                 ]],
-            ]]
+            ], kwargs]
         ];
         pen.beginPath();
         pen.addPoint([1, 1], 'move');
@@ -136,7 +137,7 @@ define(
                     [ [6, 6], false, null, {} ],
                     [ [7, 7], true, null, {} ]
                 ]],
-            ]]
+            ], kwargs]
         ];
         pen.beginPath();
         pen.addPoint([6, 6]);
@@ -160,7 +161,7 @@ define(
                     [ [5, 5], false, null, {} ],
                     [ null, null, null, null ]
                 ]],
-            ]]
+            ], kwargs]
         ];
         pen.beginPath();
         pen.addPoint([1, 1]);
