@@ -25,9 +25,9 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="0.65393235"
-     inkscape:cx="349.45069"
-     inkscape:cy="346.50738"
+     inkscape:zoom="0.56452754"
+     inkscape:cx="716.00448"
+     inkscape:cy="609.50863"
      inkscape:document-units="px"
      inkscape:current-layer="layer2"
      showgrid="false"
@@ -56,7 +56,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title></dc:title>
+        <dc:title />
       </cc:Work>
     </rdf:RDF>
   </metadata>
@@ -68,10 +68,12 @@
     <rect
        style="opacity:1;fill:#000000;fill-opacity:1;stroke:none;stroke-width:23.37506294;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
        id="rect5019"
-       width="759.37567"
-       height="1083.0699"
-       x="1.442627"
-       y="4.3943181" />
+       width="504.2951"
+       height="859.87445"
+       x="128.98291"
+       y="115.99207"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
   </g>
   <g
      inkscape:label="Layer 1"
@@ -79,7 +81,9 @@
      id="layer1">
     <g
        id="g4197"
-       transform="translate(88.577084,19.879732)">
+       transform="translate(88.577084,19.879732)"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
       <text
          sodipodi:linespacing="125%"
          id="text5805-9"
@@ -198,7 +202,9 @@
     </g>
     <g
        id="g4175"
-       transform="translate(88.577066,-103.98629)">
+       transform="translate(88.577066,-103.98629)"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90">
       <text
          sodipodi:linespacing="125%"
          id="text5805-9-1"
