@@ -25,11 +25,10 @@
   "license": "MIT",
   "readmeFilename": "README.md",
   "gitHead": "ebfca2028f68a5000041fe705f27f0e34518d31b",
-  "devDependencies": {
-    "jsdom": "~0.10.5",
-    "libxmljs": "^0.13.0"
-  },
+  "devDependencies": {},
   "dependencies": {
+    "jsdom": "3",
+    "libxmljs": "~0.15.0",
     "lie": "~2.6.0"
   }
 }
