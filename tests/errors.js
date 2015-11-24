@@ -1,6 +1,6 @@
 define(['ufojs/errors'], function(errors){
-    
-    var count_runs_of_Test_MakeError = 0; 
+
+    var count_runs_of_Test_MakeError = 0;
     var raiser = {raise:function(err){throw new err;}}
     doh.register("ufojs.errors", [
     function Test_Errors(){
@@ -10,7 +10,7 @@ define(['ufojs/errors'], function(errors){
             [errors.Error],
             'errors.Error must inherit from Error'
         );
-        
+
         doh.assertError(
             errors.Error,
             raiser, 'raise',
@@ -29,20 +29,20 @@ define(['ufojs/errors'], function(errors){
             doh.assertFalse(errors.NewError === undefined);
         }
         count_runs_of_Test_MakeError += 1;
-        
-        errors.makeError('NewError', undefined, new errors.Error);
-        
+
+        errors.makeError('NewError', undefined, errors.Error);
+
         doh.assertFalse(errors.NewError === undefined);
-        
+
         doh.assertError(
             errors.Error,
             raiser, 'raise',
             [errors.NewError],
             'makeError must make a child of errors.Error'
         );
-        
+
         var myNamespace = {};
-        errors.makeError('NewError', undefined, new Error, myNamespace);
+        errors.makeError('NewError', undefined, Error, myNamespace);
         doh.assertFalse(myNamespace.NewError === undefined);
         doh.assertError(
             Error,
@@ -58,7 +58,7 @@ define(['ufojs/errors'], function(errors){
             [false],
             'assertion must raise when false'
         );
-        
+
         //noting may happen
         doh.assertEqual(errors.assert(true), null);
     }
