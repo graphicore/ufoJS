@@ -75,8 +75,8 @@ ufoJS is based on porting the Python code of FontTools and RoboFab to JavaScript
 The files of the Python sources are referenced in the headers of the files
 of this project.
 
-[FontTools](http://sourceforge.net/projects/fonttools/)
-Author: Just van Rossum 
+[FontTools](https://github.com/behdad/fonttools)
+Authors: Just van Rossum, Behdad Esfahbod
 
 [RoboFab](http://www.robofab.org)
 Authors: Erik van Blokland, Tal Leming, Just van Rossum
