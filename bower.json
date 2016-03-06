@@ -35,6 +35,7 @@
     "Atem-Errors": "graphicore/Atem-Errors",
     "Atem-Pen-Case": "graphicore/Atem-Pen-Case",
     "Atem-IO": "graphicore/Atem-IO",
-    "Atem-Math-Tools": "graphicore/Atem-Math-Tools"
+    "Atem-Math-Tools": "graphicore/Atem-Math-Tools",
+    "path": ">=3.46.1"
   }
 }
