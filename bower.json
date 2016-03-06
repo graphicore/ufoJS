@@ -1,0 +1,32 @@
+{
+  "name": "ufoJS",
+  "version": "0.0.0",
+  "homepage": "lib.ufojs.org",
+  "authors": [
+    "Lasse Fister <commander@graphicore.de>"
+  ],
+  "description": "JavaScript API for the Unified Font Object",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "UFO",
+    "unified",
+    "font",
+    "object",
+    "ufoLib",
+    "glifLib",
+    "plistLib",
+    "typography",
+    "fonts"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib/bower_components",
+    "test",
+    "tests"
+  ]
+}
