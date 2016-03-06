@@ -28,5 +28,13 @@
     "lib/bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "Atem-RequireJS-Config": "graphicore/Atem-RequireJS-Config",
+    "obtainjs": "graphicore/obtainJS",
+    "Atem-Errors": "graphicore/Atem-Errors",
+    "Atem-Pen-Case": "graphicore/Atem-Pen-Case",
+    "Atem-IO": "graphicore/Atem-IO",
+    "Atem-Math-Tools": "graphicore/Atem-Math-Tools"
+  }
 }
