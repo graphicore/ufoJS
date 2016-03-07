@@ -1,11 +1,13 @@
 define([
-    'ufojs/main'
+    'doh'
+  , 'ufojs/main'
   , 'ufojs/errors'
   , 'ufojs/ufoLib/filenames'
   , 'ufojs/ufoLib/validators'
   , 'ufojs/ufoLib/glifLib/misc'],
 function(
-    main
+    doh
+  , main
   , errors
   , filenames
   , validators
@@ -37,14 +39,14 @@ function(
     }
   , function Test_validateLayerInfoVersion3ValueForAttribute() {
         doh.assertFalse(misc.validateLayerInfoVersion3ValueForAttribute('made-up', 1))
-        
+
         // this uses ufoLib.validators.genericTypeValidator
         doh.assertTrue(misc.validateLayerInfoVersion3ValueForAttribute('lib', {}))
         doh.assertFalse(misc.validateLayerInfoVersion3ValueForAttribute('lib', 1))
         doh.assertFalse(misc.validateLayerInfoVersion3ValueForAttribute('lib', false))
-        
+
         // this uses ufoLib.validators.colorValidator, so just a rough check here:
-        
+
         //good
         doh.assertTrue(misc.validateLayerInfoVersion3ValueForAttribute('color','1,1,1,1'))
         doh.assertTrue(misc.validateLayerInfoVersion3ValueForAttribute('color','1,0,0,0'))
@@ -54,11 +56,11 @@ function(
         doh.assertFalse(misc.validateLayerInfoVersion3ValueForAttribute('color', '1,1,1 1'))
         // something else
         doh.assertFalse(misc.validateLayerInfoVersion3ValueForAttribute('color', [1,2,3,4]))
-        
+
     }
   , function Test_validateLayerInfoVersion3Data() {
         var infoData, result;
-        
+
         infoData = {
             'made-up': 1000
         }
@@ -68,10 +70,10 @@ function(
            [infoData],
            'unknown attribute'
         );
-        
+
         infoData = {};
         doh.assertEqual(infoData, misc.validateLayerInfoVersion3Data(infoData))
-        
+
         infoData = {
             'color': '1 1 1 1',
         };
@@ -83,7 +85,7 @@ function(
         );
         infoData.color = '0,.7,.1,1';
         doh.assertEqual(infoData, misc.validateLayerInfoVersion3Data(infoData))
-        
+
         infoData.lib = undefined;
         doh.assertError(
            errors.GlifLib,
@@ -93,11 +95,11 @@ function(
         );
         infoData.lib = {answer: 42};
         doh.assertEqual(infoData, misc.validateLayerInfoVersion3Data(infoData))
-        
+
         delete infoData.color;
         doh.assertEqual(infoData, misc.validateLayerInfoVersion3Data(infoData))
-        
-        
+
+
         // validateLayerInfoVersion3Data copies the values to a new object
         result = misc.validateLayerInfoVersion3Data(infoData);
         doh.assertFalse(result === infoData)

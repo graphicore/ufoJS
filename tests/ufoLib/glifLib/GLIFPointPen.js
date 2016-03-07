@@ -1,16 +1,18 @@
 define([
-    'ufojs/main'
+    'doh'
+  , 'ufojs/main'
   , 'ufojs/errors'
   , 'ufojs/xml/main'
   , 'ufojs/ufoLib/glifLib/GLIFPointPen'
 ], function(
-    main
+    doh
+  , main
   , errors
   , xml
   , GLIFPointPen
 ) {
     "use strict";
-    
+
     /**
      * Use with a commands array like AbstractPointTestPen produces like so:
      * commands.map(_drawToPen, pen)
@@ -22,7 +24,7 @@ define([
           ;
         this[cmd].apply(this, args);
     }
-    
+
     /**
      * use like:
      * _map(commands, _drawToPen, pen)
@@ -30,7 +32,7 @@ define([
     function _map(arr, fn, scope) {
         arr.map(fn, scope)
     }
-    
+
     doh.register("ufoLib.glifLib.GLIFPointPen", [
         function Test_GLIFPointPen_constructor() {
             var pen, element
@@ -38,7 +40,7 @@ define([
              , identifiers = {}
              , k
              ;
-            
+
             element = {};
             // element must be an xml.Node
             doh.assertError(
@@ -48,17 +50,17 @@ define([
               , [element]
               , 'element must be an xml.Node'
             );
-            
-            
+
+
             element = doc.createElement('outline')
             pen = new GLIFPointPen(element, identifiers, 1);
             doh.assertTrue(pen instanceof GLIFPointPen);
-            
+
             // test getters
             doh.assertTrue(element === pen.element);
             doh.assertTrue(identifiers === pen.identifiers);
             doh.assertTrue(1 === pen.formatVersion);
-            
+
             // these getters are not setters
             for(k in {'element':null, 'identifiers':null,
                                                 'formatVersion':null}) {
@@ -78,11 +80,11 @@ define([
               , i
               , identifiers
               ;
-            
+
             outlineCommands = [
                 [ 'beginPath' ],
                 [ 'addPoint', [ 445, 0 ], 'line', false, 'horst' ],
-                [ 'addPoint', [ 319, 249 ], 'line', false, undefined, 
+                [ 'addPoint', [ 319, 249 ], 'line', false, undefined,
                                             {identifier:'very-unique'}],
                 [ 'addPoint', [ 380, 286 ], null, false, undefined ],
                 [ 'addPoint', [ 417, 349 ], null, false, undefined ],
@@ -110,19 +112,19 @@ define([
                 [ 'endPath' ],
                 [ 'addComponent', 'B', [ 1, 0, 0.3, 1, 350, 0 ] ]
             ]
-            
+
             // format 1, ignores identifiers
             element = doc.createElement('outline');
             pen = new GLIFPointPen(element, undefined, 1);
-            
+
             outlineCommands.map(_drawToPen, pen)
-            
+
             // only some spot-tests
             doh.assertEqual(3, element.children.length)
             doh.assertEqual('contour', element.children[0].tagName)
             doh.assertEqual('contour', element.children[1].tagName)
             doh.assertEqual('component', element.children[2].tagName)
-            
+
             doh.assertEqual(16, element.children[0].children.length)
             doh.assertEqual('horst', element.children[0]
                                             .children[0]
@@ -131,8 +133,8 @@ define([
             doh.assertFalse(element.children[0]
                                    .children[1]
                                    .hasAttribute('identifier'))
-            
-            
+
+
             // format 2, identifiers must be unique, so this fails
             element = doc.createElement('outline');
             pen = new GLIFPointPen(element, undefined, 2);
@@ -145,24 +147,24 @@ define([
                 [outlineCommands, _drawToPen, pen],
                 'identifiers must be unique'
             );
-            
+
             outlineCommands[2][5].identifier = 'very-very-unique'
             element = doc.createElement('outline');
             identifiers = {}
             // format 2, identifiers must be unique
             pen = new GLIFPointPen(element, identifiers, 2);
             outlineCommands.map(_drawToPen, pen)
-            
+
             doh.assertEqual('very-very-unique', element.children[0]
                                             .children[1]
                                             .getAttribute('identifier'))
-            
+
             doh.assertEqual('very-unique', element.children[1]
                                                   .getAttribute('identifier'));
-            
+
             doh.assertTrue('very-very-unique' in identifiers)
             doh.assertTrue('very-unique' in identifiers)
-            
+
             // this way the not unique identifier must also be discovered
             element = doc.createElement('outline');
             identifiers = {}
@@ -188,11 +190,11 @@ define([
                 [],
                 'currentPath is not null, call endPath'
             );
-            
+
             pen.endPath();
             pen.beginPath({identifier: 'hello'});
             doh.assertTrue('hello' in identifiers)
-            
+
             pen.endPath();
             doh.assertError(
                 errors.GlifLib,
@@ -207,18 +209,18 @@ define([
               , identifiers = {}
               , pen = new GLIFPointPen(element, identifiers, 2)
               ;
-            
+
             doh.assertError(
                 errors.Assertion,
                 pen, 'endPath',
                 [],
                 'currentPath is null, call beginPath'
             );
-            
+
             pen.beginPath();
             pen.addPoint([0, 0], 'move');
             pen.addPoint([0, 4]);
-            
+
             doh.assertError(
                 errors.GlifLib,
                 pen, 'endPath',
@@ -232,14 +234,14 @@ define([
               , identifiers = {}
               , pen = new GLIFPointPen(element, identifiers, 2)
               ;
-            
+
             doh.assertError(
                 errors.Assertion,
                 pen, 'addPoint',
                 [],
                 'currentPath is null, call beginPath'
             );
-            
+
             pen.beginPath();
             doh.assertError(
                 errors.GlifLib,
@@ -247,16 +249,16 @@ define([
                 [['Horst', 'Helga'], 'move'],
                 'coordinates must be int or float'
             );
-            
+
             doh.assertError(
                 errors.GlifLib,
                 pen, 'addPoint',
                 [],
                 'Missing point argument'
             );
-            
+
             pen.addPoint([0, 4]);
-            
+
             doh.assertError(
                 errors.GlifLib,
                 pen, 'addPoint',
@@ -264,34 +266,34 @@ define([
                 'move occurs after a point has '
                         +'already been added to the contour.'
             );
-            
+
             doh.assertError(
                 errors.GlifLib,
                 pen, 'addPoint',
                 [[0, 0], 'line'],
                 'offcurve occurs before line point.'
             );
-            
+
             pen.addPoint([0, 4]);
             pen.addPoint([0, 4]);
-            
+
             doh.assertError(
                 errors.GlifLib,
                 pen, 'addPoint',
                 [[0, 0], 'curve'],
                 'too many offcurve points before curve poin.'
             );
-            
+
             doh.assertError(
                 errors.GlifLib,
                 pen, 'addPoint',
                 [[0, 4], undefined, true],
                 'can\'t set smooth in an offcurve point.'
             );
-            
+
             pen.addPoint([0, 4], 'offcurve', false, 'a name', {identifier: 'hansi'});
             doh.assertTrue('hansi' in identifiers);
-            
+
             doh.assertError(
                 errors.GlifLib,
                 pen, 'addPoint',
@@ -305,19 +307,19 @@ define([
               , identifiers = {}
               , pen = new GLIFPointPen(element, identifiers, 2)
               ;
-            
+
             pen.addComponent('X', [1,2,3,4,5,6], {identifier: 'karl'});
-            
+
             doh.assertEqual('component', element.lastChild.tagName);
             doh.assertTrue('karl' in identifiers)
-            
+
             doh.assertError(
                 errors.GlifLib,
                 pen, 'addComponent',
                 ['X', [1,2,3,4,5,'6']],
                 'transformation values must be int or float'
             );
-            
+
             //transformation must be at least an empty list
             doh.assertError(
                 TypeError,
@@ -325,7 +327,7 @@ define([
                 ['Y', undefined],
                 'Cannot read property \'length\' of undefined'
             )
-            
+
             pen.addComponent('Y', [], {identifier: 'petra'});
             doh.assertError(
                 errors.GlifLib,

@@ -1,6 +1,6 @@
 define(
-    ['ufojs/main', 'ufojs/errors', 'ufojs/tools/misc/transform'],
-    function(main, errors, transform)
+    ['doh', 'ufojs/main', 'ufojs/errors', 'Atem-Math-Tools/transform'],
+    function(doh, main, errors, transform)
 {
     var round = main.round,
         Transform = transform.Transform,

@@ -1,6 +1,6 @@
 define(
-    ['ufojs/main', 'ufojs/errors'],
-    function(main, errors)
+    ['doh', 'ufojs/main', 'ufojs/errors'],
+    function(doh, main, errors)
 {
     doh.register("ufojs.main", [
     function Test_enhance(){

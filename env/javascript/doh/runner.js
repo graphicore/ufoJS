@@ -198,7 +198,7 @@ doh.extend(doh.Deferred, {
 			this.results[0].cancel();
 		}
 	},
-			
+
 
 	_pause: function(){
 		this.paused++;
@@ -458,13 +458,13 @@ doh._getTestObj = function(group, test, type){
 			doh.perfTestResults[group][tObj.name] = {};
 		}
 		tObj.results = doh.perfTestResults[group][tObj.name];
-		
+
 		//If it's not set, then set the trial duration
 		//default to 100ms.
 		if(!("trialDuration" in tObj)){
 			tObj.trialDuration = 100;
 		}
-		
+
 		//If it's not set, then set the delay between trial runs to 100ms
 		//default to 100ms to allow for GC and to make IE happy.
 		if(!("trialDelay" in tObj)){
@@ -585,7 +585,7 @@ doh.registerDocTests = function(module){
 			//		Get all the doctests from the given module and register each of them
 			//		as a single test case here.
 			//
-			
+
 			var docTest = new dojox.testing.DocTest();
 			var docTests = docTest.getTests(module);
 			var len = docTests.length;
@@ -869,7 +869,7 @@ doh._runPerfFixture = function(/*String*/groupName, /*Object*/fixture){
 			def.errback(new Error("test timeout in "+fixture.name.toString()));
 		}, to);
 	}
-	
+
 	//Set up the end calls to the test into the deferred we'll return.
 	def.addBoth(function(arg){
 		if(timer){
@@ -1508,6 +1508,7 @@ if(typeof define == "undefined" || define.vendor=="dojotoolkit.org"){
 }else{
 	// using an AMD loader
 	doh.runnerFactory= d;
+	define([], doh);
 }
 
 }).call(null, typeof arguments=="undefined" ? [] : Array.prototype.slice.call(arguments));

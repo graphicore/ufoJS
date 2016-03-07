@@ -1,13 +1,14 @@
 define(
     [
+        'doh',
         'ufojs/main',
         'ufojs/errors',
-        'ufojs/tools/misc/transform',
-        'ufojs/tools/pens/AbstractPen',
-        'ufojs/tools/pens/BasePen',
-        'ufojs/tools/pens/testPens'
+        'Atem-Math-Tools/transform',
+        'Atem-Pen-Case/pens/AbstractPen',
+        'Atem-Pen-Case/pens/BasePen',
+        'Atem-Pen-Case/pens/testPens'
     ],
-    function(ufojs, errors, transform, AbstractPen, BasePen, testPens)
+    function(doh, ufojs, errors, transform, AbstractPen, BasePen, testPens)
 {
     /*shortcuts*/
     var TestPen = testPens.BaseTestPen,

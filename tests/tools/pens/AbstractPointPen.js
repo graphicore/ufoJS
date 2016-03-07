@@ -1,6 +1,6 @@
 define(
-    ['ufojs/errors', 'ufojs/tools/pens/AbstractPointPen'],
-    function(errors, AbstractPointPen)
+    ['doh', 'ufojs/errors', 'Atem-Pen-Case/pens/AbstractPointPen'],
+    function(doh, errors, AbstractPointPen)
 {
     doh.register("ufojs.pens.AbstractPointPen", [
     function Test_AbstractPointPen_Errors() {
@@ -17,7 +17,7 @@ define(
             errors.NotImplemented,
             pen, 'addPoint'
         );
-        
+
         doh.assertError(
             errors.NotImplemented,
             pen, 'addComponent'

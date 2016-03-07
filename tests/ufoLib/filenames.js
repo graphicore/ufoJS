@@ -1,6 +1,6 @@
 define(
-    ['ufojs/main', 'ufojs/errors', 'ufojs/ufoLib/filenames'],
-    function(main, errors, filenames)
+    ['doh', 'ufojs/main', 'ufojs/errors', 'ufojs/ufoLib/filenames'],
+    function(doh, main, errors, filenames)
 {
     var userNameToFileName = filenames.userNameToFileName,
         handleClash1 = filenames.handleClash1,
@@ -37,20 +37,20 @@ define(
             suffix = ".0000000000",
             existing = ['aaaaa'],
             e;
-         
+
         e = main.setLike(existing);
          doh.assertEqual(
             '00000.AAAAA000000000000001.0000000000',
             handleClash1("AAAAA", e, prefix, suffix)
         );
-        
+
         e = main.setLike(existing);
         e[prefix + "aaaaa" + '000000000000001' + suffix] = true;
          doh.assertEqual(
             '00000.AAAAA000000000000002.0000000000',
             handleClash1("AAAAA", e, prefix, suffix)
         );
-        
+
         e = main.setLike(existing);
         e[prefix + "AAAAA" + "000000000000002" + suffix] = true;
          doh.assertEqual(
@@ -71,14 +71,14 @@ define(
             '00000.100.0000000000',
             handleClash2(e, prefix, suffix)
         );
-        
+
         e = main.setLike(existing);
         delete(e[prefix + "1" + suffix]);
         doh.assertEqual(
             '00000.1.0000000000',
             handleClash2(e, prefix, suffix)
         );
-        
+
         e = main.setLike(existing);
         delete(e[prefix + "2" + suffix]);
         doh.assertEqual(
