@@ -5,7 +5,6 @@ node_js:
   - "0.11"
   - "5"
 
-
 # These are workarounds for travis not building libxmljs
 # found here: https://github.com/polotek/libxmljs/issues/339#issuecomment-142504275
 # It is likeley that we wont need this for a long time.
