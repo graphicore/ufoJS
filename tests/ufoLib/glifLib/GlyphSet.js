@@ -4,7 +4,7 @@ define([
   , 'ufojs/errors'
   , 'Atem-IO/errors'
   , 'ufojs/ufoLib/glifLib/misc'
-  , 'ufojs/ufoLib/glifLib/constants'
+  , 'ufojs/ufoLib/constants'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , 'ufojs/plistLib/main'
   , 'Atem-IO/io/static'
