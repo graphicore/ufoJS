@@ -1,0 +1,13 @@
+{
+  "name": "Atem-Errors",
+  "homepage": "https://github.com/graphicore/Atem-Errors",
+  "_release": "c8593edda0",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "c8593edda0aef04cc20c60196b13be06f2d1a24e"
+  },
+  "_source": "git://github.com/graphicore/Atem-Errors.git",
+  "_target": "*",
+  "_originalSource": "graphicore/Atem-Errors"
+}

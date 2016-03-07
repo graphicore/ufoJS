@@ -1,0 +1,14 @@
+{
+  "name": "complex",
+  "homepage": "https://github.com/graphicore/complex",
+  "version": "3.0.8",
+  "_release": "3.0.8",
+  "_resolution": {
+    "type": "version",
+    "tag": "v3.0.8",
+    "commit": "db027db193069a2651727db73b6ab58a6eb65c45"
+  },
+  "_source": "git://github.com/graphicore/complex.git",
+  "_target": "*",
+  "_originalSource": "graphicore/complex"
+}

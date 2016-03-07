@@ -1,0 +1,36 @@
+{
+  "name": "Atem-CPS-whitelisting",
+  "homepage": "https://github.com/graphicore/Atem-CPS-whitelisting",
+  "authors": [
+    "Lasse Fister <commander@graphicore.de>"
+  ],
+  "description": "Atem Project: whitelisting for Atem-CPS, to prepare modules for usage within Atem-CPS without creating a hard dependency.",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "Atem",
+    "CPS",
+    "whitelisting"
+  ],
+  "license": "GPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Atem-Errors": "graphicore/Atem-Errors"
+  },
+  "_release": "50327b3670",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "50327b36706f266c9bc3c132941774625f7c80e7"
+  },
+  "_source": "git://github.com/graphicore/Atem-CPS-whitelisting.git",
+  "_target": "*",
+  "_originalSource": "graphicore/Atem-CPS-whitelisting"
+}

@@ -1,0 +1,11 @@
+{
+ "name": "path",
+ "version": "3.46.1",
+ "main": "path.min.js",
+ "description": "'path' nodejs core module browserify-ied with `--standalone path`. Should support all module systems (commonjs, AMD & `window.path`) - check browserify docs.",
+ "keywords": [
+  "nodejs",
+  "browserify",
+  "path"
+ ]
+}

@@ -1,0 +1,36 @@
+{
+  "name": "Atem-Math-Tools",
+  "version": "0.0.0",
+  "homepage": "https://github.com/graphicore/Atem-Math-Tools",
+  "authors": [
+    "Lasse Fister <commander@graphicore.de>"
+  ],
+  "description": "Collection of 2d graphics math modules used in Atem.",
+  "moduleType": [
+    "amd"
+  ],
+  "keywords": [
+    "Vector",
+    "2d",
+    "hobby-splines",
+    "tension",
+    "Complex",
+    "affine",
+    "transformation",
+    "matrix"
+  ],
+  "license": "GPLv3",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "lib/bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "Atem-CPS-whitelisting": "graphicore/Atem-CPS-whitelisting",
+    "Atem-Errors": "graphicore/Atem-Errors",
+    "complex": "graphicore/complex"
+  }
+}

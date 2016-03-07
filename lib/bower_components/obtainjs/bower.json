@@ -1,0 +1,27 @@
+{
+  "name": "obtainjs",
+  "description": "DRY development of synchronous and asynchronous JavaScript",
+  "main": "lib/obtan.js",
+  "authors": [
+    "Lasse Fister <commander@graphicore.de>"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "metaprogramming",
+    "asynchronous",
+    "synchronous",
+    "tool",
+    "promise"
+  ],
+  "homepage": "https://github.com/graphicore/obtainJS",
+  "moduleType": [
+    "amd"
+  ],
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

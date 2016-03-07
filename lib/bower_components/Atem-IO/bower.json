@@ -1,0 +1,30 @@
+{
+  "name": "Atem-IO",
+  "version": "0.0.0",
+  "homepage": "https://github.com/graphicore/Atem-IO",
+  "authors": [
+    "Lasse Fister <commander@graphicore.de>"
+  ],
+  "description": "Simple, unified input/output API for JavaScript. Includes API adapters",
+  "main": "(none)",
+  "moduleType": [
+    "amd"
+  ],
+  "license": "GPL+3.0",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "lib/bower_components"
+  ],
+  "dependencies": {
+    "obtainjs": "graphicore/obtainJS",
+    "jszip": "~2.5.0",
+    "path": "~3.46.1",
+    "event-emitter.js": "~0.2.2",
+    "Atem-Errors": "graphicore/Atem-Errors"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "name": "path",
+  "version": "3.46.1",
+  "main": "path.min.js",
+  "description": "'path' nodejs core module browserify-ied with `--standalone path`. Should support all module systems (commonjs, AMD & `window.path`) - check browserify docs.",
+  "keywords": [
+    "nodejs",
+    "browserify",
+    "path"
+  ],
+  "homepage": "https://github.com/anodynos/node2web_path",
+  "_release": "3.46.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "3.46.1",
+    "commit": "f678fdf4a0f0d052ec780d033856278c9482655a"
+  },
+  "_source": "git://github.com/anodynos/node2web_path.git",
+  "_target": "~3.46.1",
+  "_originalSource": "path"
+}
