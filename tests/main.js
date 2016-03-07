@@ -14,6 +14,7 @@ define([
     'tests/plistLib/main',
     'tests/ufoLib/validators',
     'tests/ufoLib/filenames',
+    'tests/ufoLib/converters',
     'tests/ufoLib/glifLib/misc',
     'tests/ufoLib/glifLib/readGlyph',
     'tests/xml/main',
