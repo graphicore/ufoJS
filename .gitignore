@@ -1,3 +1,4 @@
 node_modules/*
 env/ufos/*
 .tern-port
+lib/bower_components
