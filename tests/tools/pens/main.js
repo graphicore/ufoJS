@@ -1,6 +1,6 @@
 define(
-    ['ufojs/errors', 'ufojs/tools/pens/main'],
-    function(errors, pens)
+    ['doh', 'ufojs/errors', 'Atem-Pen-Case/tools/decomposeSuperSegments'],
+    function(doh, errors, pens)
 {
     doh.register("ufojs.pens.main", [
     function Test_decomposeSuperBezierSegment_Errors() {
@@ -32,7 +32,7 @@ define(
         var points = [ [1, 2], [3, 4], [5, 6] ];
         var result = [ points ];
         doh.assertEqual(result, pens.decomposeSuperBezierSegment(points));
-        
+
         var points = [ [1, 2], [3, 4], [5, 6], [7, 8] ];
         var expecting = [
             [
@@ -47,7 +47,7 @@ define(
             ]
         ];
         doh.assertEqual(expecting, pens.decomposeSuperBezierSegment(points));
-        
+
         var points = [ [1, 2], [3, 4], [5, 6], [7, 8], [9, 10] ];
         var expecting = [
             [
@@ -60,14 +60,14 @@ define(
                 [4.333333333333333, 5.333333333333333],
                 [5.166666666666666, 6.166666666666666]
             ],
-            [   
+            [
                 [6, 7],
                 [7, 8],
                 [9, 10]
             ]
         ];
         doh.assertEqual(expecting, pens.decomposeSuperBezierSegment(points));
-        
+
         var points = [ [1, 1], [2, 2], [3, 3], [4, 4], [5, 5] ];
         var expecting = [
             [
@@ -110,7 +110,7 @@ define(
         var points = [ [1, 2], [3, 4] ];
         var expecting = [ points ];
         doh.assertEqual(expecting, pens.decomposeQuadraticSegment(points));
-        
+
         var points = [ [1, 2], [3, 4], [5, 6] ];
         var expecting = [
             [
@@ -123,7 +123,7 @@ define(
             ]
         ];
         doh.assertEqual(expecting, pens.decomposeQuadraticSegment(points));
-        
+
         var points = [ [1, 2], [3, 4], [5, 6], [7, 8] ];
         var expecting = [
             [
@@ -140,14 +140,14 @@ define(
             ]
         ];
         doh.assertEqual(expecting, pens.decomposeQuadraticSegment(points));
-        
+
         var points = [ [1, 2], [3, 4], [5, 6], [7, 8], [9, 10] ];
         var expecting = [
             [
                 [1, 2],
                 [2, 3]
             ],
-            [   
+            [
                 [3, 4],
                 [4, 5]
             ],
@@ -161,7 +161,7 @@ define(
             ]
         ];
         doh.assertEqual(expecting, pens.decomposeQuadraticSegment(points));
-        
+
         var points = [ [1, 1], [2, 2], [3, 3], [4, 4], [5, 5] ];
         var expecting = [
             [

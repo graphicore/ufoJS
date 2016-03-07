@@ -66,7 +66,7 @@ var d= function(doh) {
 					return Math.round(n/360000)/10+"h";
 			}
 		};
-		
+
 		var _logBacklog = [], _loggedMsgLen = 0;
 		var sendToLogPane = function(args, skip){
 			var msg = "";
@@ -106,10 +106,10 @@ var d= function(doh) {
 			}
 			return n;
 		}
-		
+
 		doh._jumpToLog = function(e){
 			//console.log(e);
-			
+
 			var node = findTarget(e?e.target:window.event.srcElement);
 			if(!node){
 				return;
@@ -196,7 +196,7 @@ var d= function(doh) {
 				os.apply(doh,arguments);
 			}
 		})(doh._setupGroupForRun);
-		
+
 		doh._report = (function(or){
 			//overload _report to insert a tfoot
 			return function(){
@@ -217,7 +217,7 @@ var d= function(doh) {
 					cell.setAttribute('_target',_loggedMsgLen+1);
 					row.insertCell(-1).innerHTML=formatTime(doh._totalTime);
 				}
-				
+
 				//This location can do the final performance rendering for the results
 				//of any performance tests.
 				var plotResults = null;
@@ -328,7 +328,7 @@ var d= function(doh) {
 				or.apply(doh,arguments);
 			}
 		})(doh._report);
-		
+
 		doh.error = undefined;
 		if(this["opera"] && opera.postError){
 			doh.debug = function(){
@@ -549,7 +549,7 @@ var d= function(doh) {
 
 		doh._updateGlobalProgressBar = function(p,success,group){
 			var outerContainer=byId("progressOuter");
-					
+
 			var gdiv=outerContainer.childNodes[doh._runedSuite-1];
 			if(!gdiv){
 				gdiv=document.createElement('div');
@@ -590,7 +590,7 @@ var d= function(doh) {
 				if(gn && doh._curTestCount){
 					var p = doh._runed/doh._curTestCount;
 					var groupfail = this._updateGlobalProgressBar((doh._runedSuite+p-1)/doh._groupCount,success,group);
-					
+
 					var pbar = gn.getElementsByTagName("td")[2].lastChild;
 					pbar.className = groupfail?"failure":"success";
 					pbar.style.width = parseInt(p*100)+"%";
@@ -718,7 +718,6 @@ var d= function(doh) {
 
 		_addOnEvt("load",
 			function(){
-				// let robot code run if it gets to this first
 				var __onEnd = doh._onEnd;
 				doh._onEnd = function(){
 					__onEnd.apply(doh, arguments);
@@ -895,6 +894,9 @@ if (typeof define == "undefined" || define.vendor=="dojotoolkit.org") {
 	d(doh);
 }else{
 	// using an AMD loader
-	doh.browserRunnerFactory= d;
+	define(['doh/runner'], function(doh) {
+		doh.browserRunnerFactory = d;
+		return doh;
+	});
 }
 }).call(null);

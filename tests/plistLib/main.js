@@ -1,10 +1,12 @@
 define([
-    'ufojs/main'
+    'doh'
+  , 'ufojs/main'
   , 'ufojs/errors'
-  , 'ufojs/tools/io/static'
+  , 'Atem-IO/io/static'
   , 'ufojs/plistLib/main'
 ], function(
-    main
+    doh
+  , main
   , errors
   , staticIO
   , plistLib
@@ -31,8 +33,8 @@ define([
             no: false
         }
         ;
-    
-    
+
+
     doh.register("plistLib.main", [
     /**
      * This is to document what the _comparePlists method is supposed to do
@@ -44,19 +46,19 @@ define([
         doh.assertFalse(a === b);
         //but look the same
         doh.assertTrue(plistLib._comparePlists(a, b));
-        
+
         //the same object compares to true, too of course
         doh.assertTrue(plistLib._comparePlists(a, a));
-        
+
         //now they don't look the same anymore
         b.l = undefined;
         doh.assertFalse(plistLib._comparePlists(a, b));
-        
+
         //'synchronous recursion' this is allowed
         b.l = a;
         a.l = a;
         doh.assertTrue(plistLib._comparePlists(a, b));
-        
+
         //'asynchronous recursion' this is very forbidden
         // => should it just return false?
         b.l = a;

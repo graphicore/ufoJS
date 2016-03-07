@@ -1,10 +1,12 @@
 define([
-    'ufojs/main'
+    'doh'
+  , 'ufojs/main'
   , 'ufojs/errors'
-  , 'ufojs/tools/io/static'
+  , 'Atem-IO/io/static'
   , 'ufojs/ufoLib/validators'
 ], function(
-    main
+    doh
+  , main
   , errors
   , staticIO
   , validators
@@ -63,13 +65,13 @@ define([
         doh.assertTrue(validators.genericNonNegativeNumberValidator(.4));
         doh.assertTrue(validators.genericNonNegativeNumberValidator(0));
         doh.assertTrue(validators.genericNonNegativeNumberValidator(1.7));
-       
+
         doh.assertFalse(validators.genericNonNegativeNumberValidator(-5));
         doh.assertFalse(validators.genericNonNegativeNumberValidator(-5453521));
         doh.assertFalse(validators.genericNonNegativeNumberValidator(-35461.54211));
         doh.assertFalse(validators.genericNonNegativeNumberValidator(-.4));
         doh.assertFalse(validators.genericNonNegativeNumberValidator(-1.7));
-        
+
         doh.assertFalse(validators.genericNonNegativeNumberValidator([]));
         doh.assertFalse(validators.genericNonNegativeNumberValidator());
         doh.assertFalse(validators.genericNonNegativeNumberValidator(function(){}));
@@ -84,9 +86,9 @@ define([
         // not a dict
         doh.assertFalse(validators.genericDictValidator(function(){}, {}));
         doh.assertFalse(validators.genericDictValidator(undefined,{}));
-        
+
         doh.assertTrue(validators.genericDictValidator({},{}));
-         
+
         // missing required keys
         var prototype = {
             a: ['string', true], //required
@@ -104,11 +106,11 @@ define([
         doh.assertFalse(validators.genericDictValidator(value,prototype));
         value.a = '';
         doh.assertTrue(validators.genericDictValidator(value,prototype));
-        
+
         // unknown keys
         value.x = undefined;
         doh.assertFalse(validators.genericDictValidator(value,prototype));
-        
+
         // incorrect types
         // uses main.isInstance
         value = {
@@ -148,7 +150,7 @@ define([
         doh.assertTrue(validators.fontInfoStyleMapStyleNameValidator('italic'));
         doh.assertTrue(validators.fontInfoStyleMapStyleNameValidator('bold'));
         doh.assertTrue(validators.fontInfoStyleMapStyleNameValidator('bold italic'));
-        
+
         doh.assertFalse(validators.fontInfoStyleMapStyleNameValidator('black'));
         doh.assertFalse(validators.fontInfoStyleMapStyleNameValidator('light'));
         doh.assertFalse(validators.fontInfoStyleMapStyleNameValidator('slanted'));
@@ -162,7 +164,7 @@ define([
         doh.assertFalse(validators.fontInfoOpenTypeGaspRangeRecordsValidator(5));
         //empty is allowed
         doh.assertTrue(validators.fontInfoOpenTypeGaspRangeRecordsValidator([]));
-        
+
         //dunno if this would be a useable value, but it is supposed to be valid
         var value = [
             {
@@ -179,29 +181,29 @@ define([
         //fail ppemOrder
         doh.assertFalse(validators.fontInfoOpenTypeGaspRangeRecordsValidator(value));
         value.reverse()
-        
+
         //ppemValidity
         value[0].rangeMaxPPEM = -1;
         doh.assertFalse(validators.fontInfoOpenTypeGaspRangeRecordsValidator(value));
         value[0].rangeMaxPPEM = 0;
         doh.assertTrue(validators.fontInfoOpenTypeGaspRangeRecordsValidator(value));
-        
+
         //bad rangeRecord
         value.push(true);
         doh.assertFalse(validators.fontInfoOpenTypeGaspRangeRecordsValidator(value));
-        
+
         value.pop(true);
         var flawed = {};
         value.push(flawed);
         doh.assertFalse(validators.fontInfoOpenTypeGaspRangeRecordsValidator(value));
-        
+
         flawed.rangeMaxPPEM = 5;
         flawed.rangeGaspBehavior= 7;
         doh.assertFalse(validators.fontInfoOpenTypeGaspRangeRecordsValidator(value));
-        
+
         delete(flawed.rangeGaspBehavior);
         doh.assertFalse(validators.fontInfoOpenTypeGaspRangeRecordsValidator(value));
-        
+
         flawed.rangeMaxPPEM = 9;
         flawed.rangeGaspBehavior = [2,3,0];
         doh.assertTrue(validators.fontInfoOpenTypeGaspRangeRecordsValidator(value));
@@ -210,10 +212,10 @@ define([
         // format: 0000/00/00 00:00:00
         var value = '2012/04/25 11:39:44';
         doh.assertTrue(validators.fontInfoOpenTypeHeadCreatedValidator(value));
-        
+
         //wrong type
         doh.assertFalse(validators.fontInfoOpenTypeHeadCreatedValidator(1502354));
-        
+
         //basic formatting
         value = '2012/4/25 11:39:44';//too short
         doh.assertFalse(validators.fontInfoOpenTypeHeadCreatedValidator(value));
@@ -278,10 +280,10 @@ define([
         doh.assertFalse(validators.fontInfoOpenTypeHeadCreatedValidator(value));
         value = '2012/04/25 11:39:-9';//second out of range
         doh.assertFalse(validators.fontInfoOpenTypeHeadCreatedValidator(value));
-        
+
         value = '+012/04/25 11:39:09';//this is allowed, too
         doh.assertTrue(validators.fontInfoOpenTypeHeadCreatedValidator(value));
-        
+
         value = '-999/01/01 00:00:00';//min date
         doh.assertTrue(validators.fontInfoOpenTypeHeadCreatedValidator(value));
         value = '9999/12/31 23:59:59';//max date
@@ -293,18 +295,18 @@ define([
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(true));
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(1));
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(''));
-        
+
         doh.assertTrue(validators.fontInfoOpenTypeNameRecordsValidator([]));
-        
+
         var value = [{
             nameID: 5,
             platformID: 3,
             encodingID: 8,
             languageID: 89,
             string: 'hi'
-        }];        
+        }];
         doh.assertTrue(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value.push({
             nameID: 7,
             platformID: 23,
@@ -313,7 +315,7 @@ define([
             string: 'hello'
         });
         doh.assertTrue(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value.push({
             nameID: '7',
             platformID: 23,
@@ -322,7 +324,7 @@ define([
             string: 'hello'
         });
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value[2] = {
             nameID: 7,
             platformID: false,
@@ -331,7 +333,7 @@ define([
             string: 'hello'
         };
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value[2] = {
             nameID: 7,
             platformID: 58,
@@ -340,7 +342,7 @@ define([
             string: 'hello'
         };
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value[2] = {
             nameID: 7,
             platformID: 58,
@@ -349,7 +351,7 @@ define([
             string: 987
         };
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value[2] = {
             nameID: 7,
             platformID: 58,
@@ -364,7 +366,7 @@ define([
             languageID: 6
         };
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value[2] = {
             nameID: 7,
             platformID: 58,
@@ -372,7 +374,7 @@ define([
             string: 'hello'
         };
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value[2] = {
             nameID: 7,
             encodingID: 90,
@@ -380,7 +382,7 @@ define([
             string: 'hello'
         };
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value[2] = {
             platformID: 58,
             encodingID: 90,
@@ -388,7 +390,7 @@ define([
             string: 'hello'
         };
         doh.assertFalse(validators.fontInfoOpenTypeNameRecordsValidator(value));
-        
+
         value[2] = {
             nameID: 7,
             platformID: 58,
@@ -403,7 +405,7 @@ define([
         doh.assertTrue(validators.fontInfoOpenTypeOS2WeightClassValidator(0));
         doh.assertTrue(validators.fontInfoOpenTypeOS2WeightClassValidator(2));
         doh.assertFalse(validators.fontInfoOpenTypeOS2WeightClassValidator(-1));
-        
+
         // isInt
         doh.assertFalse(validators.fontInfoOpenTypeOS2WeightClassValidator(1.456));
         doh.assertFalse(validators.fontInfoOpenTypeOS2WeightClassValidator('5'));
@@ -417,7 +419,7 @@ define([
             doh.assertTrue(validators.fontInfoOpenTypeOS2WidthClassValidator(i));
         doh.assertFalse(validators.fontInfoOpenTypeOS2WidthClassValidator(10));
         doh.assertFalse(validators.fontInfoOpenTypeOS2WidthClassValidator(0));
-        
+
         // isInt
         doh.assertFalse(validators.fontInfoOpenTypeOS2WidthClassValidator(1.456));
         doh.assertFalse(validators.fontInfoOpenTypeOS2WidthClassValidator('5'));
@@ -430,24 +432,24 @@ define([
         //currently expects an Array of 10 values, all integer
         var value = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
         doh.assertTrue(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
-        
+
         //negative is ok, too
         value[7] = -10;
         doh.assertTrue(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
-        
+
         //9 items
         value.pop();
         doh.assertFalse(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
-        
+
         //11 items
         value.push(5456341);
-        value.push(-55654);  
+        value.push(-55654);
         doh.assertFalse(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
-        
+
         //10 items again
         value.pop();
         doh.assertTrue(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
-        
+
         // must be all integer
         value[5] = '5';
         doh.assertFalse(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
@@ -457,7 +459,7 @@ define([
         doh.assertFalse(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
         value[5] = {};
         doh.assertFalse(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
-        
+
         // not instanceof Array
         value = {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, length: 10};
         doh.assertFalse(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
@@ -465,7 +467,7 @@ define([
         doh.assertFalse(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
         value = '';
         doh.assertFalse(validators.fontInfoVersion2OpenTypeOS2PanoseValidator(value));
-        
+
         //make an ancestor of Array
         var Value = function() {
             this.length = arguments.length;
@@ -480,20 +482,20 @@ define([
         //currently expects an Array of 10 values, all integer and >= 0
         var value = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
         doh.assertTrue(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
-        
+
         //9 items
         value.pop();
         doh.assertFalse(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
-        
+
         //11 items
         value.push(5456341);
-        value.push(55654);  
+        value.push(55654);
         doh.assertFalse(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
-        
+
         //10 items again
         value.pop();
         doh.assertTrue(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
-        
+
         //must be all integer and negative is not ok
         value[5] = -10;
         doh.assertFalse(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
@@ -505,7 +507,7 @@ define([
         doh.assertFalse(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
         value[5] = {};
         doh.assertFalse(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
-        
+
         // not instanceof Array
         value = {0:0, 1:1, 2:2, 3:3, 4:4, 5:5, 6:6, 7:7, 8:8, 9:9, length: 10};
         doh.assertFalse(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
@@ -513,7 +515,7 @@ define([
         doh.assertFalse(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
         value = '';
         doh.assertFalse(validators.fontInfoVersion3OpenTypeOS2PanoseValidator(value));
-        
+
         //make an ancestor of Array
         var Value = function() {
             this.length = arguments.length;
@@ -534,7 +536,7 @@ define([
         doh.assertTrue(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
         var value = [7, 1];
         doh.assertTrue(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
-        
+
         var value = [-7, 1];
         doh.assertFalse(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
         var value = [7, -1];
@@ -543,7 +545,7 @@ define([
         doh.assertFalse(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
         var value = [7, 16];
         doh.assertFalse(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
-        
+
         var value = [7, true];
         doh.assertFalse(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
         var value = [{}, 1];
@@ -552,7 +554,7 @@ define([
         doh.assertFalse(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
         var value = ['7', '1'];
         doh.assertFalse(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
-        
+
         var value = [7, 1, 5];
         doh.assertFalse(validators.fontInfoOpenTypeOS2FamilyClassValidator(value));
         var value = [7];
@@ -583,13 +585,13 @@ define([
             -.1, 1654
         ];
         doh.assertTrue(validators.fontInfoPostscriptBluesValidator(value));
-        
+
         //too much
         value.push(1);
         doh.assertFalse(validators.fontInfoPostscriptBluesValidator(value));
         value.push(1);
         doh.assertFalse(validators.fontInfoPostscriptBluesValidator(value));
-        
+
         while(value.length){
             // odd number is false
             value.pop();
@@ -598,14 +600,14 @@ define([
             value.pop();
             doh.assertTrue(validators.fontInfoPostscriptBluesValidator(value));
         }
-        
+
         value = [1, 3];
         doh.assertTrue(validators.fontInfoPostscriptBluesValidator(value));
         value = [1, '3'];
         doh.assertFalse(validators.fontInfoPostscriptBluesValidator(value));
         value = [1, NaN];
         doh.assertFalse(validators.fontInfoPostscriptBluesValidator(value));
-        
+
         //instanceof Array
         value = '';
         doh.assertFalse(validators.fontInfoPostscriptBluesValidator(value));
@@ -627,13 +629,13 @@ define([
             451, .541
         ];
         doh.assertTrue(validators.fontInfoPostscriptOtherBluesValidator(value));
-        
+
         //too much
         value.push(1);
         doh.assertFalse(validators.fontInfoPostscriptOtherBluesValidator(value));
         value.push(1);
         doh.assertFalse(validators.fontInfoPostscriptOtherBluesValidator(value));
-        
+
         while(value.length){
             // odd number is false
             value.pop();
@@ -642,14 +644,14 @@ define([
             value.pop();
             doh.assertTrue(validators.fontInfoPostscriptOtherBluesValidator(value));
         }
-        
+
         value = [1, 3];
         doh.assertTrue(validators.fontInfoPostscriptOtherBluesValidator(value));
         value = [1, '3'];
         doh.assertFalse(validators.fontInfoPostscriptOtherBluesValidator(value));
         value = [1, NaN];
         doh.assertFalse(validators.fontInfoPostscriptOtherBluesValidator(value));
-        
+
         //instanceof Array
         value = '';
         doh.assertFalse(validators.fontInfoPostscriptOtherBluesValidator(value));
@@ -666,26 +668,26 @@ define([
             -9521, 0, -1, 654
         ]
         doh.assertTrue(validators.fontInfoPostscriptStemsValidator(value));
-        
+
         value.push(234);
         doh.assertFalse(validators.fontInfoPostscriptStemsValidator(value));
-        
+
         value.pop();
         value[2] = NaN;
         doh.assertFalse(validators.fontInfoPostscriptStemsValidator(value));
-        
+
         value[2] = true;
         doh.assertFalse(validators.fontInfoPostscriptStemsValidator(value));
-        
+
         value[2] = [];
         doh.assertFalse(validators.fontInfoPostscriptStemsValidator(value));
-        
+
         value[2] = '3';
         doh.assertFalse(validators.fontInfoPostscriptStemsValidator(value));
-        
+
         value[2] = function(){};
         doh.assertFalse(validators.fontInfoPostscriptStemsValidator(value));
-        
+
         value[2] = 45;
         while(value.length) {
             value.pop();
@@ -718,7 +720,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataUniqueIDValidator(value));
         value = 5;
         doh.assertFalse(validators.fontInfoWOFFMetadataUniqueIDValidator(value));
-        
+
         // bad dict
         value = {};
         doh.assertFalse(validators.fontInfoWOFFMetadataUniqueIDValidator(value));
@@ -726,7 +728,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataUniqueIDValidator(value));
         value = {id: 'hi', rubbish: true};
         doh.assertFalse(validators.fontInfoWOFFMetadataUniqueIDValidator(value));
-        
+
         // good dict
         delete(value.rubbish);
         doh.assertTrue(validators.fontInfoWOFFMetadataUniqueIDValidator(value));
@@ -741,7 +743,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataVendorValidator(value));
         value = true;
         doh.assertFalse(validators.fontInfoWOFFMetadataVendorValidator(value));
-        
+
         //bad dict
         value = {};
         value = {id: true};
@@ -750,11 +752,11 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataVendorValidator(value));
         value = {rubbish: true};
         doh.assertFalse(validators.fontInfoWOFFMetadataVendorValidator(value));
-        
+
         // good dict
         value = {name: 'abc'};
         doh.assertTrue(validators.fontInfoWOFFMetadataVendorValidator(value));
-        
+
         value = {
             name: 'abc',
             url: 'abc',
@@ -766,7 +768,7 @@ define([
         doh.assertTrue(validators.fontInfoWOFFMetadataVendorValidator(value));
         delete(value['class']);
         doh.assertTrue(validators.fontInfoWOFFMetadataVendorValidator(value));
-        
+
         //bad again, values have to be all string
         value.dir = 5;
         doh.assertFalse(validators.fontInfoWOFFMetadataVendorValidator(value));
@@ -776,11 +778,11 @@ define([
         delete(value['class']);
         value.url = false
         doh.assertFalse(validators.fontInfoWOFFMetadataVendorValidator(value));
-        
+
         // good
         value.url = 'http://';
         doh.assertTrue(validators.fontInfoWOFFMetadataVendorValidator(value));
-        
+
         // dir has to be 'ltr' or 'rtl', when present
         value.dir = 'hello';
         doh.assertFalse(validators.fontInfoWOFFMetadataVendorValidator(value));
@@ -798,7 +800,7 @@ define([
         //    "dir" : ['string', false],
         //    "class" : ['string', false]
         //};
-        
+
         //no dict
         var value = true;
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
@@ -806,7 +808,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
         value = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
-        
+
         //no key 'credits' which is an Array
         value = {};
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
@@ -819,13 +821,13 @@ define([
         //unexpected key
         value = {credits: [], rubbish: true};
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
-        
+
         // minimal valid
         delete(value.rubbish);
         var credits = value.credits;
         credits.push({name: ''});
         doh.assertTrue(validators.fontInfoWOFFMetadataCreditsValidator(value));
-        
+
         // fully filled valid credits item
         // and more than one credits items
         credits.push({
@@ -836,7 +838,7 @@ define([
             'class': 'hi'
         });
         doh.assertTrue(validators.fontInfoWOFFMetadataCreditsValidator(value));
-        
+
         //dir must be 'ltr' or 'rtl' when present
         credits[1].dir = 'hello';
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
@@ -846,25 +848,25 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
         delete(credits[1].dir);
         doh.assertTrue(validators.fontInfoWOFFMetadataCreditsValidator(value));
-        
+
         //url must be string when present
         credits[0].url = [];
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
         credits[0].url = 'hello';
         doh.assertTrue(validators.fontInfoWOFFMetadataCreditsValidator(value));
-        
+
         //role must be string when present
         credits[0].role = false;
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
         credits[0].role = 'hi';
         doh.assertTrue(validators.fontInfoWOFFMetadataCreditsValidator(value));
-        
+
         //class must be string when present
         credits[0]['class'] = [];
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
         credits[0]['class'] = 'gooday';
         doh.assertTrue(validators.fontInfoWOFFMetadataCreditsValidator(value));
-        
+
         //name must be present and string
         delete(credits[0].name);
         doh.assertFalse(validators.fontInfoWOFFMetadataCreditsValidator(value));
@@ -885,7 +887,7 @@ define([
         //    dir: optional, string
         //    class: optional, string
         //}
-        
+
         // no dict
         var value = 4;
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
@@ -893,17 +895,17 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
         value = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
-        
+
         // wrong dict
         value = {};
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
         value = {rubbish: 'junk'};
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
-        
+
         // minimal correct
         value = {text: ''};
         doh.assertTrue(validators.fontInfoWOFFMetadataTextValue(value));
-        
+
         // text must be string
         value.text = 43;
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
@@ -913,7 +915,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
         value.text = 'A text';
         doh.assertTrue(validators.fontInfoWOFFMetadataTextValue(value));
-        
+
         //if dir is present ist must be 'ltr' or 'rtl'
         value.dir = true;
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
@@ -925,7 +927,7 @@ define([
         doh.assertTrue(validators.fontInfoWOFFMetadataTextValue(value));
         value.dir = 'rtl';
         doh.assertTrue(validators.fontInfoWOFFMetadataTextValue(value));
-        
+
         //if language or class are present either needs to be string
         value.language = 'klingon';
         doh.assertTrue(validators.fontInfoWOFFMetadataTextValue(value));
@@ -935,7 +937,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataTextValue(value));
         value.language = 'javascript';
         doh.assertTrue(validators.fontInfoWOFFMetadataTextValue(value));
-        
+
         value['class'] = 'something';
         doh.assertTrue(validators.fontInfoWOFFMetadataTextValue(value));
         value['class'] = '';
@@ -954,7 +956,7 @@ define([
         //    url: optional, string
         //    text: mandatory, Array of 0 or more fontInfoWOFFMetadataTextValue
         // }
-        
+
         //no dict
         var value = 5;
         doh.assertFalse(validators.fontInfoWOFFMetadataDescriptionValidator(value));
@@ -962,11 +964,11 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataDescriptionValidator(value));
         value = undefined;
         doh.assertFalse(validators.fontInfoWOFFMetadataDescriptionValidator(value));
-        
+
         //minimal tue
         value = {text: []};
         doh.assertTrue(validators.fontInfoWOFFMetadataDescriptionValidator(value));
-        
+
         //when url is present ist must be a string
         value.url = '';
         doh.assertTrue(validators.fontInfoWOFFMetadataDescriptionValidator(value));
@@ -976,7 +978,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataDescriptionValidator(value));
         value.url = 'http://some.url.com';
         doh.assertTrue(validators.fontInfoWOFFMetadataDescriptionValidator(value));
-        
+
         // fontInfoWOFFMetadataTextValue was tested above, I won't do it
         // here completely
         // minimal true is  {text: ''};
@@ -1001,17 +1003,17 @@ define([
         //    text: optional, Array of fontInfoWOFFMetadataTextValue
         //    id: optional, string
         //}
-        
+
         // no dict
         var value = 7;
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseValidator(value));
         value = undefined;
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseValidator(value));
-        
+
         // minimal true (all is optional)
         value = {};
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseValidator(value));
-        
+
         //when url is present it must be string
         value.url = '';
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseValidator(value));
@@ -1019,7 +1021,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseValidator(value));
         value.url = 'somestring';
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseValidator(value));
-        
+
         //when id is present it must be string
         value.id = '';
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseValidator(value));
@@ -1027,8 +1029,8 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseValidator(value));
         value.id = 'unique?';
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseValidator(value));
-        
-        
+
+
         // text when present must be an array of zero or more fontInfoWOFFMetadataTextValue
         value.text = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseValidator(value));
@@ -1036,7 +1038,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseValidator(value));
         value.text = [];
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseValidator(value));
-        
+
         // fontInfoWOFFMetadataTextValue was tested above, I won't do it
         // here completely
         // minimal true is  {text: ''};
@@ -1059,7 +1061,7 @@ define([
         // {
         //    text: mandatory Array of zero or more fontInfoWOFFMetadataTextValue
         // }
-        
+
         // not a dict
         var value = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataTrademarkValidator(value));
@@ -1067,7 +1069,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataTrademarkValidator(value));
         value = 56;
         doh.assertFalse(validators.fontInfoWOFFMetadataTrademarkValidator(value));
-        
+
         // text must be present and array of zero or more fontInfoWOFFMetadataTextValue
         value.text = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataTrademarkValidator(value));
@@ -1076,12 +1078,12 @@ define([
         // minimal true
         value = {text:[]};
         doh.assertTrue(validators.fontInfoWOFFMetadataTrademarkValidator(value));
-        
+
         // unexpected key
         value.rubbish = 'something'
         doh.assertFalse(validators.fontInfoWOFFMetadataTrademarkValidator(value));
         delete(value.rubbish);
-        
+
         // fontInfoWOFFMetadataTextValue was tested above, I won't do it
         // here completely
         // minimal true is  {text: ''};
@@ -1105,7 +1107,7 @@ define([
         // {
         //    text: mandatory Array of zero or more fontInfoWOFFMetadataTextValue
         // }
-        
+
         // not a dict
         var value = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataCopyrightValidator(value));
@@ -1113,7 +1115,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataCopyrightValidator(value));
         value = 56;
         doh.assertFalse(validators.fontInfoWOFFMetadataCopyrightValidator(value));
-        
+
         // text must be present and array of zero or more fontInfoWOFFMetadataTextValue
         value.text = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataCopyrightValidator(value));
@@ -1122,12 +1124,12 @@ define([
         // minimal true
         value = {text:[]};
         doh.assertTrue(validators.fontInfoWOFFMetadataCopyrightValidator(value));
-        
+
         // unexpected key
         value.rubbish = 'something'
         doh.assertFalse(validators.fontInfoWOFFMetadataCopyrightValidator(value));
         delete(value.rubbish);
-        
+
         // fontInfoWOFFMetadataTextValue was tested above, I won't do it
         // here completely
         // minimal true is  {text: ''};
@@ -1152,7 +1154,7 @@ define([
         //    "dir" : optional, string, either 'ltr' or 'rtl'
         //    "class" : optional, string
         //}
-        
+
         //no dict
         var value = 4;
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseeValidator(value));
@@ -1162,7 +1164,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseeValidator(value));
         value = function(){};
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseeValidator(value));
-        
+
         //minimal true
         value = {name: ''};
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseeValidator(value));
@@ -1172,7 +1174,7 @@ define([
         delete(value.answer);
         value.name = 'Hönes';
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseeValidator(value));
-        
+
         //when dir is present it must be 'ltr' or 'rtl'
         value.dir = 'rtl';
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseeValidator(value));
@@ -1180,7 +1182,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataLicenseeValidator(value));
         value.dir = 'ltr';
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseeValidator(value));
-        
+
         //class, when present, must be string
         value['class'] =  '';
         doh.assertTrue(validators.fontInfoWOFFMetadataLicenseeValidator(value));
@@ -1199,7 +1201,7 @@ define([
         //    dir: optional, string
         //    class: optional, string
         //}
-        
+
         // no dict
         var value = 4;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
@@ -1207,17 +1209,17 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
         value = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
-        
+
         // wrong dict
         value = {};
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
         value = {rubbish: 'junk'};
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
-        
+
         // minimal correct
         value = {text: ''};
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
-        
+
         // text must be string
         value.text = 43;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
@@ -1227,7 +1229,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
         value.text = 'A text';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
-        
+
         //if dir is present ist must be 'ltr' or 'rtl'
         value.dir = true;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
@@ -1239,7 +1241,7 @@ define([
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
         value.dir = 'rtl';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
-        
+
         //if language or class are present either needs to be string
         value.language = 'klingon';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
@@ -1249,7 +1251,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
         value.language = 'javascript';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
-        
+
         value['class'] = 'something';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionNameValidator(value));
         value['class'] = '';
@@ -1271,7 +1273,7 @@ define([
         //    dir: optional, string
         //    class: optional, string
         //}
-        
+
         // no dict
         var value = 4;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
@@ -1279,17 +1281,17 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
         value = '';
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
-        
+
         // wrong dict
         value = {};
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
         value = {rubbish: 'junk'};
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
-        
+
         // minimal correct
         value = {text: ''};
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
-        
+
         // text must be string
         value.text = 43;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
@@ -1299,7 +1301,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
         value.text = 'A text';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
-        
+
         //if dir is present ist must be 'ltr' or 'rtl'
         value.dir = true;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
@@ -1311,7 +1313,7 @@ define([
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
         value.dir = 'rtl';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
-        
+
         //if language or class are present either needs to be string
         value.language = 'klingon';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
@@ -1321,7 +1323,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
         value.language = 'javascript';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
-        
+
         value['class'] = 'something';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValueValidator(value));
         value['class'] = '';
@@ -1341,7 +1343,7 @@ define([
         //    values: mandatory Array of zero or more fontInfoWOFFMetadataExtensionValueValidator
         //    id: optional, string
         //}
-        
+
         // no dict
         var value = 7;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
@@ -1352,11 +1354,11 @@ define([
         // not enough mandatory keys
         value = {};
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
-        
+
         // minimal true
         value.values = [];
         value.names = [];
-        
+
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
         //values must be array
         value.values = 5;
@@ -1369,7 +1371,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
         value.values = [];
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
-    
+
         //names must be array
         value.names = 5;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
@@ -1381,12 +1383,12 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
         value.names = [];
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
-        
+
         //unexpected keys
         value.rubbish = false;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
         delete(value.rubbish);
-        
+
         //optional id has wrong type
         value.id = 23;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
@@ -1396,7 +1398,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
         value.id = 'Hellooo';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionItemValidator(value));
-        
+
         // values and names have already testet validators, so this is just
         // a minimum check
         value.names.push({
@@ -1429,7 +1431,7 @@ define([
         //     items: mandatory, Array of zero or more fontInfoWOFFMetadataExtensionItemValidator
         //     id: optional, string
         // }
-        
+
         //no dict
         var value = 9;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValidator(value));
@@ -1452,14 +1454,14 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValidator(value));
         value.items = true;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValidator(value));
-        
+
         // unexpected key
         value.items = [];
         value.rubbish = 'something';
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValidator(value));
         delete(value.rubbish);
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValidator(value));
-        
+
         //wrong type for optional id
         value.id = 12;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValidator(value));
@@ -1473,7 +1475,7 @@ define([
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValidator(value));
         value.id = 'hello';
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValidator(value));
-        
+
         //wrong type for optional names
         value.names = 12;
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValidator(value));
@@ -1485,7 +1487,7 @@ define([
         doh.assertFalse(validators.fontInfoWOFFMetadataExtensionValidator(value));
         value.names = [];
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValidator(value));
-        
+
         // the contents of names and values arech checked wit already tested validators
         // this is just a minimal check
         value.names.push({
@@ -1504,7 +1506,7 @@ define([
             ]
         });
         doh.assertTrue(validators.fontInfoWOFFMetadataExtensionValidator(value));
-        
+
         value.items.push({
             names: [{}],
             values: [
@@ -1559,20 +1561,20 @@ define([
         //too long
         value += 'a';
         doh.assertFalse(validators.identifierValidator(value));
-        
+
         //bad content
         value = 'ä';
         doh.assertFalse(validators.identifierValidator(value));
-        
+
         value = String.fromCharCode(0x2026);
         doh.assertFalse(validators.identifierValidator(value));
-        
+
         value = String.fromCharCode(0x7F);
         doh.assertFalse(validators.identifierValidator(value));
-        
+
         value = String.fromCharCode(0x1f);
         doh.assertFalse(validators.identifierValidator(value));
-        
+
         // 0x20 = 32
         // 0x7e = 126
         // so all valid values fit in one string
@@ -1592,7 +1594,7 @@ define([
         doh.assertFalse(validators.colorValidator(value));
         value = [];
         doh.assertFalse(validators.colorValidator(value));
-        
+
         //from the Python doctest
         value = "0,0,0,0";
         doh.assertTrue(validators.colorValidator(value));
@@ -1602,7 +1604,7 @@ define([
         doh.assertTrue(validators.colorValidator(value));
         value = "1,1,1,1";
         doh.assertTrue(validators.colorValidator(value));
-        
+
         //values greater than 1 are forbidden
         value = "2,0,0,0";
         doh.assertFalse(validators.colorValidator(value));
@@ -1612,7 +1614,7 @@ define([
         doh.assertFalse(validators.colorValidator(value));
         value = "0,0,0,2";
         doh.assertFalse(validators.colorValidator(value));
-        
+
         //values smaller than 0 are forbidden (and minus signs, too)
         value = "-.3,0,0,0";
         doh.assertFalse(validators.colorValidator(value));
@@ -1622,7 +1624,7 @@ define([
         doh.assertFalse(validators.colorValidator(value));
         value = "0,0,0,-.3";
         doh.assertFalse(validators.colorValidator(value));
-        
+
         // wont accept plus signs
         value = ".3,0,0,0";
         doh.assertTrue(validators.colorValidator(value));
@@ -1634,7 +1636,7 @@ define([
         doh.assertFalse(validators.colorValidator(value));
         value = "0,0,0,+3";
         doh.assertFalse(validators.colorValidator(value));
-        
+
         //badly formatted
         value = "1r,1,1,1";
         doh.assertFalse(validators.colorValidator(value));
@@ -1644,7 +1646,7 @@ define([
         doh.assertFalse(validators.colorValidator(value));
         value = "1,1,1,1a";
         doh.assertFalse(validators.colorValidator(value));
-        
+
         //commas missing
         value = "1 1 1 1";
         doh.assertFalse(validators.colorValidator(value));
@@ -1654,7 +1656,7 @@ define([
         doh.assertFalse(validators.colorValidator(value));
         value = "1,1,1 1";
         doh.assertFalse(validators.colorValidator(value));
-        
+
         value = "1, 1, 1, 1";
         doh.assertTrue(validators.colorValidator(value));
     },
@@ -1675,7 +1677,7 @@ define([
         doh.assertFalse(validators.guidelineValidator(value));
         value = true;
         doh.assertFalse(validators.guidelineValidator(value));
-        
+
         //minimal true
         value = {x: 5};
         doh.assertTrue(validators.guidelineValidator(value));
@@ -1702,7 +1704,7 @@ define([
         doh.assertTrue(validators.guidelineValidator(value));
         value.angle = 360;
         doh.assertTrue(validators.guidelineValidator(value));
-        
+
         //name must be string when present
         value.name = 15;
         doh.assertFalse(validators.guidelineValidator(value));
@@ -1710,13 +1712,13 @@ define([
         doh.assertTrue(validators.guidelineValidator(value));
         value.name = 'my name';
         doh.assertTrue(validators.guidelineValidator(value));
-        
+
         //color and identifier have tested validators, so less tests here
         value.identifier = 'wrönǵ¢öǹŧ€nt';
         doh.assertFalse(validators.guidelineValidator(value));
         value.identifier = 'good " # $ % & \' @ content';
         doh.assertTrue(validators.guidelineValidator(value));
-        
+
         value.color = '0 0 0 0';
         doh.assertFalse(validators.guidelineValidator(value));
         value.color = '.1, 0, 1, 0.9';
@@ -1726,7 +1728,7 @@ define([
         // Array of zero or more guidelineValidator
         // an guidelineValidator.identifier must be unique within the array
         // and within the keys! of the optional seccond argument 'identifiers'
-        
+
         //no Array
         var value = '';
         doh.assertFalse(validators.guidelinesValidator(value));
@@ -1736,11 +1738,11 @@ define([
         doh.assertFalse(validators.guidelinesValidator(value));
         value = true;
         doh.assertFalse(validators.guidelinesValidator(value));
-        
+
         //minimal true
         value = [];
         doh.assertTrue(validators.guidelinesValidator(value));
-        
+
         //test the identifier uniqueness
         value.push({
             x: 5,
@@ -1753,7 +1755,7 @@ define([
         doh.assertFalse(validators.guidelinesValidator(value));
         value[1].identifier = 'seccond id';
         doh.assertTrue(validators.guidelinesValidator(value));
-        
+
         // see whether the identifiers argument works
         var identifiers = {};
         identifiers[value[1].identifier] = true;
@@ -1769,8 +1771,8 @@ define([
         //   color: optional colorValidator
         //   identifier: optional, identifierValidator
         // }
-        
-        
+
+
         //not dict
         var value = 9;
         doh.assertFalse(validators.anchorValidator(value));
@@ -1780,14 +1782,14 @@ define([
         doh.assertFalse(validators.anchorValidator(value));
         value = undefined;
         doh.assertFalse(validators.anchorValidator(value));
-        
+
         //minimal true
         value = {
             x: 15.8,
             y: -152876
         };
         doh.assertTrue(validators.anchorValidator(value));
-        
+
         //when name then a string
         value.name = ['hi'];
         doh.assertFalse(validators.anchorValidator(value));
@@ -1799,13 +1801,13 @@ define([
         doh.assertTrue(validators.anchorValidator(value));
         value.name = 'Hi';
         doh.assertTrue(validators.anchorValidator(value));
-        
+
         //color and identifier have tested validators, so less tests here
         value.identifier = 'wrönǵ¢öǹŧ€nt';
         doh.assertFalse(validators.anchorValidator(value));
         value.identifier = 'good " # $ % & \' @ content';
         doh.assertTrue(validators.anchorValidator(value));
-        
+
         value.color = '0 0 0 0';
         doh.assertFalse(validators.anchorValidator(value));
         value.color = '.1, 0, 1, 0.9';
@@ -1815,7 +1817,7 @@ define([
         // Array of zero or more anchorValidator
         // an anchorValidator.identifier must be unique within the array
         // and within the keys! of the optional seccond argument 'identifiers'
-        
+
         //no Array
         var value = '';
         doh.assertFalse(validators.anchorsValidator(value));
@@ -1825,11 +1827,11 @@ define([
         doh.assertFalse(validators.anchorsValidator(value));
         value = true;
         doh.assertFalse(validators.anchorsValidator(value));
-        
+
         //minimal true
         value = [];
         doh.assertTrue(validators.anchorsValidator(value));
-        
+
         //test the identifier uniqueness
         value.push({
             x: 5,
@@ -1844,7 +1846,7 @@ define([
         doh.assertFalse(validators.anchorsValidator(value));
         value[1].identifier = 'seccond id';
         doh.assertTrue(validators.anchorsValidator(value));
-        
+
         // see whether the identifiers argument works
         var identifiers = {};
         identifiers[value[1].identifier] = true;
@@ -1863,7 +1865,7 @@ define([
         //   yOffset:  optional, number
         //   color:  optional, colorValidator
         // }
-        
+
         //no dict
         var value = 6;
         doh.assertFalse(validators.imageValidator(value));
@@ -1874,38 +1876,38 @@ define([
         //not the mandatory keys
         value = {};
         doh.assertFalse(validators.imageValidator(value));
-        
+
         //minimal true
         value.fileName = 'a';
         doh.assertTrue(validators.imageValidator(value));
-        
+
         value.fileName = '';
         doh.assertFalse(validators.imageValidator(value));
         // in the Python Sources are no rules for the format of a fileName
         value.fileName = '23454321=-098?AXDc*ä_325//\\';
         doh.assertTrue(validators.imageValidator(value));
-        
+
         //all other values must be numbers when present
         value.xScale = '15';
         doh.assertFalse(validators.imageValidator(value));
         value.xScale = 15;
         doh.assertTrue(validators.imageValidator(value));
-        
+
         value.xyScale = true;
         doh.assertFalse(validators.imageValidator(value));
         value.xyScale = 1.5;
         doh.assertTrue(validators.imageValidator(value));
-        
+
         value.yxScale = [];
         doh.assertFalse(validators.imageValidator(value));
         value.yxScale = -5;
         doh.assertTrue(validators.imageValidator(value));
-        
+
         value.xOffset = {};
         doh.assertFalse(validators.imageValidator(value));
         value.xOffset = 500056456312;
         doh.assertTrue(validators.imageValidator(value));
-        
+
         value.yOffset = function(){};
         doh.assertFalse(validators.imageValidator(value));
         value.yOffset = -0.6312;
@@ -1918,28 +1920,28 @@ define([
            [],
            'I/O api is missing'
         );
-        
+
         doh.assertError(
            errors.Assertion,
            validators, 'pngValidatorSync',
            [staticIO],
            'there must be at least one input parameter'
         );
-        
+
         doh.assertError(
            errors.Assertion,
            validators, 'pngValidatorSync',
            [staticIO, {}],
            'there must be at least one input parameter'
         );
-        
+
         doh.assertTrue(validators.pngValidatorSync(staticIO, {data: "\x89PNG\r\n\x1a\n"})[0]);
         doh.assertTrue(validators.pngValidatorSync(staticIO, {data: '\x89PNG\r\n\x1a\ndatdadtdadtdadadDATA'})[0]);
         doh.assertFalse(validators.pngValidatorSync(staticIO, {data: 'nothing'})[0]);
-        
+
         var path = './testdata/grayscale.png';
         doh.assertTrue(validators.pngValidatorSync(staticIO, {path: path})[0]);
-        
+
         doh.assertError(
             errors.NotImplemented,
             validators, 'pngValidatorSync',
@@ -2012,7 +2014,7 @@ define([
             var deferred = new doh.Deferred();
             var callback = function(error, result) {
                 if(error) {
-                    // this is expected, but it would be nice to 
+                    // this is expected, but it would be nice to
                     // check the error more precisely
                     // so the implementation should catch native errors
                     // and throw io errors
@@ -2040,8 +2042,8 @@ define([
         // the layerName "public.default" must not be used for any directory
         // other than the deault "glyphs" but "glyph" may have another layerName
         // no directorName or layerName must be used twice
-        
-        var ufoPath = './testdata/TestFont1 (UFO3).ufo', 
+
+        var ufoPath = './testdata/TestFont1 (UFO3).ufo',
         // not Array
             value = 1;
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
@@ -2051,7 +2053,7 @@ define([
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = '';
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
-        
+
         // no foundDefault
         value = [];
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
@@ -2085,7 +2087,7 @@ define([
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [['', 'glyphs.custom']];
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
-        
+
         // existing dirs
         value = [
             ['public.default', 'glyphs'],
@@ -2099,17 +2101,17 @@ define([
             ['background', 'glyphs.not-available']
         ];
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
-        
+
         //the layerName 'public.default' must only be used for the directoryName "glyphs"
         value = [['public.default', 'glyphs.arbitrary']];
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
-        
+
         // a layerName must not be used more than once
         value = [['Slayer', 'glyphs.arbitrary'], ['Slayer', 'glyphs']];
         doh.assertFalse(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
         value = [['Slayer', 'glyphs.arbitrary'], ['Default', 'glyphs']];
         doh.assertTrue(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
-        
+
         // a directoryName must not be used more than once
         value = [
             ['Slayer', 'glyphs.arbitrary'],
@@ -2123,7 +2125,7 @@ define([
             ['Another', 'glyphs.mask'],
         ];
         doh.assertTrue(validators.layerContentsValidatorSync(staticIO, value, ufoPath)[0]);
-        
+
         //once more: no default directory makes it fails
         value = [
             ['Slayer', 'glyphs.arbitrary'],
@@ -2191,7 +2193,7 @@ define([
                     ['background', 'glyphs.mask'],
                     ['Some Arbitrary Layer', 'glyphs.not-available']
                 ];
-            
+
             validators.layerContentsValidatorAsync(staticIO, value, ufoPath, callback);
             return deferred;
         },
@@ -2211,7 +2213,7 @@ define([
         // an item of a glyphList is a glyphName
         // a glyphName must be unique within in the groups prefixed with
         // public.kern1. and must be unique within groups prefixed with public.kern2
-        
+
         // no dict
         var value = 1;
         doh.assertFalse(validators.groupsValidator(value)[0]);
@@ -2221,7 +2223,7 @@ define([
         doh.assertFalse(validators.groupsValidator(value)[0]);
         value = undefined;
         doh.assertFalse(validators.groupsValidator(value)[0]);
-        
+
         //minimal true
         value = {};
         doh.assertTrue(validators.groupsValidator(value)[0]);
@@ -2243,11 +2245,11 @@ define([
         // just public. as prefix makes the kerning group validation skip as well
         value = {'public.something': [2, {}, true]};
         doh.assertTrue(validators.groupsValidator(value)[0]);
-        
+
         //valid kerning group
         value = {'public.kern1.round': []};
         doh.assertTrue(validators.groupsValidator(value)[0]);
-        
+
         //one invalid kerning group, there is no name after the prefix
         value = {'public.kern1.': []};
         doh.assertFalse(validators.groupsValidator(value)[0]);
@@ -2257,21 +2259,21 @@ define([
         //two valid
         value = {'public.kern1.round': [], 'public.kern2.round': []};
         doh.assertTrue(validators.groupsValidator(value)[0]);
-        
+
         //two valid with contents
         value = {
             'public.kern1.round': ['a', 'b', 'c'],
             'public.kern2.round': ['a', 'b', 'c']
         };
         doh.assertTrue(validators.groupsValidator(value)[0]);
-        
+
         //glyphname doubled in group 1
         value = {
             'public.kern1.round': ['a', 'b', 'c', 'a'],
             'public.kern2.round': ['a', 'b', 'c']
         };
         doh.assertFalse(validators.groupsValidator(value)[0]);
-        
+
         //glyphName doubled in the kern2 groups
         value = {
             'public.kern1.round': ['a', 'b', 'c'],
@@ -2287,7 +2289,7 @@ define([
             'public.kern2.cornered': ['T', 'M', 'N']
         };
         doh.assertTrue(validators.groupsValidator(value)[0]);
-        
+
         // taken from the python doctests:
         value = {"A" : ["A", "A"], "A2" : ["A"]};
         doh.assertTrue(validators.groupsValidator(value)[0]);
@@ -2297,23 +2299,23 @@ define([
 
         value = {"public.awesome" : ["A"]};
         doh.assertTrue(validators.groupsValidator(value)[0]);
-        
+
         value = {"public.kern1." : ["A"]};
         doh.assertFalse(validators.groupsValidator(value)[0]);
-     
+
         value = {"public.kern2." : ["A"]};
         doh.assertFalse(validators.groupsValidator(value)[0]);
-        
+
         value = {"public.kern1.A" : ["A"], "public.kern2.A" : ["A"]};
         doh.assertTrue(validators.groupsValidator(value)[0]);
-        
+
         value = {"public.kern1.A1" : ["A"], "public.kern1.A2" : ["A"]};
         doh.assertFalse(validators.groupsValidator(value)[0]);
     },
     function Test_kerningValidator() {
         // wrong input datatypes
         kerning = 1, groups = {};
-        
+
         doh.assertError(
             TypeError,
             validators, 'kerningValidator',
@@ -2330,7 +2332,7 @@ define([
         // empty input will validate
         kerning = [], groups = {};
         doh.assertTrue(validators.kerningValidator(kerning, groups));
-        
+
         // however, a malformed kerning array will make this bark
         kerning = ['a'], groups = {};
         doh.assertError(
@@ -2353,8 +2355,8 @@ define([
             [kerning, groups],
             'Both arguments of _kerningNamesHash must be string'
         );
-        
-        
+
+
         // from the Python doctest
         var groups = {
             "public.kern1.O" : ["O", "D", "Q"],
@@ -2365,7 +2367,7 @@ define([
             [["D", "F"], -300]
         ];
         doh.assertTrue(validators.kerningValidator(kerning, groups));
-        
+
         kerning = [
             [["public.kern1.O", "public.kern2.E"], -100],
             [["public.kern1.O", "F"], -200],
@@ -2382,17 +2384,17 @@ define([
         doh.assertFalse(validators.fontLibValidator(lib)[0]);
         lib = true;
         doh.assertFalse(validators.fontLibValidator(lib)[0]);
-        
+
         // from the Python doctest
         lib = {foo: 'bar'};
         doh.assertTrue(validators.fontLibValidator(lib)[0]);
-        
+
         lib = {"public.awesome" : "hello"};
         doh.assertTrue(validators.fontLibValidator(lib)[0]);
-        
+
         lib = {"public.glyphOrder" : ["A", "C", "B"]};
         doh.assertTrue(validators.fontLibValidator(lib)[0]);
-        
+
         //public.glyphOrder is not properly formatted.
         lib = {"public.glyphOrder" : "hello"};
         doh.assertFalse(validators.fontLibValidator(lib)[0]);
@@ -2407,17 +2409,17 @@ define([
         doh.assertFalse(validators.glyphLibValidator(lib)[0]);
         lib = true;
         doh.assertFalse(validators.glyphLibValidator(lib)[0]);
-        
+
         // from the Python doctest
         lib = {"foo" : "bar"};
         doh.assertTrue(validators.glyphLibValidator(lib)[0]);
-        
+
         lib = {"public.awesome" : "hello"};
         doh.assertTrue(validators.glyphLibValidator(lib)[0]);
-      
+
         lib = {"public.markColor" : "1,0,0,0.5"};
         doh.assertTrue(validators.glyphLibValidator(lib)[0]);
-        
+
         //public.markColor is not properly formatted.
         lib = {"public.markColor" : 1}
         doh.assertFalse(validators.glyphLibValidator(lib)[0]);

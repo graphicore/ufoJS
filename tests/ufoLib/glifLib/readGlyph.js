@@ -1,12 +1,14 @@
 define([
-    'ufojs/main'
+    'doh'
+  , 'ufojs/main'
   , 'ufojs/errors'
   , 'ufojs/ufoLib/glifLib/readGlyph'
-  , 'ufojs/tools/pens/testPens'
+  , 'Atem-Pen-Case/pens/testPens'
   , 'ufojs/xml/main'
   , 'ufojs/plistLib/main'
 ], function(
-    main
+    doh
+  , main
   , errors
   , readGlyph
   , pens
@@ -125,11 +127,11 @@ define([
     doh.register("ufoLib.glifLib.readGlyph", [
         function Test_readGlyphFromString() {
             var glyphObject, pen, prediction, result,i;
-            
+
             // read the more complex glifString
             glyphObject = {};
             pen = new AbstractPointTestPen();
-            
+
             readGlyph.fromString(glifString, glyphObject, pen);
             doh.assertEqual(glyphObject,{name: 'R',
                                          width: 463,
@@ -139,22 +141,22 @@ define([
                                             { x: 208, y: 681, name: 'top' }
                                          ]
             })
-            
+
             doh.assertError(
                 errors.GlifLib,
                 readGlyph, 'fromString',
                 ['<glif />', {}],
                 'GLIF data is not properly formatted.'
             );
-            
+
             doh.assertError(
                 errors.Parser,
                 readGlyph, 'fromString',
                 ['<glyph ', {}],
                 'Not parseable.'
             );
-            
-            
+
+
             prediction = [
                 [ 'beginPath' ],
                 [ 'addPoint', [ 445, 0 ], 'line', false, 'horst' ],
@@ -185,7 +187,7 @@ define([
                 [ 'endPath' ],
                 [ 'addComponent', 'B', [ 1, 0, 0.3, 1, 350, 0 ] ]
             ];
-            
+
             result = pen.flush();
             doh.assertEqual(prediction, result)
             // check that especially points are stricly equal
@@ -196,7 +198,7 @@ define([
                     doh.assertTrue(prediction[i][1][1] === result[i][1][1]);
                 }
             }
-            
+
             // read format1GlifSpec glif
             glyphObject = {};
             pen = new AbstractPointTestPen();
@@ -231,7 +233,7 @@ define([
             glyphObject = {};
             pen = new AbstractPointTestPen();
             readGlyph.fromString(format2GlifSpec, glyphObject, pen);
-            
+
             prediction = {
                 name: 'period',
                 width: 268,
@@ -247,7 +249,7 @@ define([
                 },
                 lib: {
                     'com.letterror.somestuff': 'arbitrary custom data!',
-                    'public.markColor': '1,0,0,0.5' 
+                    'public.markColor': '1,0,0,0.5'
                 },
                 guidelines: [
                     { y: -12, name: 'overshoot', identifier: 'this is a guideline' },
@@ -256,13 +258,13 @@ define([
                 anchors: [ { x: 74, y: 197, name: 'top', identifier: 'just an anchor' } ],
                 unicodes: [ 46, 47 ]
             };
-            
-           
+
+
             doh.assertEqual(prediction, glyphObject);
-            
+
             prediction = [
                 [ 'beginPath', {identifier:undefined} ],
-                
+
                 [ 'addPoint', [ 237, 152 ], null, false, undefined, {identifier:undefined} ],
                 [ 'addPoint', [ 193, 187 ], null, false, undefined, {identifier:undefined} ],
                 [ 'addPoint',
@@ -293,7 +295,7 @@ define([
                 [ 'endPath' ]
             ];
             result = pen.flush()
-            
+
             doh.assertTrue(compareObjects(result, prediction, true));
         },
         function Test_readGlyph_RootElement() {
@@ -302,12 +304,12 @@ define([
               , i
               , fails
               ;
-            
+
             doc = xml.parseXMLString('<glyph name="minimal" format="2" />');
             glyphObject = {};
             readGlyph.fromDOM(doc, glyphObject);
             doh.assertEqual({ name: 'minimal' }, glyphObject);
-            
+
             fails = [
                 ['<generic />', 'No <glyph> root element']
               , ['<glyph name="" format="2" />', 'Name must be set']
@@ -354,7 +356,7 @@ define([
               , goodOutline
               , resetter
               ;
-            
+
             goodData = {
                     name: 'period',
                     guidelines: [
@@ -383,24 +385,24 @@ define([
                     {identifier:undefined} ],
                 [ 'endPath' ]
             ];
-            
+
             glyphObject = {}
             pen = new AbstractPointTestPen();
             readGlyph.fromString(format2Glif, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
-            
+
             doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
-            
+
             function setConflictID(nodes, value) {
                 var _reset =  nodes.map(function(node) {
                     return [node, node.hasAttribute('identifier')
                             , node.getAttribute('identifier')]
                 })
-                
+
                 nodes.forEach(function(node) {
                     node.setAttribute('identifier', value);
                 })
-                
+
                 // resetter
                 return function() {
                     _reset.forEach(function(item) {
@@ -411,10 +413,10 @@ define([
                     })
                 }
             }
-            
+
             // causing conflicts with some combinations, then resetting
             // and trying another combo
-            
+
             resetter = setConflictID([anchor1, point2], 'conflict')
             pen = new AbstractPointTestPen();
             glyphObject = {}
@@ -431,7 +433,7 @@ define([
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
             doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
-            
+
             resetter = setConflictID([guide2, anchor2], 'conflict')
             pen = new AbstractPointTestPen();
             doh.assertError(
@@ -447,7 +449,7 @@ define([
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
             doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
-            
+
             resetter = setConflictID([anchor1, anchor2], 'conflict')
             pen = new AbstractPointTestPen();
             doh.assertError(
@@ -463,7 +465,7 @@ define([
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
             doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
-            
+
             resetter = setConflictID([anchor1, contour], 'conflict')
             pen = new AbstractPointTestPen();
             doh.assertError(
@@ -479,7 +481,7 @@ define([
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
             doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
-            
+
             resetter = setConflictID([point2, contour], 'conflict')
             pen = new AbstractPointTestPen();
             doh.assertError(
@@ -495,7 +497,7 @@ define([
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
             doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
-            
+
             resetter = setConflictID([point1, point2], 'conflict')
             pen = new AbstractPointTestPen();
             doh.assertError(
@@ -511,7 +513,7 @@ define([
             readGlyph.fromDOM(doc, glyphObject, pen);
             doh.assertEqual(glyphObject, goodData);
             doh.assertTrue(compareObjects(pen.flush(), goodOutline, true));
-            
+
             // but!
             errors.warn('Some conflicting identifiers are not found if using '
                 +'no pen and thus no parsing and validating of the '

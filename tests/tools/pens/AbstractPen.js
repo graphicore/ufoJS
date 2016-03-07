@@ -1,6 +1,6 @@
 define(
-    ['ufojs/errors', 'ufojs/tools/pens/AbstractPen'],
-    function(errors, AbstractPen)
+    ['doh', 'ufojs/errors', 'Atem-Pen-Case/pens/AbstractPen'],
+    function(doh, errors, AbstractPen)
 {
     doh.register("ufojs.pens.AbstractPen", [
     function Test_AbstractPen_Errors(){
@@ -17,11 +17,11 @@ define(
             errors.NotImplemented,
             pen, 'curveTo'
         );
-        
+
         //these methods just do nothing:
         //pen.closePath
         //pen.endPath
-        
+
         doh.assertError(
             errors.NotImplemented,
             pen, 'addComponent'

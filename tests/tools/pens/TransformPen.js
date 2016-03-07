@@ -1,24 +1,25 @@
 define(
     [
+        'doh',
         'ufojs/errors',
-        'ufojs/tools/pens/testPens',
-        'ufojs/tools/pens/AbstractPen',
-        'ufojs/tools/pens/TransformPen',
-        'ufojs/tools/misc/transform'
+        'Atem-Pen-Case/pens/testPens',
+        'Atem-Pen-Case/pens/AbstractPen',
+        'Atem-Pen-Case/pens/TransformPen',
+        'Atem-Math-Tools/transform'
     ],
-    function(errors, TestPens, AbstractPen, TransformPen, transform)
+    function(doh, errors, TestPens, AbstractPen, TransformPen, transform)
 {
     /*shortcuts*/
     var TestPen = TestPens.AbstractTestPen,
         Transform = transform.Transform;
-    
+
     doh.register("ufojs.pens.TransformPen", [
     function Test_TransformPen_inheritance() {
-        
+
         var testPen = new TestPen(null),
             testTransformation = [0, 0, 1, 0, 0, 1],
             pen = new TransformPen(testPen, testTransformation);
-        
+
         doh.assertTrue(pen instanceof AbstractPen);
         doh.assertTrue(testPen instanceof AbstractPen);
     },
@@ -33,39 +34,39 @@ define(
             testTransformation = [2, 0, 0.5, 2, -10, 0],
             pen = new TransformPen(testPen, testTransformation),
             expecting, result;
-        
+
         expecting = [ ['moveTo', [-10, 0]] ]
         pen.moveTo([0, 0]);
         doh.assertEqual(expecting, testPen.flush());
-        
+
         expecting = [ ['lineTo', [40.0, 200]] ];
         pen.lineTo([0, 100]);
         doh.assertEqual(expecting, testPen.flush());
-        
+
         expecting = [
             ['curveTo', [127.5, 150], [135.0, 100], [102.5, 50], [-10.0, 0]]
         ];
         pen.curveTo([50, 75], [60, 50], [50, 25], [0, 0]);
         doh.assertEqual(expecting, testPen.flush());
-        
-        
+
+
         pen.qCurveTo([50, 75], [60, 50], [50, 25], [0, 0]);
         expecting = [
             ['qCurveTo', [127.5, 150], [135.0, 100], [102.5, 50], [-10.0, 0]]
         ];
         //seems to fail in python => investigate
         doh.assertEqual(expecting, testPen.flush());
-        
+
         pen.qCurveTo([50, 75], [60, 50], null);
         expecting = [
             ['qCurveTo', [127.5, 150], [135.0, 100], null],
         ];
         doh.assertEqual(expecting, testPen.flush());
-        
+
         pen.closePath();
         expecting = [ ['closePath'] ];
         doh.assertEqual(expecting, testPen.flush());
-        
+
         // its not possible to test the returned transformation matrix
         // within the assertEquals call, so we test that first.
         // we don't really transform ther matrix with the identity

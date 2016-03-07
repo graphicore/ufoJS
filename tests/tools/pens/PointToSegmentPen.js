@@ -1,13 +1,15 @@
 define(
     [
+        'doh',
         'ufojs/errors',
-        'ufojs/tools/pens/testPens',
-        'ufojs/tools/pens/AbstractPen',
-        'ufojs/tools/pens/AbstractPointPen',
-        'ufojs/tools/pens/BasePointToSegmentPen',
-        'ufojs/tools/pens/PointToSegmentPen'
+        'Atem-Pen-Case/pens/testPens',
+        'Atem-Pen-Case/pens/AbstractPen',
+        'Atem-Pen-Case/pens/AbstractPointPen',
+        'Atem-Pen-Case/pens/BasePointToSegmentPen',
+        'Atem-Pen-Case/pens/PointToSegmentPen'
     ],
     function(
+        doh,
         errors,
         TestPens,
         AbstractPen,
@@ -18,12 +20,12 @@ define(
 {
     /*shortcuts*/
     var TestPen = TestPens.AbstractTestPen;
-    
+
     doh.register("ufojs.pens.PointToSegmentPen", [
     function Test_PointToSegmentPen_inheritance() {
         var testPen = new TestPen(),
             pen = new PointToSegmentPen(testPen);
-        
+
         doh.assertTrue(pen instanceof AbstractPointPen);
         doh.assertTrue(pen instanceof BasePointToSegmentPen);
         //just for the sake of it
@@ -32,7 +34,7 @@ define(
     function Test_PointToSegmentPen_Errors() {
         var testPen = new TestPen(),
         pen = new PointToSegmentPen(testPen);
-        
+
         pen.beginPath();
         pen.addPoint([1, 1], 'move');
         pen.addPoint([2, 2], 'fancy');
@@ -42,7 +44,7 @@ define(
             [],
             'It\'s illegal! [Maurice Moss]'
         );
-        
+
         // this is not testable with the api the pen provides so we use
         // the 'private' method to ensure our warnings work and are
         // in place, the not-errors in the other tests are documenting
@@ -53,7 +55,7 @@ define(
             [[]],//empty list
             'It\'s illegal! [Maurice Moss]'
         );
-        
+
         var goodSegments = [
             [ 'move', [
                     [ [2, 2], false, null, {} ]
@@ -72,7 +74,7 @@ define(
             pen, '_flushContour',
             [badSegments]
         );
-        
+
         var badSegments = [
             [ 'move', [
                     [ [2, 2], false, null, {} ],
@@ -86,7 +88,7 @@ define(
             pen, '_flushContour',
             [badSegments]
         );
-        
+
         var goodSegments = [
             [ 'move', [
                     [ [2, 2], false, null, {} ]
@@ -115,10 +117,10 @@ define(
             pen, '_flushContour',
             [badSegments]
         );
-        
-        
-        
-        
+
+
+
+
     },
     function Test_PointToSegmentPen_flushContour() {
         // these are the same tests as in the ufojs.pens.BasePointToSegmentPen
@@ -126,12 +128,12 @@ define(
         // another translation of the output
         var testPen = new TestPen(),
         pen = new PointToSegmentPen(testPen);
-            
+
         //no addPoint so nothing happened
         var expecting = [];
         pen.beginPath();
         pen.endPath();
-        
+
         // testing for a 'smart' thing endPath does, if there
         // is only one point it has to be a 'move', so it transforms
         // our 'curve' into a move
@@ -143,7 +145,7 @@ define(
         pen.addPoint([1, 1], 'fancy', true);
         pen.endPath();
         doh.assertEqual(expecting, testPen.flush());
-        
+
         //an open countour
         var expecting = [
             ['moveTo', [1, 1] ],
@@ -157,7 +159,7 @@ define(
         pen.addPoint([4, 4], 'curve', true);
         pen.endPath();
         doh.assertEqual(expecting, testPen.flush());
-        
+
         // the pen will rotate the point list so that it ends with the
         // first on curve point of the point list,
         // then the flushContour will prepend a moveTo to the last point
@@ -180,7 +182,7 @@ define(
         pen.addPoint([5, 5]);
         pen.endPath();
         doh.assertEqual(expecting, testPen.flush());
-        
+
         //the quadratic curves special case without on curve points
         var expecting = [
             ['qCurveTo', [1, 1], [2, 2], [3, 3], [4, 4], [5, 5], null ],
@@ -213,7 +215,7 @@ define(
         pen.addPoint([5, 5], 'line');
         pen.endPath();
         doh.assertEqual(expecting, testPen.flush());
-        
+
         //a closed countour
         var expecting = [
             ['moveTo', [4, 4] ],

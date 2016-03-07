@@ -1,11 +1,13 @@
 define([
-    'ufojs/main'
+    'doh'
+  , 'ufojs/main'
   , 'ufojs/errors'
   , 'ufojs/xml/main'
   , 'ufojs/plistLib/main'
   , 'ufojs/ufoLib/glifLib/writeGlyph'
 ], function(
-    main
+    doh
+  , main
   , errors
   , xml
   , plistLib

@@ -1,6 +1,6 @@
 define(
-    ['ufojs/enhance', 'ufojs/errors'],
-    function(enhance, errors)
+    ['doh', 'ufojs/enhance', 'ufojs/errors'],
+    function(doh, enhance, errors)
 {
     doh.register("ufojs.enhance", [
     function Test_Enhance(){
@@ -10,7 +10,7 @@ define(
                 throw new errors.NotImplemented;
             }
         });
-        
+
         var ConcreteObject = function(){};
         ConcreteObject.prototype = new AbstractObject;
         enhance(ConcreteObject, {
@@ -24,7 +24,7 @@ define(
             abstract, 'test',
             []
         );
-        
+
         var concrete = new ConcreteObject;
         doh.assertTrue(concrete.test());
         doh.assertTrue(concrete instanceof AbstractObject);

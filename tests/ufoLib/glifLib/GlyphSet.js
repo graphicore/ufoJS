@@ -1,16 +1,20 @@
 define([
-    'ufojs/main'
+    'doh'
+  , 'ufojs/main'
   , 'ufojs/errors'
+  , 'Atem-IO/errors'
   , 'ufojs/ufoLib/glifLib/misc'
   , 'ufojs/ufoLib/glifLib/constants'
   , 'ufojs/ufoLib/glifLib/GlyphSet'
   , 'ufojs/plistLib/main'
-  , 'ufojs/tools/io/static'
-  , 'ufojs/tools/io/TestingIO'
-  , 'ufojs/tools/pens/testPens'
+  , 'Atem-IO/io/static'
+  , 'Atem-IO/io/TestingIO'
+  , 'Atem-Pen-Case/pens/testPens'
 ], function(
-    main
+    doh
+  , main
   , errors
+  , ioErrors
   , misc
   , constants
   , GlyphSet
@@ -20,43 +24,43 @@ define([
   , pens
 ) {
     "use strict";
-    
+
     var compareObjects = plistLib._comparePlists
       , AbstractPointTestPen = pens.AbstractPointTestPen
-    
+
       , testGlyphSet = 'testdata/TestFont1 (UFO3).ufo/glyphs'
       , contentsPlist = testGlyphSet + '/contents.plist'
-        
+
       , glyphSetFaulty = 'testdata/testing-layers/faulty'
       , faultyPlist = glyphSetFaulty + '/contents.plist'
-      
+
       , glyphSetNoLayerInfo = 'testdata/TestFont1 (UFO3).ufo/glyphs.arbitrary'
       , glyphSetABC = glyphSetNoLayerInfo
-      
+
       , glyphSetEmpty = 'testdata/testing-layers/empty'
       , notFoundPlist = glyphSetEmpty + '/contents.plist'
-      
+
       , glyphSetFileNameFail = 'testdata/testing-layers/file-name-fail'
-      
+
       , glyphSetMissingGlyph = 'testdata/testing-layers/missing-glyph'
-      
+
       , glyphSetFaultyLayerinfo = 'testdata/testing-layers/faulty-layerinfo'
       , glyphSetWrongFormatLayerinfo = 'testdata/testing-layers/wrong-format-layerinfo'
       , glyphSetBrokenColorLayerinfo = 'testdata/testing-layers/broken-color-layerinfo'
-      
+
       , glyphSetWithComponents = 'testdata/testing-layers/with-components'
-      
+
       , glyphSetWithImages = 'testdata/testing-layers/with-images'
-      
+
       , contentsPlistContent = { A: 'A_.glif', B: 'B_.glif' }
-      
+
       , layerinfoPlistContent = { color: '0.3,0.5,1,0', lib: { greeting: 'hello' } }
-      
+
       // plist with array as root element
       , arrayPlist = 'testdata/array.plist'
       , arrayData = [ 'Jonny', 'Bello', { 'given-name': 'John', type: 'snail' } ]
       ;
-    
+
     function _drawToPen(command) {
         var cmd = command[0]
           , args = command.slice(1)
@@ -66,7 +70,7 @@ define([
     function _drawPoints(commands, pen) {
         commands.map(_drawToPen, pen)
     }
-    
+
     /**
      * create a TestingIO
      */
@@ -78,20 +82,20 @@ define([
           , mtime = mtime ||  new Date()
           ;
         testingIO.files[[dir, 'contents.plist'].join('/')] = [contentsPlist, mtime]
-        
+
         for(k in contentsPlistContent) {
             glifname = [dir, contentsPlistContent[k]].join('/');
             testingIO.files[glifname] = ['fake', mtime];
         }
         return testingIO;
     }
-    
+
     doh.register("ufoLib.glifLib.GlyphSet", [
         function Test_GlyphSet_constructor() {
             var glyphset
               , injectedFunc = function(){}
               ;
-            
+
             // instead of new
             glyphset = Object.create(GlyphSet.prototype);
             // run the constructor
@@ -101,7 +105,7 @@ define([
                 [glyphset],
                 'GlyphSet I/O module missing'
             );
-            
+
             // instead of new
             glyphset = Object.create(GlyphSet.prototype);
             // run the constructor
@@ -111,7 +115,7 @@ define([
                 [glyphset, staticIO],
                 'GlyphSet: dirName is missing'
             );
-            
+
             // instead of new
             glyphset = Object.create(GlyphSet.prototype);
             // run the constructor
@@ -121,7 +125,7 @@ define([
                 [glyphset, staticIO, testGlyphSet, undefined, -1],
                 'Unsupported UFO format version: -1'
             );
-            
+
             glyphset = new GlyphSet(staticIO, testGlyphSet, undefined, 3);
             doh.assertEqual(3, glyphset.ufoFormatVersion)
             doh.assertEqual(testGlyphSet, glyphset.dirName)
@@ -131,7 +135,7 @@ define([
             // glyphset.contents is set by rebuildContents
             doh.assertEqual(undefined, glyphset.contents)
             doh.assertTrue('contents' in glyphset)
-            
+
             glyphset = new GlyphSet(staticIO, testGlyphSet, injectedFunc);
             doh.assertEqual(injectedFunc, glyphset.glyphNameToFileName)
         }
@@ -139,23 +143,23 @@ define([
             var glyphset
               , array
               ;
-            
+
             glyphset = new GlyphSet(staticIO, testGlyphSet);
             // this works with any plist
             doh.assertEqual(arrayData, glyphset._readPlist(false, arrayPlist));
             // and with contents.plist
             doh.assertEqual(contentsPlistContent,
                             glyphset._readPlist(false, contentsPlist));
-            
-            // errors.IONoEntry, is expected on 404 or equivalent
+
+            // ioErrors.IONoEntry, is expected on 404 or equivalent
             doh.assertError(
-                errors.IONoEntry,
+                ioErrors.IONoEntry,
                 glyphset, '_readPlist',
                 [false, notFoundPlist],
                 "IONoEntry Error: ENOENT, no such file or directory "
                 + "'non-existent.plist'"
             )
-            
+
             // anything else must raise errors.GlifLib
             doh.assertError(
                 errors.GlifLib,
@@ -198,7 +202,7 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            // errors.IONoEntry, is expected on 404 or equivalent
+            // ioErrors.IONoEntry, is expected on 404 or equivalent
             glyphset._readPlist(true, notFoundPlist)
             .then(
                 function(result) {
@@ -207,7 +211,7 @@ define([
                 },
                 function(error) {
                     doh.assertError(
-                        errors.IONoEntry,
+                        ioErrors.IONoEntry,
                         {echo: function(error){ throw error; }}, 'echo',
                         [error],
                         "IONoEntry Error: ENOENT, no such file or directory "
@@ -245,14 +249,14 @@ define([
             .then(undefined, errback)
             return deferred;
         }
-        
+
       , function Test_GlyphSet_rebuildContents_faultyPlist() {
             var glyphset
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
             // errors.GlifLib, is expected
-            
+
             // sync
             glyphset = new GlyphSet(staticIO, glyphSetFaulty);
             doh.assertError(
@@ -262,7 +266,7 @@ define([
                 'GlifLib Error: The file "testdata/faulty.plist" could '
                 + 'not be read. ...'
             );
-            
+
             // async
             glyphset = new GlyphSet(staticIO, glyphSetFaulty);
             glyphset.rebuildContents(true)
@@ -295,7 +299,7 @@ define([
             // sync
             glyphset = new GlyphSet(staticIO, glyphSetEmpty);
             doh.assertError(
-                errors.IONoEntry,
+                ioErrors.IONoEntry,
                 glyphset, 'rebuildContents',
                 [false],
                 'GlifLib Error: The file "testdata/faulty.plist" could '
@@ -312,7 +316,7 @@ define([
                 },
                 function(error) {
                     doh.assertError(
-                        errors.IONoEntry,
+                        ioErrors.IONoEntry,
                         {echo: function(error){ throw error; }}, 'echo',
                         [error],
                         'GlifLib Error: The file "testdata/faulty.plist" could '
@@ -331,7 +335,7 @@ define([
             , deferred = new doh.Deferred()
             , errback = deferred.errback.bind(deferred)
             ;
-            
+
             // sync
             glyphset = new GlyphSet(staticIO, glyphSetFileNameFail);
             doh.assertError(
@@ -341,7 +345,7 @@ define([
                 'GlifLib Error: contents.plist is not properly formatted '
                 + 'the value at "B" is not string but:number'
             )
-            
+
             // async
             glyphset = new GlyphSet(staticIO, glyphSetFileNameFail)
             glyphset.rebuildContents(true)
@@ -380,7 +384,7 @@ define([
                 + 'does not exist: '
                 + 'testdata/contentplists/missing-glyph/C_.glif'
             )
-            
+
             // async
             glyphset = new GlyphSet(staticIO, glyphSetMissingGlyph)
             glyphset.rebuildContents(true)
@@ -409,12 +413,12 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             // sync
             glyphset = GlyphSet.factory(false, staticIO, testGlyphSet);
             doh.assertTrue(glyphset instanceof GlyphSet);
             doh.assertEqual(contentsPlistContent, glyphset.contents);
-            
+
             GlyphSet.factory(true, staticIO, testGlyphSet)
             .then(function(glyphset) {
                     doh.assertTrue(glyphset instanceof GlyphSet);
@@ -422,16 +426,16 @@ define([
                     deferred.callback(true);
             })
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet_factory_genericError() {
-            // picking the Error caused by  lyphSetMissingGlyph 
+            // picking the Error caused by  lyphSetMissingGlyph
             // just to proof that GlyphSet.factory handles it right.
             var deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             doh.assertError(
                 errors.GlifLib,
                 GlyphSet, 'factory',
@@ -440,7 +444,7 @@ define([
                 + 'that does not exist: '
                 + 'testdata/contentplists/missing-glyph/C_.glif'
             )
-            
+
             // async
             GlyphSet.factory(true, staticIO, glyphSetMissingGlyph)
             .then(
@@ -482,17 +486,17 @@ define([
               , errback = deferred.errback.bind(deferred)
               ;
             testingIO = _getTestingIO(testGlyphSet)
-            
+
             glyphset = GlyphSet.factory(false, testingIO, testGlyphSet)
             glyphset.contents['X'] = 'X_.glif';
-            
+
             glyphset.writeContents(false);
-            
+
             newPlistContent = plistLib.readPlistFromString(
                                 testingIO.readFile(false, contentsPlist));
             doh.assertTrue('X' in newPlistContent);
             doh.assertEqual(newPlistContent['X'], 'X_.glif');
-            
+
             glyphset.contents['Y'] = 'Y_.glif';
             glyphset.writeContents(true)
             .then(function(){
@@ -512,12 +516,12 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             glyphset = GlyphSet.factory(false, staticIO, testGlyphSet);
             result = glyphset.readLayerInfo(false, info)
             doh.assertTrue(result === info);
             doh.assertEqual(layerinfoPlistContent, info);
-            
+
             info = {};
             glyphset.readLayerInfo(true, info)
             .then(function(result) {
@@ -535,12 +539,12 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             glyphset = GlyphSet.factory(false, staticIO, glyphSetNoLayerInfo);
             result = glyphset.readLayerInfo(false, info)
             doh.assertTrue(result === info);
             doh.assertEqual({}, info);
-            
+
             info = {};
             glyphset.readLayerInfo(true, info)
             .then(function(result) {
@@ -558,9 +562,9 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             glyphset = GlyphSet.factory(false, staticIO, glyphSetFaultyLayerinfo);
-            
+
             doh.assertError(
                 errors.GlifLib,
                 glyphset, 'readLayerInfo',
@@ -568,9 +572,9 @@ define([
                 'The file "..." could not be read.'
             )
             doh.assertEqual({}, info);
-            
-            
-            
+
+
+
             info = {};
             glyphset.readLayerInfo(true, info)
             .then(
@@ -599,9 +603,9 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             glyphset = GlyphSet.factory(false, staticIO, glyphSetWrongFormatLayerinfo);
-            
+
             doh.assertError(
                 errors.GlifLib,
                 glyphset, 'readLayerInfo',
@@ -609,7 +613,7 @@ define([
                 'layerinfo.plist is not properly formatted.'
             )
             doh.assertEqual({}, info);
-            
+
             info = {};
             glyphset.readLayerInfo(true, info)
             .then(
@@ -640,9 +644,9 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             glyphset = GlyphSet.factory(false, staticIO, glyphSetBrokenColorLayerinfo);
-            
+
             doh.assertError(
                 errors.GlifLib,
                 glyphset, 'readLayerInfo',
@@ -650,9 +654,9 @@ define([
                 'Invalid value for attribute color (string: 0.3,A B C,1,0)'
             )
             doh.assertEqual({}, info);
-            
-            
-            
+
+
+
             info = {};
             glyphset.readLayerInfo(true, info)
             .then(
@@ -694,14 +698,14 @@ define([
                 }
               , resultString, result
               ;
-            
+
             glyphset = GlyphSet.factory(false, staticIO, testGlyphSet);
             resultString = glyphset.writeLayerInfoToString(info);
             result = plistLib.readPlistFromString(resultString);
             doh.assertTrue(compareObjects(filteredInfo, result, true));
             doh.assertFalse('madeUpKey' in result);
-            
-            
+
+
             glyphset = GlyphSet.factory(false, staticIO, testGlyphSet, undefined, 2);
             doh.assertError(
                 errors.GlifLib,
@@ -709,7 +713,7 @@ define([
                 [info],
                 'layerinfo.plist is not allowed in UFO 2.'
             )
-            
+
             // test that validateLayerInfoVersion3Data kicks in
             glyphset = GlyphSet.factory(false, staticIO, testGlyphSet);
             doh.assertError(
@@ -735,20 +739,20 @@ define([
               , errback = deferred.errback.bind(deferred)
               ;
             glyphset = GlyphSet.factory(false, testingIO, testGlyphSet);
-            
+
             doh.assertFalse(testingIO.pathExists(false, path));
             glyphset.writeLayerInfo(false, info);
             doh.assertTrue(testingIO.pathExists(false, path));
-            
+
             resultString = testingIO.readFile(false, path)
             result = plistLib.readPlistFromString(resultString);
             doh.assertTrue(compareObjects(info, result, true));
-            
+
             // async
             testingIO = _getTestingIO(testGlyphSet)
             glyphset = GlyphSet.factory(false, testingIO, testGlyphSet);
             doh.assertFalse(testingIO.pathExists(false, path));
-            
+
             glyphset.writeLayerInfo(true, info)
             .then(function(){
                 doh.assertTrue(testingIO.pathExists(false, path));
@@ -758,12 +762,12 @@ define([
                 deferred.callback(true);
             }, undefined)
             .then(undefined, errback)
-            
+
             // see, it's really async :-)
             doh.assertFalse(testingIO.pathExists(false, path));
             return deferred;
         }
-        
+
         , function Test_GlyphSet_getGLIFcache() {
             var glyphset
               , testingIO = _getTestingIO('.', new Date(1999, 0,1))
@@ -773,7 +777,7 @@ define([
               , errback = deferred.errback.bind(deferred)
               , callback = function(){deferred.callback(true);}
               ;
-            
+
             glyphset = GlyphSet.factory(false, testingIO, '.');
             cache = glyphset._getGLIFcache(false, 'A');
             // the same content in cache and testingIO
@@ -790,11 +794,11 @@ define([
             // but both checks consider the values to be equal
             doh.assertEqual(testingIO.files['./A_.glif'], cache)
             doh.assertTrue(compareObjects(testingIO.files['./A_.glif'], cache, true))
-            
+
             newCache = glyphset._getGLIFcache(false, 'A');
             // same identity, there was no reason to reload
             doh.assertTrue(newCache === cache)
-            
+
             // cache is outdated now
             testingIO.writeFile(false, './A_.glif', 'other value');
             newCache = glyphset._getGLIFcache(false, 'A');
@@ -804,8 +808,8 @@ define([
             doh.assertFalse(compareObjects(newCache, cache));
             // the cache has the same value as the testingIO file entry
             doh.assertEqual(testingIO.files['./A_.glif'], newCache);
-            
-            
+
+
             // async
             testingIO = _getTestingIO('.', new Date(1999, 0,1))
             glyphset = GlyphSet.factory(false, testingIO, '.');
@@ -814,7 +818,7 @@ define([
                 // save in closure namespace
                 oldCache = cache;
                 doh.assertEqual(testingIO.files['./A_.glif'], cache)
-                
+
                 // return a promise
                 return glyphset._getGLIFcache(true, 'A');
             })
@@ -823,7 +827,7 @@ define([
                 newCache = cache;
                 // same identity, there was no reason to reload
                 doh.assertTrue(oldCache, cache)
-                
+
                 // cache is outdated now
                 testingIO.writeFile(false, './A_.glif', 'other value');
                 return glyphset._getGLIFcache(true, 'A');
@@ -846,14 +850,14 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             doh.assertError(
                 errors.Key,
                 glyphset, '_getGLIFcache',
                 [false, 'X'],
                 'Key Error: X'
             )
-            
+
             glyphset._getGLIFcache(true, 'X')
             .then(
                 function(result) {
@@ -871,7 +875,7 @@ define([
                 }
             )
             .then(undefined, errback)
-            
+
         }
       , function Test_GlyphSet_getGLIFcache_KeyError_readfile() {
             // keyerror because glyphName was not in contents.plist
@@ -881,16 +885,16 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             testingIO.unlink(false, './A_.glif');
-            
+
             doh.assertError(
                 errors.Key,
                 glyphset, '_getGLIFcache',
                 [false, 'A'],
                 'Key Error: A'
             )
-            
+
             glyphset._getGLIFcache(true, 'A')
             .then(
                 function(result) {
@@ -908,7 +912,7 @@ define([
                 }
             )
             .then(undefined, errback)
-            
+
             return deferred;
         }
       , function Test_GlyphSet_getGLIFcache_KeyError_mtime() {
@@ -919,10 +923,10 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             // first read, then delete, then fail with updating because
             // mtime can't find the file
-            
+
             glyphset._getGLIFcache(false, 'A');
             testingIO.unlink(false, './A_.glif');
             doh.assertError(
@@ -931,7 +935,7 @@ define([
                 [false, 'A'],
                 'Key Error: A'
             )
-            
+
             glyphset._getGLIFcache(true, 'A')
             .then(
                 function(result) {
@@ -949,7 +953,7 @@ define([
                 }
             )
             .then(undefined, errback)
-            
+
             return deferred;
         }
       , function Test_GlyphSet_getGLIF() {
@@ -962,15 +966,15 @@ define([
               ;
             glif = glyphset.getGLIF(false, 'A');
             doh.assertEqual(expected, glif);
-            
-            
+
+
             glyphset.getGLIF(true, 'A')
             .then(function(glif){
                 doh.assertEqual(expected, glif);
                 deferred.callback(true);
             })
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet_getGLIFDocument_ParserError() {
@@ -980,15 +984,15 @@ define([
               , errback = deferred.errback.bind(deferred)
               , glif
               ;
-            
+
             doh.assertError(
                 errors.Parser,
                 glyphset, 'getGLIFDocument',
                 [false, 'A'],
                 "Parser Error: XML SAX2 Parser: Start tag expected, '<' not found"
             );
-            
-            
+
+
             glyphset.getGLIFDocument(true, 'A')
             .then(
                 function(result) {
@@ -1014,10 +1018,10 @@ define([
               , errback = deferred.errback.bind(deferred)
               , glifDoc
               ;
-            
+
             glifDoc = glyphset.getGLIFDocument(false, 'A')
             doh.assertEqual('glyph', glifDoc.documentElement.tagName);
-            
+
             glyphset = GlyphSet.factory(false, staticIO, testGlyphSet)
             glyphset.getGLIFDocument(true, 'A')
             .then(
@@ -1042,11 +1046,11 @@ define([
             docs = glyphset._getGLIFDocuments(false, request);
             doh.assertEqual(request, Object.keys(docs).sort());
             doh.assertTrue( Object.keys(docs).every(docIsGlyph, docs));
-            
+
             // whithout a "request" all glyphs will be returned
             docs = glyphset._getGLIFDocuments(false);
             doh.assertEqual(['A', 'B', 'C'], Object.keys(docs).sort());
-            
+
             glyphset._getGLIFDocuments(true, request)
             .then(function(docs){
                 doh.assertEqual(request, Object.keys(docs).sort());
@@ -1054,7 +1058,7 @@ define([
                 deferred.callback(true);
             })
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet__getGLIFDocuments_keyError() {
@@ -1067,7 +1071,7 @@ define([
                     return this[k].documentElement.tagName === 'glyph';
                 }
               ;
-            
+
             glyphset._getGLIFDocuments(true, request)
             .then(
                 function(result) {
@@ -1085,7 +1089,7 @@ define([
                 }
             )
             .then(undefined, errback)
-            
+
             return deferred;
         }
       , function Test_GlyphSet_getGLIFModificationTime() {
@@ -1096,18 +1100,18 @@ define([
               , errback = deferred.errback.bind(deferred)
               , glifMTime
               ;
-            
+
             glifMTime = glyphset.getGLIFModificationTime(false, 'A');
             doh.assertEqual(mTime, glifMTime);
             doh.assertNotEqual(mTime, new Date());
-            
+
             doh.assertError(
                 errors.Key,
                 glyphset, 'getGLIFModificationTime',
                 [false, 'X'],
                 'Key Error: X'
             );
-            
+
             glyphset.getGLIFModificationTime(true, 'A')
             .then(function(glifMTime) {
                 doh.assertEqual(mTime, glifMTime);
@@ -1131,13 +1135,13 @@ define([
                 }
             )
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet__purgeCachedGLIF() {
             var glyphset = GlyphSet.factory(false, staticIO, testGlyphSet);
             glyphset.getGLIFModificationTime(false, 'A');
-            
+
             doh.assertTrue('A' in glyphset._glifCache);
             glyphset._purgeCachedGLIF('A');
             doh.assertFalse('A' in glyphset._glifCache);
@@ -1164,8 +1168,8 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
-            doh.assertNotEqual(expectedGlyph, glyphObject)  
+
+            doh.assertNotEqual(expectedGlyph, glyphObject)
             result = glyphset.readGlyph(false, 'A', glyphObject, pen);
             doh.assertTrue(glyphObject === result);
             doh.assertEqual(expectedGlyph, glyphObject)
@@ -1176,7 +1180,7 @@ define([
                 [false, 'X'],
                 'Key Error: X'
             );
-            
+
             // async
             glyphObject = {}
             pen = new AbstractPointTestPen()
@@ -1204,7 +1208,7 @@ define([
                 }
             )
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet_writeGlyph() {
@@ -1231,7 +1235,7 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             doh.assertFalse(glyphset.has_key('X'))
             doh.assertFalse(testingIO.pathExists(false, './X_.glif'))
             doh.assertFalse('x_.glif' in glyphset.getReverseContents())
@@ -1240,7 +1244,7 @@ define([
             doh.assertTrue(testingIO.pathExists(false, './X_.glif'))
             doh.assertTrue(glyphset.has_key('X'))
             doh.assertTrue('x_.glif' in glyphset.getReverseContents())
-            
+
             // setting the date to a value in the past
             testingIO.files['./X_.glif'][1] = glyphDate;
             // this shouldn't write, because the data didn't change
@@ -1253,24 +1257,24 @@ define([
             doh.assertFalse(testingIO.files['./X_.glif'][1] === glyphDate);
             doh.assertEqual('X', glyphset.getGLIFDocument(false, 'X')
                                     .documentElement.getAttribute('name'));
-            
+
             // test some aspects of the format version
             doh.assertEqual('2', glyphset.getGLIFDocument(false, 'X')
                                 .documentElement.getAttribute('format'))
-            
+
             // force format version 1
             glyphset.writeGlyph(false, 'X', glyphData, drawPointsFunc, 1);
             doh.assertEqual('1', glyphset.getGLIFDocument(false, 'X')
                                 .documentElement.getAttribute('format'))
-            
-            
+
+
             doh.assertError(
                 errors.GlifLib,
                 glyphset, 'writeGlyph',
                 [false, 'X', undefined, undefined, 100],
                 'Unsupported GLIF format version: 100'
             )
-            
+
             glyphset = GlyphSet.factory(false, testingIO, '.', undefined, 2);
             doh.assertError(
                 errors.GlifLib,
@@ -1278,37 +1282,37 @@ define([
                 [false, 'X', undefined, undefined, 2],
                 'Unsupported GLIF format version (2) for UFO format version 2.'
             )
-            
+
             glyphset.writeGlyph(false, 'X', glyphData, drawPointsFunc);
             doh.assertEqual('1', glyphset.getGLIFDocument(false, 'X')
                                 .documentElement.getAttribute('format'))
-            
+
             // reverse the name. no checks are done
             glyphNameToFilename = function(glyphName, injected_glyphSet) {
                 doh.assertTrue(injected_glyphSet === glyphset);
-                
+
                 var nameArr = glyphName.split('');
                 nameArr.reverse();
                 nameArr.push('.glif');
                 return nameArr.join('');
             }
-            
+
             glyphset = GlyphSet.factory(false, testingIO, '.', glyphNameToFilename)
             glyphset.writeGlyph(false, 'YX', glyphData, drawPointsFunc);
             doh.assertEqual('XY.glif', glyphset.contents['YX']);
-            
-            
-            
+
+
+
             // async
             testingIO = _getTestingIO('.', mTime)
             glyphset = GlyphSet.factory(false, testingIO, '.')
-            
+
             glyphset.writeGlyph(true, 'X', glyphData, drawPointsFunc)
             .then(function() {
                 doh.assertEqual( 'X_.glif', glyphset.contents['X'])
                 doh.assertTrue(testingIO.pathExists(false, './X_.glif'))
                 doh.assertTrue(glyphset.has_key('X'))
-                
+
                 // setting the date to a value in the past
                 testingIO.files['./X_.glif'][1] = glyphDate;
                 // this shouldn't write, because the data didn't change
@@ -1337,24 +1341,24 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
-            
+
+
             doh.assertTrue('A' in glyphset.contents);
             glyphset.getGLIF(false, 'A');
             doh.assertTrue('A' in glyphset._glifCache);
             doh.assertTrue('./A_.glif' in testingIO.files);
             glyphset.getReverseContents();
-            
+
             glyphset.deleteGlyph(false, 'A');
             doh.assertFalse('A' in glyphset.contents);
             doh.assertFalse('A' in glyphset._glifCache);
             doh.assertFalse('./A_.glif' in testingIO.files);
-            
+
             // async
             testingIO = _getTestingIO('.', mTime);
             glyphset = GlyphSet.factory(false, testingIO, '.');
             glyphset.getReverseContents();
-            
+
             glyphset.deleteGlyph(true, 'A')
             .then(function() {
                 doh.assertFalse('A' in glyphset.contents);
@@ -1394,18 +1398,18 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             glyph = glyphset.get('B');
             doh.assertTrue(glyph instanceof GlyphSet.prototype.GlyphClass);
             doh.assertEqual(expected1, glyph);
             glyph.drawPoints(false, pen);
             doh.assertEqual(expected2, glyph);
             doh.assertEqual(expectedOutline, pen.flush());
-            
+
             // async
             glyph = glyphset.get('B');
             doh.assertEqual(expected1, glyph);
-            
+
             glyph.drawPoints(true, pen)
             .then(function(resultGlyph) {
                 doh.assertTrue(glyph === resultGlyph);
@@ -1414,7 +1418,7 @@ define([
                 deferred.callback(true);
             })
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet__mapGLIFDocuments() {
@@ -1427,10 +1431,10 @@ define([
               , errback = deferred.errback.bind(deferred)
               ;
               ;
-            
+
             result = glyphset._mapGLIFDocuments(false, ['A', 'B'], mapper);
             doh.assertEqual(expected, result);
-            
+
             // async
             glyphset._mapGLIFDocuments(true, ['A', 'B'], mapper)
             .then(function(result) {
@@ -1438,7 +1442,7 @@ define([
                 deferred.callback(true);
             })
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet_getUnicodes() {
@@ -1448,10 +1452,10 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             result = glyphset.getUnicodes(false, ['A', 'B']);
             doh.assertEqual(expected, result);
-            
+
             // async
             glyphset.getUnicodes(true, ['A', 'B'])
             .then(function(result) {
@@ -1459,7 +1463,7 @@ define([
                 deferred.callback(true);
             })
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet_getComponentReferences() {
@@ -1470,10 +1474,10 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             result = glyphset.getComponentReferences(false, request);
             doh.assertEqual(expected, result);
-            
+
             // async
             glyphset.getComponentReferences(true, request)
             .then(function(result) {
@@ -1481,7 +1485,7 @@ define([
                 deferred.callback(true);
             })
             .then(undefined, errback);
-            
+
             return deferred;
         }
       , function Test_GlyphSet_getImageReferences() {
@@ -1492,10 +1496,10 @@ define([
               , deferred = new doh.Deferred()
               , errback = deferred.errback.bind(deferred)
               ;
-            
+
             result = glyphset.getImageReferences(false, request);
             doh.assertEqual(expected, result);
-            
+
             // async
             glyphset.getImageReferences(true, request)
             .then(function(result) {
@@ -1503,7 +1507,7 @@ define([
                 deferred.callback(true);
             })
             .then(undefined, errback);
-            
+
             return deferred;
         }
     ])

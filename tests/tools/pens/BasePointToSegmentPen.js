@@ -1,11 +1,13 @@
 define(
     [
+        'doh',
         'ufojs/errors',
-        'ufojs/tools/pens/AbstractPointPen',
-        'ufojs/tools/pens/BasePointToSegmentPen',
-        'ufojs/tools/pens/testPens'
+        'Atem-Pen-Case/pens/AbstractPointPen',
+        'Atem-Pen-Case/pens/BasePointToSegmentPen',
+        'Atem-Pen-Case/pens/testPens'
     ],
     function(
+        doh,
         errors,
         AbstractPointPen,
         BasePointToSegmentPen,
@@ -14,35 +16,35 @@ define(
 {
     /*shortcuts*/
     var TestPen = testPens.BasePointToSegmentTestPen;
-    
+
     doh.register("ufojs.pens.BasePointToSegmentPen", [
     function Test_BasePointToSegmentPen_inheritance() {
         var pen = new BasePointToSegmentPen();
         doh.assertTrue(pen instanceof AbstractPointPen);
-        
+
         var pen = new TestPen;
         doh.assertTrue(pen instanceof AbstractPointPen);
         doh.assertTrue(pen instanceof BasePointToSegmentPen);
     },
     function Test_BasePointToSegmentPen_Errors() {
         var pen = new BasePointToSegmentPen();
-        
+
         doh.assertError(
             TypeError,//TypeError: Cannot call method 'push' of null
             pen, 'addPoint',
             [[1, 1]],
             'addPoint before beginPath'
         );
-        
+
         doh.assertError(
             errors.Assertion,
             pen, 'endPath',
             [],
             'currentPath is null'
         );
-        
+
         pen.beginPath();
-        
+
         doh.assertError(
             errors.Assertion,
             pen, 'beginPath',
@@ -53,13 +55,13 @@ define(
         pen.endPath();
         //after calling endPath we can call beginPath again
         pen.beginPath();
-        
+
         var pen = new BasePointToSegmentPen();
         doh.assertError(
             errors.NotImplemented,
             pen, 'addComponent'
         );
-        
+
         doh.assertError(
             errors.NotImplemented,
             pen, '_flushContour'
@@ -80,27 +82,27 @@ define(
     },
     function Test_BasePointToSegmentPen_endPath() {
         var pen = new TestPen();
-        
+
         //no addPoint so nothing happened
         var expecting = [];
         pen.beginPath();
         pen.endPath();
         doh.assertEqual( expecting, pen.flush() );
-        
+
         // testing for a 'smart' thing endPath does, if there
         // is only one point it has to be a 'move', so it transforms
         // our 'curve' into a move
         var kwargs = undefined
           , expecting = [
             ['_flushContour', /* segments: */  [
-                [ 'move', [ [ [1, 1], true, null, {} ] ] ] 
+                [ 'move', [ [ [1, 1], true, null, {} ] ] ]
             ], kwargs]
         ];
         pen.beginPath(kwargs);
         pen.addPoint([1, 1], 'curve', true);
         pen.endPath();
         doh.assertEqual(expecting, pen.flush());
-        
+
         //an open countour
         var expecting = [
             ['_flushContour', /* segments: */  [
@@ -119,7 +121,7 @@ define(
         pen.addPoint([4, 4], 'curve', true);
         pen.endPath();
         doh.assertEqual(expecting, pen.flush());
-        
+
         // the pen will rotate the point list so that it ends with the
         // first on curve point of the point list
         var expecting = [
@@ -149,7 +151,7 @@ define(
         pen.addPoint([5, 5]);
         pen.endPath();
         doh.assertEqual(expecting, pen.flush());
-        
+
         //the quadratic curves special case without on curve points
         var expecting = [
             ['_flushContour', /* segments: */  [
