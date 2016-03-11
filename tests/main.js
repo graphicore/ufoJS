@@ -15,6 +15,8 @@ define([
     'tests/ufoLib/validators',
     'tests/ufoLib/filenames',
     'tests/ufoLib/converters',
+    'tests/ufoLib/UFOWriter',
+    'tests/ufoLib/UFOReader',
     'tests/ufoLib/glifLib/misc',
     'tests/ufoLib/glifLib/readGlyph',
     'tests/xml/main',
