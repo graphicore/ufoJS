@@ -298,31 +298,21 @@ define([
 
             // sync
             glyphset = new GlyphSet(staticIO, glyphSetEmpty);
-            doh.assertError(
-                ioErrors.IONoEntry,
-                glyphset, 'rebuildContents',
-                [false],
-                'GlifLib Error: The file "testdata/faulty.plist" could '
-                + 'not be read. ...'
-            );
+
+            glyphset.rebuildContents(false)
+            doh.assertEqual({}, glyphset.contents);
 
             // async
             glyphset = new GlyphSet(staticIO, glyphSetEmpty)
             glyphset.rebuildContents(true)
             .then(
                 function(result) {
-                    throw new Error('This test-case is broken. A GlifLib '
-                        + 'error was provoked, but a result appeared.')
+                    doh.assertEqual({}, glyphset.contents);
+                    deferred.callback(true);
                 },
                 function(error) {
-                    doh.assertError(
-                        ioErrors.IONoEntry,
-                        {echo: function(error){ throw error; }}, 'echo',
-                        [error],
-                        'GlifLib Error: The file "testdata/faulty.plist" could '
-                        + 'not be read. ...'
-                    )
-                    deferred.callback(true);
+                    throw new Error('rebuildContents should have returned '
+                                            + 'an empty dict on IONoEntry');
                 }
             )
             .then(undefined, errback);

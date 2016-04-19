@@ -20,7 +20,7 @@ define([
                 'given-name': 'John',
                 surname: 'Dow'
             },
-            five: new plistLib.types.Int(5),
+            five: 5,
             pets: [
                 'Jonny',
                 'Bello',
