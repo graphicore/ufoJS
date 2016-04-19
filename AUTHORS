@@ -1,0 +1,21 @@
+# This is the official list of Metapolator authors for copyright purposes.
+# This file is distinct from the CONTRIBUTORS files.
+# See the latter for an explanation.
+# 
+# Names should be added to this file as:
+# Name or Organization <email address> @githubusername
+# The email address is not required for organizations.
+
+# From tag v0.5.0 excluding the tagged commit, GPL Licensed
+# Add new names here.
+
+Lasse Fister <commander@graphicore.de> @graphicore
+
+# Until tag v0.5.0 (MIT Licensed)
+# DO NOT EDIT BELOW THIS LINE
+
+Google Inc.
+Lasse Fister <commander@graphicore.de> @graphicore
+Eric Schrijver <eric@ericschrijver.nl> @codingisacopingstrategy
+Felipe Corrêa da Silva Sanches <juca@members.fsf.org> @felipesanches
+Mike Kamermans <eric@ericschrijver.nl> @Pomax
