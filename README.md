@@ -95,8 +95,5 @@ The implementation of the Synchronous/Asynchronous APIs is made
 with [ObtainJS](https://github.com/graphicore/obtainJS) Author: Lasse Fister
 
 <hr />
-
-Copyright (c) 2011, 2012, 2013, 2014, Lasse Fister lasse@graphicore.de, http://graphicore.de
-
-You should have received a copy of the MIT License along with this program.
-If not, see http://www.opensource.org/licenses/mit-license.php
+© [The ufoJS authors](./AUTHORS)  
+![GPLv3](https://www.gnu.org/graphics/gplv3-127x51.png)
