@@ -1,4 +1,8 @@
 {
     "laxcomma": true,
-    "laxbreak": true
+    "laxbreak": true,
+    "undef": true,
+    "unused": true,
+    "predef": [ "define", "require" ],
+    "sub": true
 }
