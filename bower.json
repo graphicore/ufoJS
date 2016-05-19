@@ -30,6 +30,7 @@
     "tests"
   ],
   "dependencies": {
+    "requirejs-domReady": ">=2.0.1",
     "Atem-RequireJS-Config": "graphicore/Atem-RequireJS-Config",
     "obtainjs": "graphicore/obtainJS",
     "Atem-Errors": "graphicore/Atem-Errors",
