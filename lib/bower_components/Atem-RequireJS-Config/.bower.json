@@ -1,11 +1,11 @@
 {
   "name": "Atem-RequireJS-Config",
   "homepage": "https://github.com/graphicore/Atem-RequireJS-Config",
-  "_release": "12ae98b0df",
+  "_release": "df91858563",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "12ae98b0df763c62a7f506d7ae2c472a35109832"
+    "commit": "df91858563fbb6c9cb05724d6a1a37261bd77f29"
   },
   "_source": "git://github.com/graphicore/Atem-RequireJS-Config.git",
   "_target": "*",

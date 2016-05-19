@@ -32,11 +32,11 @@
     "Atem-Errors": "graphicore/Atem-Errors",
     "complex": "graphicore/complex"
   },
-  "_release": "f06a42b756",
+  "_release": "afc0545b73",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "f06a42b756d43912a3fae5bbd0325e0cca0e6230"
+    "commit": "afc0545b73fa0952224138f809dcad4c2673d7e0"
   },
   "_source": "git://github.com/graphicore/Atem-Math-Tools.git",
   "_target": "*",

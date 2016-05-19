@@ -24,11 +24,11 @@
     "test",
     "tests"
   ],
-  "_release": "262c57ad63",
+  "_release": "cd75efdc6f",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "262c57ad638eb94fe5930d1278512d19d65ec10f"
+    "commit": "cd75efdc6f1cd3aa39a42254f8f0bd0a363e01b2"
   },
   "_source": "git://github.com/graphicore/obtainJS.git",
   "_target": "*",

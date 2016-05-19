@@ -21,16 +21,16 @@
   ],
   "dependencies": {
     "obtainjs": "graphicore/obtainJS",
-    "jszip": "~2.5.0",
-    "path": "~3.46.1",
-    "event-emitter.js": "~0.2.2",
+    "jszip": ">=3.0.0",
+    "path": ">=3.46.1",
+    "event-emitter.js": ">=0.2.2",
     "Atem-Errors": "graphicore/Atem-Errors"
   },
-  "_release": "736d305754",
+  "_release": "2817015aea",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "736d3057543940b335e1e807feba930e46986aa0"
+    "commit": "2817015aeaea5f34ea7d9cf0d0fb684008cb3836"
   },
   "_source": "git://github.com/graphicore/Atem-IO.git",
   "_target": "*",

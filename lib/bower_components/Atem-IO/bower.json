@@ -22,9 +22,9 @@
   ],
   "dependencies": {
     "obtainjs": "graphicore/obtainJS",
-    "jszip": "~2.5.0",
-    "path": "~3.46.1",
-    "event-emitter.js": "~0.2.2",
+    "jszip": ">=3.0.0",
+    "path": ">=3.46.1",
+    "event-emitter.js": ">=0.2.2",
     "Atem-Errors": "graphicore/Atem-Errors"
   }
 }

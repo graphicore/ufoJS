@@ -4,6 +4,65 @@ layout: default
 section: main
 ---
 
+### From 2.x to 3.0.0
+
+* Deprecated objects/methods has been removed:
+  * `options.base64` in `generate()` (the base64 type is still valid)
+  * `options.base64`, `options.binary`, `options.dir`, `options.date`
+    on `ZipObject` (see the [2.3 upgrade section](#from-222-to-230))
+  * `JSZip.utils`
+  * `JSZip.prototype.crc32`, `JSZip.prototype.utf8encode`, `JSZip.prototype.utf8decode`
+  * `JSZip.base64` (you can get the content of a file directly as a base64 string)
+* `JSZip.compressions` has been removed.
+* On `ZipObject`, the synchronous getters has been replaced by `async()` and
+  `nodeStream()`.
+* The `generate()` method has been replaced by `generateAsync()` and 
+  `generateNodeStream()`.
+* The `type` option in `generate()` is now mandatory.
+* The "text" type has been replaced by the "string" type, a binary string is
+  named "binarystring".
+* The `load()` method and the constructor with data (`new JSZip(data)`) have
+  been replaced by `loadAsync()`.
+* When adding a file, the option `createFolders` now defaults to `true`. If
+  you don't want to create sub folders, set it to false.
+* `zip.generateAsync()` and `zip.generateNodeStream()` now depend on the
+  current folder level.
+
+```js
+// 2.x
+zip.file("test.txt").asText();
+// 3.x
+zip.file("test.txt").async("string")
+.then(function (content) {
+    // use content
+});
+
+
+// 2.x
+zip.generate();
+// 3.x
+zip.generateAsync({type:"uint8array"})
+.then(function (content) {
+    // use content
+});
+
+// 2.x
+new JSZip(data);
+zip.load(data);
+// 3.x
+JSZip.loadAsync(data);
+zip.loadAsync(data);
+
+// 2.x
+var data = zip.file("img.jpg").asBinary();
+var dataURI = "data:image/jpeg;base64," + JSZip.base64.encode(data);
+// 3.x
+zip.file("img.jpg").async("base64")
+.then(function (data64) {
+    var dataURI = "data:image/jpeg;base64," + data64;
+});
+```
+
 ### From 2.2.2 to 2.3.0
 
 * On `ZipObject#options`, the attributes `date` and `dir` have been

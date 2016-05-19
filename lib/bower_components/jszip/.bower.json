@@ -1,6 +1,5 @@
 {
   "name": "jszip",
-  "version": "2.5.0",
   "homepage": "http://stuartk.com/jszip",
   "authors": [
     "Stuart Knightley <stuart@stuartk.com>"
@@ -20,13 +19,14 @@
     "test",
     "tests"
   ],
-  "_release": "2.5.0",
+  "version": "3.0.0",
+  "_release": "3.0.0",
   "_resolution": {
     "type": "version",
-    "tag": "v2.5.0",
-    "commit": "39c69fde2d3779889dbf874d3c3ee9d556614fe2"
+    "tag": "v3.0.0",
+    "commit": "dbc084115a2f5c88d2ebda16c7e019d2b5d547d8"
   },
-  "_source": "git://github.com/Stuk/jszip.git",
-  "_target": "~2.5.0",
+  "_source": "https://github.com/Stuk/jszip.git",
+  "_target": ">=3.0.0",
   "_originalSource": "jszip"
 }

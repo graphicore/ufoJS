@@ -26,10 +26,22 @@ limitation).
 ### Performance issues
 
 An other limitation comes from the browser (and the machine running the
-browser). A compressed zip file of 10MB is "easily" opened by firefox / chrome
+browser). A compressed zip file of 10MB is easily opened by firefox / chrome
 / opera / IE10+ but will crash older IE. Also keep in mind that strings in
 javascript are encoded in UTF-16 : a 10MB ascii text file will take 20MB of
 memory.
+
+The
+[`async` method]({{site.baseurl}}/documentation/api_zipobject/async.html) and the
+[`generateAsync` method]({{site.baseurl}}/documentation/api_jszip/generate_async.html)
+hold the full result in memory but doesn't freeze the browser. If the result
+is too big, and if you can't use the
+[`nodeStream` method]({{site.baseurl}}/documentation/api_zipobject/node_stream.html) or the
+[`generateNodeStream` method]({{site.baseurl}}/documentation/api_jszip/generate_node_stream.html)
+you need to use the underlying
+[`StreamHelper`]({{site.baseurl}}/documentation/api_streamhelper.html) to
+handle the result chunk by chunk and `pause()`/`resume()` to handle the
+backpressure.
 
 If you're having performance issues, please consider the following :
 
@@ -39,14 +51,10 @@ If you're having performance issues, please consider the following :
     (or blob, arraybuffer, nodebuffer).
   * If you load the file from an ajax call, ask your XHR an ArrayBuffer.
     Loading a string is asking for troubles.
-* Don't use compression (see below).
-* If you want to get the content of an ASCII file as a string, consider using
-  `asBinary()` instead of `asText()`. The transformation
-  "binary string" -&gt; "unicode string" is a consuming process.
 
 Note about compression :
 When reading a file, JSZip will store the content without decompressing it.
-When generating a compressed file, JSZip will reuse if possible compressed
+When generating a compressed file, JSZip will reuse if possible the compressed
 content :
 
 * If you read a zip file compressed with DEFLATE and call `generate` with the
@@ -67,7 +75,22 @@ Some data are discarded (file metadata) and other are added (subfolders).
 
 ### Encodings support
 
-JSZip only supports utf8 : if the names of the files inside the zip are not in
-utf8 (or ASCII), they won't be interpreted correctly. If the content is a text
-not encoded with utf8 (or ASCII), the `asText()` method won't decode it
-correctly.
+JSZip only supports UTF-8 natively. A zip file doesn't contain the name of the
+encoding used, you need to know it before doing anything.
+
+#### File name
+
+If the name of a file inside the zip is encoded with UTF-8 then JSZip can
+detect it (Language encoding flag, Unicode Path Extra Field). If not, JSZip
+can't detect the encoding used and will generate [Mojibake](https://en.wikipedia.org/wiki/Mojibake).
+You can use the [encodeFileName]({{site.baseurl}}/documentation/api_jszip/generate.html)
+option and the [decodeFileName]({{site.baseurl}}/documentation/api_jszip/load.html)
+option to encode/decode using a custom encoding.
+
+#### File content
+
+The `async("string")` method uses UTF-8 to decode the content. If you have a text in
+a different encoding, you can get the bytes array with `async("uint8array")` and
+decode it with a lib (iconv, iconv-lite, etc) on your side.
+To save a text using a non-UTF-8 encoding, do the same : encode it into a
+Uint8Array before adding it to JSZip.

@@ -24,11 +24,11 @@
   "dependencies": {
     "Atem-Errors": "graphicore/Atem-Errors"
   },
-  "_release": "50327b3670",
+  "_release": "6aac333117",
   "_resolution": {
     "type": "branch",
     "branch": "master",
-    "commit": "50327b36706f266c9bc3c132941774625f7c80e7"
+    "commit": "6aac3331176300dacf8d7296d7a1cdacc3b3446e"
   },
   "_source": "git://github.com/graphicore/Atem-CPS-whitelisting.git",
   "_target": "*",

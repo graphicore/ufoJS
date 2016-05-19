@@ -4,6 +4,30 @@ layout: default
 section: main
 ---
 
+### v3.0.0 2016-04-13
+This release changes a lot of methods, please see [the upgrade guide](http://stuk.github.io/jszip/documentation/upgrade_guide.html).
+
+- replace sync getters and `generate()` with async methods (see [#195](https://github.com/Stuk/jszip/pull/195)).
+- support nodejs streams (in `file()` and `generateAsync()`).
+- support Blob and Promise in `file()` and `loadAsync()` (see [#275](https://github.com/Stuk/jszip/pull/275)).
+- add `support.nodestream`.
+- zip.filter: remove the defensive copy.
+- remove the deprecated API (see [#253](https://github.com/Stuk/jszip/pull/253)).
+- `type` is now mandatory in `generateAsync()`.
+- change the createFolders default value (now `true`).
+- Dates: use UTC instead of the local timezone.
+- Add `base64` and `array` as possible output type.
+- Add a forEach method.
+- Drop node 0.8 support (see [#270](https://github.com/Stuk/jszip/pull/270)).
+
+### v2.6.0 2016-03-23
+- publish `dist/` files in the npm package (see [#225](https://github.com/Stuk/jszip/pull/225)).
+- update pako to v1.0.0 (see [#261](https://github.com/Stuk/jszip/pull/261)).
+- add support of Array in JSZip#load (see [#252](https://github.com/Stuk/jszip/pull/252)).
+- improve file name / comment encoding support (see [#211](https://github.com/Stuk/jszip/pull/211)).
+- handle prepended data (see [#266](https://github.com/Stuk/jszip/pull/266)).
+- improve platform coverage in tests (see [#233](https://github.com/Stuk/jszip/pull/233) and [#269](https://github.com/Stuk/jszip/pull/269)).
+
 ### v2.5.0 2015-03-10
 - add support for custom mime-types (see [#199](https://github.com/Stuk/jszip/issues/199)).
 - add an option to set the DEFLATE level (see [#201](https://github.com/Stuk/jszip/issues/201)).
