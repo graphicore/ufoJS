@@ -1,18 +1,18 @@
 require([
-    '../../lib/bower_components/Atem-RequireJS-Config/nodeConfig'
+    '../../lib/bower_components/Atem-RequireJS-Config/browserConfig'
 ], function(
     configure
 ) {
     "use strict";
     var setup = {
         baseUrl: '../'
-      , bowerPrefix: './lib/bower_components'
+      , bowerPrefix: 'lib/bower_components'
       , paths: {
-            'ufojs': './lib'
-          , 'tests': './tests/'
-          , 'doh': './env/javascript/doh'
+            'ufojs': 'lib'
+          , 'tests': 'tests/'
+          , 'doh': 'env/javascript/doh'
         }
-    }
+    };
     configure(setup, require);
     require(['doh/browserRunner'], function(doh) {
         var factories = doh;
